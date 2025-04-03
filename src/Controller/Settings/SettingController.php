@@ -41,7 +41,7 @@ class SettingController extends AbstractController
 
     //MODULES MANAGMENT
 
-    #[Route('/module', name: 'module')]
+    // #[Route('/module', name: 'module')]
     public function module(Request $request , UserRepository $userRep , PActionRepository $pActionRep , PModuleRepository $moduleRepository)
     {
         $session = new Session();
@@ -87,17 +87,19 @@ class SettingController extends AbstractController
             $em->persist($module);
             $em->flush();
 
-            $modules = $moduleRep->findAll();
+            // $modules = $moduleRep->findAll();
 
-            // $actions = $session->get("actions");
+            // // $actions = $session->get("actions");
 
-            // dd($modules);
+            // // dd($modules);
 
-            $html = $this->render('settings/module/inc//list_modules.html.twig',[
-                'allModules' => $modules,
-            ]);
+            // $html = $this->render('settings/module/inc/list_modules.html.twig',[
+            //     'allModules' => $modules,
+            //     // 'actions' => $actions,
+            // ]);
 
-            return new JsonResponse($html->getContent());
+            return new JsonResponse("Module Ajouté.", 200);
+
 
 
 

@@ -1,226 +1,147 @@
 $(document).ready( function () {
+    var previousXhr = null;
 
-  $("#module").select2();
-  $("#moduleUpd").select2();
-  
-
-    $('#subModulesTable').DataTable({
-      lengthMenu: [
-        [15, 25, 50, -1],
-        [15, 25, 50, 'All'],
-    ],
-      
-      "autoWidth": false
-
-  });
-
-
-
-
-  $("body").on("click", ".saveAddSubModule" , function(){
-    var route = $("#routeName").val();
-    var moduleName = $("#module").val();
-    var nom = $("#subModuleName").val();
-
-    if(nom == ""){
-      $("#subModuleName").attr('style', "border: 1px solid #eb0000 !important");
-
-    }
-    else{
-      $("#subModuleName").attr('style', "border: 1px solid #gray !important");
-    }
-    if(route == ""){
-      $("#routeName").attr('style', "border: 1px solid #eb0000 !important");
-
-    }
-    else{
-      $("#routeName").attr('style', "border: 1px solid #gray !important");
-    }
-    if(moduleName == ""){
-      $("#select2-module-container").parent().css("border","1px solid #eb0000");
-
-    }
-    else{
-        $("#select2-module-container").parent().css("border","1px solid lightgray ");
-
-    }
-    if(nom != "" && route != "" && moduleName != ""){
-      const l = ladda.create(document.activeElement);
-
-      l.start();
-
-                  $.ajax({
-                  url: "addSubModule",
-                  method: "POST",
-                  data:{
-                      route: route,
-                      module:moduleName,
-                      nom:nom,
-                  },
-                  success: function(data){
-                      l.stop();
-                      
-
-                      if ( $.fn.dataTable.isDataTable("#subModulesTable") ) {
-                        $('#subModulesTable').DataTable().clear().destroy();
-                    }
-
-                    $("#listSubModules").html(data)
-
-
-                    $("#subModulesTable").DataTable({
-                      lengthMenu: [
-                        [15, 25, 50, -1],
-                        [15, 25, 50, 'All'],
-                    ],
-                      "autoWidth": false
-                    })
-
-                    $("#closeAddSubModule").click();
-                    toastr.success("Sous module ajouté avec success")
-                  },
-                  error: function(data){
-                    toastr.error("Erreur")
-                    l.stop()
-                  }
-                })
-    }
-
-
-  })
-
-  $("body").on("click" , ".btnUpdateSubModule" , function(){
-    var id = $(this).attr("id");
-
-    var idSubModule = id.slice(13); 
-    
-    $.ajax({
-     url: "findSubModule",
-     method: "POST",
-     data:{
-      idSubModule: idSubModule,
-     },
-     success: function(data){
-      
-       $("#idSubModuleUpd").val(data.id);
-       $("#routeSubModuleUpd").val(data.route)
-       $("#nomSubModuleUpd").val(data.nom)
-       $("#moduleUpd").val(data.module).trigger("change")
-
-
-       $("#updateSubModule").modal('show');
-     }
-   })
- })
-
- $("body").on("click", ".saveUpdateSubModule" , function(){
-  var idSubModule = $("#idSubModuleUpd").val()
-  var route = $("#routeSubModuleUpd").val();
-  var moduleName = $("#moduleUpd").val();
-  var nom = $("#nomSubModuleUpd").val();
-
-  if(nom == ""){
-    $("#routeSubModuleUpd").attr('style', "border: 1px solid #eb0000 !important");
-
-  }
-  else{
-    $("#routeSubModuleUpd").attr('style', "border: 1px solid #gray !important");
-  }
-  if(route == ""){
-    $("#nomSubModuleUpd").attr('style', "border: 1px solid #eb0000 !important");
-
-  }
-  else{
-    $("#nomSubModuleUpd").attr('style', "border: 1px solid #gray !important");
-  }
-  if(moduleName == ""){
-    $("#select2-moduleUpd-container").parent().css("border","1px solid #eb0000");
-
-  }
-  else{
-      $("#select2-moduleUpd-container").parent().css("border","1px solid lightgray ");
-
-  }
-  if(nom != "" && route != "" && moduleName != ""){
-    const l = ladda.create(document.activeElement);
-
-    l.start();
-
-                $.ajax({
-                url: "updateSubModule",
-                method: "POST",
-                data:{
-                    idSubModule:idSubModule,
-                    route: route,
-                    module:moduleName,
-                    nom:nom,
-                },
-                success: function(data){
-                    l.stop();
-                    
-
-                    if ( $.fn.dataTable.isDataTable("#subModulesTable") ) {
-                      $('#subModulesTable').DataTable().clear().destroy();
-                  }
-
-                  $("#listSubModules").html(data)
-
-
-                  $("#subModulesTable").DataTable({
-                    lengthMenu: [
-                      [15, 25, 50, -1],
-                      [15, 25, 50, 'All'],
-                  ],
-                    "autoWidth": false
-                  })
-
-                  $("#closeUpdateSubModule").click();
-                  toastr.success("Sous module modifié avec success")
-                },
-                error: function(data){
-                  toastr.error("Erreur")
-                  l.stop()
+    // initialize datatables
+    var table = $("#subModulesTable").DataTable({
+        lengthMenu: [
+            [10, 15, 25, 50, 100, 20000000000000],
+            [10, 15, 25, 50, 100, "All"],
+        ],
+        order: [[0, "desc"]],
+        ajax: {
+            url: Routing.generate("app_settings_sousmodule_list"),
+            type: "get",
+            data: function (d) {
+                // d.filterDate = filterValue;
+            },
+            beforeSend: function (jqXHR) {
+                if (previousXhr) {
+                    previousXhr.abort();
                 }
-              })
-  }
+                previousXhr = jqXHR;
+            },
+            dataSrc: function (json) {
+                // Store actions globally for dynamic rendering
+                window.globalActions = Array.isArray(json.actions) ? json.actions : Object.values(json.actions);
+                return json.data;
+            },
+        },
+        processing: true,
+        serverSide: true,
+        deferRender: true,
+        responsive: true,
+        columns: [
+            { name: "s.id", data: "id" },
+            { name: "m.module", data: "module" },
+            { name: "s.nom", data: "nom" },
+            { name: "s.route", data: "route" },
+            { name: "s.ord", data: "ord" },
+            { name: "s.active", data: "active" },
+            { name: 'actions', date: null, orderable: false, searchable: false, render: function (data,type, full) {
+                var actionsHtml = `<div class="dropdown">
+                            <i class="menuActions fa-solid fa-ellipsis-vertical" id="${full.id}">
+                            </i>
+                            <div class="dropdown-menu dropdown-content divMenu" id="divMenu${full.id}">`;
+                            window.globalActions.forEach(function (action) {
+                                actionsHtml += `
+                                    <button data-id="${full.id}" class="${action.className} dropdown-item d-flex align-items-end"><i class="${action.icon} menuIcon"></i> ${action.nom}</button>`;
+                            });
+                    actionsHtml += '</div>';
+                    return actionsHtml;
+            } },
+        ],
+        columnDefs: [
+            {
+                targets: 0,
+                orderable: false,
+                searchable: false,
+                // render: function (data, type, full, meta) {
+                //     var checked = livraison_array.includes(data) ? 'checked' : '';
+                //     return `<input type="checkbox" class="selectLivraison" data-id="${data}" ${checked}>`;
+                // }
+            },
+        ],
+        language: datatablesFrench,
+        initComplete: function () {
+            // Prevent sorting when interacting with select in header
+            $("thead .selection").on("click", function (e) {
+                e.stopPropagation();
+            });
+        },
+    });
+
+    // ajouter module
+    $("body").on("click", ".saveAddSubModule" , async function(){
+        const l = ladda.create(document.activeElement);
+        l.start();
+
+        var route = $("#routeName").val();
+        var module = $("#module").val();
+        var nom = $("#subModuleName").val();
 
 
-})
+        if(!route || !module || !nom){
+            toastr.error("veuillez remplir tous les champs obligatoires.")
+            l.stop()
+            return;
+        }
 
-$("body").on("click", ".activateSubModule" , function(){
-  var id = $(this).attr("data-id");
-
-  // alert(id);
-  $.ajax({
-    url: "activateSubModule",
-    method: "POST",
-    data:{
-        idSubModule: id,
-    },
-    success: function(data){
-      if ( $.fn.dataTable.isDataTable("#subModulesTable") ) {
-        $('#subModulesTable').DataTable().clear().destroy();
-    }
-
-    $("#listSubModules").html(data.html);
-
-    $("#subModulesTable").DataTable({
-      lengthMenu: [
-        [15, 25, 50, -1],
-        [15, 25, 50, 'All'],
-    ],
-      "autoWidth": false
+        try {
+            toastr.info("En cours...", {
+                timeOut: 0,
+                closeButton: true
+            });
+            const request = await axios.post(
+                Routing.generate('app_settings_sousmodule_add',{
+                    route: route,
+                    module: module,
+                    nom: nom,
+                })
+            );
+            const response = await request.data;
+            toastr.clear();
+            l.stop();
+            console.log(response)
+            toastr.success(response)
+            $('#addSubModule').modal("hide")
+            table.ajax.reload();
+        } catch (error) {
+            l.stop();
+            toastr.clear();
+            console.log(error);
+            if (error.response && error.response.data) {
+                const message = error.response.data.error;
+                toastr.error(message);
+            } else {
+                toastr.error('Something went wrong!');
+            }
+        }
     })
 
-    toastr.success(data.message);
-      }
+    $('body').on('click', '.activateSubModule', async function (e) {
+        e.preventDefault();
+        try {
+            let id = $(this).attr('data-id');
+            toastr.info("En cours...", {
+                timeOut: 0,
+                closeButton: true
+            });
+            const request = await axios.post(
+                Routing.generate('app_settings_sousmodule_toggle_active', { sousmodule: id })
+            );
+            const response = await request.data;
+            toastr.clear();
+            toastr.success(response)
+            table.ajax.reload(false);
+        } catch (error) {
+            toastr.clear();
+            console.log(error);
+            if (error.response && error.response.data) {
+                const message = error.response.data;
+                toastr.error(message);
+            } else {
+                toastr.error('Something went wrong!');
+            }
+        }
     })
-  
-})
-
-
-
-
-  
-
 })

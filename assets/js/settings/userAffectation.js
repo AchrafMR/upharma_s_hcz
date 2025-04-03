@@ -18,13 +18,13 @@ $(document).ready( function () {
   //     lengthMenu: [
   //       [15, 25, 50, -1],
   //       [15, 25, 50, 'All'],
-  //   ], 
+  //   ],
   //     autoWidth: false
   // } );
 
   // $("#usersCheckAll").click(function(){
   //     $('input:checkbox').not(this).prop('checked', this.checked);
-      
+
   // });
 
 
@@ -86,11 +86,11 @@ $("body").on("click",".menu-item", function(){
     var idSite = $("#dossier").val();
     // alert(idSite)
     $('input.checkboxAction:checkbox:checked').each(function () {
-      checkedActions.push($(this).attr('id').slice(12)); 
+      checkedActions.push($(this).attr('id').slice(12));
     });
 
     $('input.checkboxAction:checkbox:not(:checked)').each(function () {
-        uncheckedActions.push($(this).attr('id').slice(12)); 
+        uncheckedActions.push($(this).attr('id').slice(12));
     });
 
     // var jsonUsers = JSON.stringify(users);
@@ -109,8 +109,8 @@ $("body").on("click",".menu-item", function(){
             idSite:idSite,
             jsonCheckedActions: jsonCheckedActions,
             jsonUncheckedActions: jsonUncheckedActions,
-          }, 
-          
+          },
+
           success: function(data){
             toastr.success(data.affected + " AFFECTE - " + data.notAffected + " NON AFFECTE");
             l.stop();
@@ -149,15 +149,15 @@ $("body").on("click",".menu-item", function(){
           data: {
             idUser: $(".colorRow").attr("id"),
             idSite: $(this).val(),
-          }, 
-          
+          },
+
           success: function(data){
             // alert("zakaria")
             $("#actionsAffectedToUser").empty().append(data);
           },
           error:function(){
           toastr.error("ERROR !");
-    
+
           }
       });
     }
@@ -180,7 +180,7 @@ $("body").on("click",".menu-item", function(){
   $("body").on("click",".assignConvention",function(){
     id_user = $(".colorRow").attr("id");
     // alert(id_user);
-  
+
     if(id_user){
         $.ajax({
             url: "findUser",
@@ -195,16 +195,16 @@ $("body").on("click",".menu-item", function(){
                 $('#user_name').val(data.username);
                 $('#user_nom').val(data.name);
                 $('#user_profession').val(data.professionDescription);
-                
-                
+
+
                 $('#convention_table tbody').empty();
 
                 if ($.fn.DataTable.isDataTable('body #convention_table')) {
                   $('#convention_table').DataTable().destroy();
                 }
-          
+
                 $('body #list_convention').empty().append(result.html);
-                
+
                 conventionTable = $("#convention_table").DataTable({
                     language: {
                       "url": window.frenchJsonUrl
@@ -239,7 +239,7 @@ $("body").on("click",".menu-item", function(){
     } else {
       $row.removeClass('colorRow');
     }
-    
+
     // Update state of "Select all" control
     updateDataTableSelectAllCtrl(conventionTable);
   })
@@ -300,12 +300,12 @@ $("body").on("click",".menu-item", function(){
 
     $("#convention_table tbody tr").each(function() {
         var checkbox = $(this).find('input[type="checkbox"]');
-        
+
         if (checkbox.is(':checked')) {
             conventionIds.push(checkbox.val());
         }
     });
-        
+
     var userConventionData = {
       conventionIds: conventionIds,
       id_user: id_user
@@ -331,7 +331,7 @@ $("body").on("click",".menu-item", function(){
     });
   })
 
-  
+
 
 
 
@@ -364,7 +364,7 @@ $("body").on("click",".menu-item", function(){
   //               settings[0].jqXHR.abort();
   //             }
   //           }
-  //         }, 
+  //         },
   //     },
   //     order: [[1, 'asc']],
   //     columns: [
@@ -459,11 +459,11 @@ $("body").on("click",".menu-item", function(){
         "url": window.frenchJsonUrl
       },
     });
-    
+
     $("body").on("click",".assignCaisse",function(){
       id_user = $(".colorRow").attr("id");
       // alert(id_user);
-    
+
       if(id_user){
           $.ajax({
               url: "findUser",
@@ -481,9 +481,9 @@ $("body").on("click",".menu-item", function(){
                   if ($.fn.DataTable.isDataTable('body #caisse_table')) {
                     $('#caisse_table').DataTable().destroy();
                   }
-            
+
                   $('body #list_caisse').empty().append(result.html);
-            
+
                   caisseTable = $("#caisse_table").DataTable({
                     language: {
                       "url": window.frenchJsonUrl
@@ -502,7 +502,7 @@ $("body").on("click",".menu-item", function(){
                   toastr.error(xhr.responseText);
               }
           });
-  
+
       }
       else{
         toastr.info("Choisir un utilisateur!")
@@ -510,14 +510,14 @@ $("body").on("click",".menu-item", function(){
     })
 
     $("body").on("click", "#caisse_table tbody tr", function () {
-      
+
         if ($(this).hasClass("colorRow")) {
           $(this).removeClass("colorRow");
           $(this).find('input[type="checkbox"]').prop("checked", false);
         } else {
           caisseTable.$('tr').removeClass("colorRow");
           caisseTable.$('input[type="checkbox"]').prop("checked", false);
-          
+
           $(this).addClass("colorRow");
           $(this).find('input[type="checkbox"]').prop("checked", true);
         }
@@ -536,7 +536,7 @@ $("body").on("click",".menu-item", function(){
         type: "POST",
         url: Routing.generate("app_assign_caisse"),
         contentType: 'application/json',
-        data: JSON.stringify({ 
+        data: JSON.stringify({
             selectedCaisse: selectedCaisse,
             id_user: id_user,
         }),
@@ -544,7 +544,7 @@ $("body").on("click",".menu-item", function(){
         contentType: false,
         success: function (result) {
           la.stop();
-  
+
           toastr.success(result);
 
           $("#assign_caisse").modal("hide");
@@ -560,14 +560,14 @@ $("body").on("click",".menu-item", function(){
     $("body").on("click",".duplicate",function(){
       id_user = $(".colorRow").attr("id");
       // alert(id_user);
-    
+
       if(id_user){
-          $("#duplicate_user").modal("show");       
+          $("#duplicate_user").modal("show");
       }
       else{
         toastr.info("Choisir un utilisateur!")
       }
-  
+
     });
 
 
@@ -575,11 +575,11 @@ $("body").on("click",".menu-item", function(){
     $("body").on("submit", "#duplicateUserForm", function (e) {
       e.preventDefault();
       id_user = $(".colorRow").attr("id");
-      
+
       var username = $("#duplicated_username").val();
       var name = $("#duplicated_nom").val();
       var password = $("#duplicated_password").val();
-    
+
       if(id_user){
 
           var userData = {
@@ -603,14 +603,14 @@ $("body").on("click",".menu-item", function(){
                   $("#duplicate_user").modal("hide");
                   $("#duplicated_username").val("");
                   $("#duplicated_nom").val("");
-                  $("#duplicated_password").val("");  
+                  $("#duplicated_password").val("");
 
                   if ( $.fn.dataTable.isDataTable("#myTable") ) {
                     $('#myTable').DataTable().clear().destroy();
                   }
-      
+
                   $("#listUsers").html(data.html);
-      
+
                   $("#myTable").DataTable({
                     lengthMenu: [
                       [15, 25, 50, -1],
@@ -618,19 +618,19 @@ $("body").on("click",".menu-item", function(){
                   ],
                     "autoWidth": false
                   })
-                
+
               },
               error: function(xhr, status, error) {
                   toastr.error(xhr.responseText);
                   l.stop();
               }
           });
-          
+
       }
       else{
         toastr.info("Choisir un utilisateur!")
       }
-  
+
     });
 
 
@@ -641,7 +641,5 @@ $("body").on("click",".menu-item", function(){
 
 
 
-  
+
 });
-
-

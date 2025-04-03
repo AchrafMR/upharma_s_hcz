@@ -53,6 +53,8 @@ function checkActivity(timeout, interval, elapsed) {
 
 import 'bootstrap/dist/js/bootstrap.bundle'
 import 'datatables.net'
+const datatablesFrench = 'datatables.net-plugins/i18n/fr-FR.mjs';
+global.datatablesFrench = datatablesFrench;
 // import 'datatables.net-select'
 
 // import 'datatables.net-dt/css/jquery.dataTables.css';
@@ -121,6 +123,7 @@ window.moment = moment;
 
 
 const axios = require('axios');
+global.axios = axios;
 
 import './images/logoHCZ2.png'
 

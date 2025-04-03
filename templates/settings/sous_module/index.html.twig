@@ -3,7 +3,7 @@
 {% block title %}Modules{% endblock %}
 {% block javascripts %}
     {{ parent() }}
-    {{ encore_entry_script_tags('setting_module') }}
+    {{ encore_entry_script_tags('setting_sub_module') }}
 {% endblock %}
 
 {% block body %}
@@ -13,7 +13,7 @@
             <div class="row no-gutters mb-2">
                     <div class="col-md-6 d-flex justify-content-start align-items-center">
                         <div class="w-100">
-                        <h5>GESTION DES MODULES :</h5>
+                        <h5>GESTION DES SOUS MODULES :</h5>
                         </div>
                     </div>
 
@@ -43,25 +43,25 @@
                     </div>
 
                 </div>
-                <table id="modulesTable" class="table table-striped">
+                <table id="subModulesTable" class="table table-striped">
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>MODULE</th>
                             <th>NOM</th>
-                            <th>ICON</th>
                             <th>ROUTE</th>
                             <th>ORD</th>
                             <th>ACTIVE</th>
                             <th>ACTIONS</th>
                         </tr>
                     </thead>
-                    <tbody id="listModules">
+                    <tbody id="">
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
-{% include 'settings/module/modals/ajouter.html.twig' %}
-{% include 'settings/module/modals/modifier.html.twig' %}
+{% include 'settings/sous_module/modals/ajouter.html.twig' %}
+{% include 'settings/sous_module/modals/modifier.html.twig' %}
 {% endblock %}

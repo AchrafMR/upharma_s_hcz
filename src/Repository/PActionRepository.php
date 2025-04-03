@@ -41,6 +41,7 @@ class PActionRepository extends ServiceEntityRepository
 
     public function findActionsByUserAndRouteName($route, $userId = null, $dossier = null)
     {
+        // dd($userId, $route, $dossier);
         if($userId) {
             return $this->createQueryBuilder('a')
             ->innerJoin('a.pUserDossierActions','userDossierAction')

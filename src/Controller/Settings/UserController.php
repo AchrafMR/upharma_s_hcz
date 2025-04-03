@@ -379,15 +379,16 @@ class UserController extends AbstractController
     #[Route('/userAffectation', name: 'userAffectation')]
     public function userAffectation(PModuleRepository $module , PProfessionRepository $professionRep,PModuleRepository $moduleRepository, UserRepository $userRep , PActionRepository $pActionRep, Request $request): Response
     {
-        $session = new Session();
+        // $session = new Session();
 
 
         $users = $userRep->findBy(array("isDeleted" => 0), array('id' => 'ASC'));
 
-        $currentUser = $this->security->getUser();
+        // $currentUser = $this->security->getUser();
 
 
-        $actions = $session->get('actions');
+        $actions = $this->userOperation->getOperations($this->getUser(), 'listUsers', $request);
+
 
         if(count($actions) == 0){
             return $this->render('errors/403.html.twig');
