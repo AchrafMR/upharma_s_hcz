@@ -139,6 +139,8 @@ $("body").on("click",".menu-item", function(){
 
   })
 
+  console.log("hi");
+
   $("body").on("change","#dossier", function(){
 
     if($(this).val() != ""){
