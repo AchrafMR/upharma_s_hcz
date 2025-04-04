@@ -1,0 +1,102 @@
+{
+  "entrypoints": {
+    "app": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/593.1f88b37a.js",
+        "/build/193.d2d1c361.js",
+        "/build/622.d1e69617.js",
+        "/build/app.477cb3a5.js"
+      ],
+      "css": [
+        "/build/622.4d445ace.css",
+        "/build/app.b6f8b5f9.css"
+      ]
+    },
+    "setting_user": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/593.1f88b37a.js",
+        "/build/setting_user.4424bddd.js"
+      ]
+    },
+    "setting_module": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/593.1f88b37a.js",
+        "/build/193.d2d1c361.js",
+        "/build/902.48947e83.js",
+        "/build/setting_module.6233b3e0.js"
+      ]
+    },
+    "setting_sub_module": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/593.1f88b37a.js",
+        "/build/193.d2d1c361.js",
+        "/build/902.48947e83.js",
+        "/build/setting_sub_module.f42adde6.js"
+      ]
+    },
+    "setting_action": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/setting_action.b31d9758.js"
+      ]
+    },
+    "setting_user_affectation": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/593.1f88b37a.js",
+        "/build/193.d2d1c361.js",
+        "/build/216.c4966876.js",
+        "/build/setting_user_affectation.41abfc7b.js"
+      ]
+    },
+    "setting_profile": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/setting_profile.1657ab8b.js"
+      ]
+    },
+    "setting_site": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/593.1f88b37a.js",
+        "/build/setting_site.68cb2e9f.js"
+      ]
+    },
+    "login": {
+      "js": [
+        "/build/runtime.6c30001d.js"
+      ],
+      "css": [
+        "/build/login.2e9eeed6.css"
+      ]
+    },
+    "siteStyle": {
+      "js": [
+        "/build/runtime.6c30001d.js"
+      ],
+      "css": [
+        "/build/siteStyle.08fbcd9b.css"
+      ]
+    },
+    "listModulesStyle": {
+      "js": [
+        "/build/runtime.6c30001d.js"
+      ],
+      "css": [
+        "/build/listModulesStyle.66891549.css"
+      ]
+    },
+    "choix_site": {
+      "js": [
+        "/build/runtime.6c30001d.js"
+      ],
+      "css": [
+        "/build/choix_site.34485e1a.css"
+      ]
+    }
+  }
+}
