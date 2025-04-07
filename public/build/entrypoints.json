@@ -2,100 +2,118 @@
   "entrypoints": {
     "app": {
       "js": [
-        "/build/runtime.6c30001d.js",
-        "/build/593.1f88b37a.js",
-        "/build/193.d2d1c361.js",
-        "/build/622.d1e69617.js",
-        "/build/app.477cb3a5.js"
+        "/build/runtime.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-c5c500.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_from_js-node_modules_core-js_modules_es_array_s-d0842a.js",
+        "/build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-dec3e4.js",
+        "/build/node_modules_bpnetguy_webpack-inject-plugin_dist_webpack-inject-plugin_loader_js_id_webpack-i-327ca7.js",
+        "/build/app.js"
       ],
       "css": [
-        "/build/622.4d445ace.css",
-        "/build/app.b6f8b5f9.css"
+        "/build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-dec3e4.css",
+        "/build/app.css"
       ]
     },
     "setting_user": {
       "js": [
-        "/build/runtime.6c30001d.js",
-        "/build/593.1f88b37a.js",
-        "/build/setting_user.4424bddd.js"
+        "/build/runtime.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-c5c500.js",
+        "/build/node_modules_bpnetguy_webpack-inject-plugin_dist_webpack-inject-plugin_loader_js_id_webpack-i-327ca7.js",
+        "/build/setting_user.js"
       ]
     },
     "setting_module": {
       "js": [
-        "/build/runtime.6c30001d.js",
-        "/build/593.1f88b37a.js",
-        "/build/193.d2d1c361.js",
-        "/build/902.48947e83.js",
-        "/build/setting_module.6233b3e0.js"
+        "/build/runtime.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-c5c500.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_from_js-node_modules_core-js_modules_es_array_s-d0842a.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_concat_js-node_modules_core-js_modules_es_array-8efff3.js",
+        "/build/node_modules_bpnetguy_webpack-inject-plugin_dist_webpack-inject-plugin_loader_js_id_webpack-i-327ca7.js",
+        "/build/setting_module.js"
       ]
     },
     "setting_sub_module": {
       "js": [
-        "/build/runtime.6c30001d.js",
-        "/build/593.1f88b37a.js",
-        "/build/193.d2d1c361.js",
-        "/build/902.48947e83.js",
-        "/build/setting_sub_module.f42adde6.js"
+        "/build/runtime.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-c5c500.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_from_js-node_modules_core-js_modules_es_array_s-d0842a.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_concat_js-node_modules_core-js_modules_es_array-8efff3.js",
+        "/build/node_modules_bpnetguy_webpack-inject-plugin_dist_webpack-inject-plugin_loader_js_id_webpack-i-327ca7.js",
+        "/build/setting_sub_module.js"
       ]
     },
     "setting_action": {
       "js": [
-        "/build/runtime.6c30001d.js",
-        "/build/setting_action.b31d9758.js"
+        "/build/runtime.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-c5c500.js",
+        "/build/node_modules_bpnetguy_webpack-inject-plugin_dist_webpack-inject-plugin_loader_js_id_webpack-i-327ca7.js",
+        "/build/setting_action.js"
       ]
     },
     "setting_user_affectation": {
       "js": [
-        "/build/runtime.6c30001d.js",
-        "/build/593.1f88b37a.js",
-        "/build/193.d2d1c361.js",
-        "/build/216.c4966876.js",
-        "/build/setting_user_affectation.41abfc7b.js"
+        "/build/runtime.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-c5c500.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_from_js-node_modules_core-js_modules_es_array_s-d0842a.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_find_js-node_modules_core-js_modules_es_date_to-6553b2.js",
+        "/build/node_modules_bpnetguy_webpack-inject-plugin_dist_webpack-inject-plugin_loader_js_id_webpack-i-327ca7.js",
+        "/build/setting_user_affectation.js"
       ]
     },
     "setting_profile": {
       "js": [
-        "/build/runtime.6c30001d.js",
-        "/build/setting_profile.1657ab8b.js"
+        "/build/runtime.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-c5c500.js",
+        "/build/node_modules_bpnetguy_webpack-inject-plugin_dist_webpack-inject-plugin_loader_js_id_webpack-i-327ca7.js",
+        "/build/setting_profile.js"
       ]
     },
     "setting_site": {
       "js": [
-        "/build/runtime.6c30001d.js",
-        "/build/593.1f88b37a.js",
-        "/build/setting_site.68cb2e9f.js"
+        "/build/runtime.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-c5c500.js",
+        "/build/node_modules_bpnetguy_webpack-inject-plugin_dist_webpack-inject-plugin_loader_js_id_webpack-i-327ca7.js",
+        "/build/setting_site.js"
       ]
     },
     "login": {
       "js": [
-        "/build/runtime.6c30001d.js"
+        "/build/runtime.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-c5c500.js",
+        "/build/node_modules_bpnetguy_webpack-inject-plugin_dist_webpack-inject-plugin_loader_js_id_webpack-i-327ca7.js"
       ],
       "css": [
-        "/build/login.2e9eeed6.css"
+        "/build/login.css"
       ]
     },
     "siteStyle": {
       "js": [
-        "/build/runtime.6c30001d.js"
+        "/build/runtime.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-c5c500.js",
+        "/build/node_modules_bpnetguy_webpack-inject-plugin_dist_webpack-inject-plugin_loader_js_id_webpack-i-327ca7.js"
       ],
       "css": [
-        "/build/siteStyle.08fbcd9b.css"
+        "/build/siteStyle.css"
       ]
     },
     "listModulesStyle": {
       "js": [
-        "/build/runtime.6c30001d.js"
+        "/build/runtime.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-c5c500.js",
+        "/build/node_modules_bpnetguy_webpack-inject-plugin_dist_webpack-inject-plugin_loader_js_id_webpack-i-327ca7.js"
       ],
       "css": [
-        "/build/listModulesStyle.66891549.css"
+        "/build/listModulesStyle.css"
       ]
     },
     "choix_site": {
       "js": [
-        "/build/runtime.6c30001d.js"
+        "/build/runtime.js",
+        "/build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-c5c500.js",
+        "/build/node_modules_bpnetguy_webpack-inject-plugin_dist_webpack-inject-plugin_loader_js_id_webpack-i-327ca7.js"
       ],
       "css": [
-        "/build/choix_site.34485e1a.css"
+        "/build/choix_site.css"
       ]
     }
   }

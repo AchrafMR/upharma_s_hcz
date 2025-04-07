@@ -9,7 +9,7 @@ use App\Entity\PUserDossierAction;
 use App\Repository\UserRepository;
 use App\Repository\PActionRepository;
 use App\Repository\PModuleRepository;
-use App\Repository\PDossierRepository;
+use App\Repository\PEntiteRepository;
 use App\Repository\PProfessionRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,16 +53,15 @@ class UserController extends AbstractController
     // }
 
     #[Route('/listUsers', name: 'listUsers')]
-    public function listUsers(PDossierRepository $pDossierRepository , PProfessionRepository $professionRep,PModuleRepository $moduleRepository, UserRepository $userRep , PActionRepository $pActionRep, Request $request, EntityManagerInterface $em): Response
+    public function listUsers(PEntiteRepository $pEntiteRepository , PProfessionRepository $professionRep,PModuleRepository $moduleRepository, UserRepository $userRep , PActionRepository $pActionRep, Request $request, EntityManagerInterface $em): Response
     {
 
         $users = $userRep->findBy(array("isDeleted" => 0), array('id' => 'ASC'));
 
         $allModules = $moduleRepository->findBy(array("active"=> true));
 
-        // $dossiers = $pDossierRepository->findBy(array("active"=> true , "organisation" => null));
 
-        $dossiers = $pDossierRepository->findBy(array("active"=> true));
+        $dossiers = $pEntiteRepository->findBy(array("active"=> true));
 
         $actions = $this->userOperation->getOperations($this->getUser(), 'listUsers', $request);
 
@@ -400,14 +399,14 @@ class UserController extends AbstractController
     }
 
     #[Route('/userActions', name: 'userActions')]
-    public function userActions(PActionRepository $pActionRep, PDossierRepository $pDossierRepository ,PModuleRepository $moduleRepository, UserRepository $userRep , PUserDossierActionRepository $pUserDossierActionRepository, Request $request)
+    public function userActions(PActionRepository $pActionRep, PEntiteRepository $pEntiteRepository ,PModuleRepository $moduleRepository, UserRepository $userRep , PUserDossierActionRepository $pUserDossierActionRepository, Request $request)
     {
 
         if($request->isXmlHttpRequest()){
 
             if($request->get("idSite")){
                 $user = $userRep->find($request->get("idUser"));
-                $site = $pDossierRepository->find($request->get("idSite"));
+                $site = $pEntiteRepository->find($request->get("idSite"));
                 $dossier = $request->getSession()->get('dossier');
 
                 $allModules = $moduleRepository->findBy(array("active"=> true));
@@ -451,7 +450,7 @@ class UserController extends AbstractController
 
 
     #[Route('/affectUser', name: 'affectUser')]
-    public function affectUser(ManagerRegistry $doctrine ,PDossierRepository $pDossierRepository , PUserDossierActionRepository $pUserDossierActionRepository,PModuleRepository $moduleRepository, UserRepository $userRep , PActionRepository $pActionRep, Request $request)
+    public function affectUser(ManagerRegistry $doctrine ,PEntiteRepository $pEntiteRepository , PUserDossierActionRepository $pUserDossierActionRepository,PModuleRepository $moduleRepository, UserRepository $userRep , PActionRepository $pActionRep, Request $request)
     {
         // dd($request);
 
@@ -459,7 +458,7 @@ class UserController extends AbstractController
 
             $em = $doctrine->getManager();
             $user = $userRep->find($request->get("idUser"));
-            $site = $pDossierRepository->find($request->get("idSite"));
+            $site = $pEntiteRepository->find($request->get("idSite"));
 
             $checkedActions = json_decode($request->get("jsonCheckedActions"));
             $uncheckedActions = json_decode($request->get("jsonUncheckedActions"));

@@ -3,12 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\PTypePieceRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: PTypePieceRepository::class)]
-#[ORM\Table(name: 'p_pg017_type_piece')]
+#[ORM\Table(name: 'p_type_piece')]
 class PTypePiece
 {
     #[ORM\Id]
@@ -16,23 +16,17 @@ class PTypePiece
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 20, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $code = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $active = null;
 
-
     #[ORM\OneToMany(mappedBy: 'typePiece', targetEntity: PCounter::class)]
-    private Collection $couters;
-
-    public function __construct()
-    {
-        $this->couters = new ArrayCollection();
-    }
+    private Collection $counters;
 
     public function getId(): ?int
     {
@@ -68,38 +62,37 @@ class PTypePiece
         return $this->active;
     }
 
-    public function setActive(bool $active): static
+    public function setActive(?bool $active): static
     {
         $this->active = $active;
 
         return $this;
     }
 
-
     /**
      * @return Collection<int, PCounter>
      */
-    public function getCouters(): Collection
+    public function getCounters(): Collection
     {
-        return $this->couters;
+        return $this->counters;
     }
 
-    public function addCouter(PCounter $couter): static
+    public function addCounter(PCounter $counter): static
     {
-        if (!$this->couters->contains($couter)) {
-            $this->couters->add($couter);
-            $couter->setTypePiece($this);
+        if (!$this->counters->contains($counter)) {
+            $this->counters->add($counter);
+            $counter->setTypePiece($this);
         }
 
         return $this;
     }
 
-    public function removeCouter(PCounter $couter): static
+    public function removeCounter(PCounter $counter): static
     {
-        if ($this->couters->removeElement($couter)) {
+        if ($this->counters->removeElement($counter)) {
             // set the owning side to null (unless already changed)
-            if ($couter->getTypePiece() === $this) {
-                $couter->setTypePiece(null);
+            if ($counter->getTypePiece() === $this) {
+                $counter->setTypePiece(null);
             }
         }
 

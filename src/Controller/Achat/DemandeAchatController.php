@@ -6,7 +6,7 @@ use App\Service\UserOperation;
 use App\Repository\UserRepository;
 use App\Repository\PActionRepository;
 use App\Repository\PModuleRepository;
-use App\Repository\PDossierRepository;
+use App\Repository\PEntiteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PProfessionRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,10 +33,10 @@ class DemandeAchatController extends AbstractController
     }
 
     #[Route('/', name: 'app_achat_demande_achat')]
-    public function index(PDossierRepository $pDossierRepository , PProfessionRepository $professionRep,PModuleRepository $moduleRepository, UserRepository $userRep , PActionRepository $pActionRep, Request $request): Response
+    public function index(PEntiteRepository $pEntiteRepository , PProfessionRepository $professionRep,PModuleRepository $moduleRepository, UserRepository $userRep , PActionRepository $pActionRep, Request $request): Response
     {
         $allModules = $moduleRepository->findBy(array("active"=> true));
-        $dossiers = $pDossierRepository->findBy(array("active"=> true));
+        $dossiers = $pEntiteRepository->findBy(array("active"=> true));
         $actions = $this->userOperation->getOperations($this->getUser(), 'app_achat_demande_achat', $request);
         $professions = $professionRep->findAll();
 

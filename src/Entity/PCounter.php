@@ -6,7 +6,7 @@ use App\Repository\PCounterRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PCounterRepository::class)]
-#[ORM\Table(name:"p_pg013_counter")]
+#[ORM\Table(name:"p_counter")]
 
 class PCounter
 {
@@ -25,12 +25,12 @@ class PCounter
     private ?int $annee = null;
 
     #[ORM\ManyToOne(inversedBy: 'counters')]
-    private ?PDossier $dossier = null;
+    private ?PEntite $entite = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $dossierAbreviation = null;
+    private ?string $entiteAbreviation = null;
 
-    #[ORM\ManyToOne(inversedBy: 'couters')]
+    #[ORM\ManyToOne(inversedBy: 'counters')]
     private ?PTypePiece $typePiece = null;
 
     public function getId(): ?int
@@ -74,26 +74,26 @@ class PCounter
         return $this;
     }
 
-    public function getDossier(): ?PDossier
+    public function getEntite(): ?PEntite
     {
-        return $this->dossier;
+        return $this->entite;
     }
 
-    public function setDossier(?PDossier $dossier): self
+    public function setEntite(?PEntite $entite): self
     {
-        $this->dossier = $dossier;
+        $this->entite = $entite;
 
         return $this;
     }
 
-    public function getDossierAbreviation(): ?string
+    public function getEntiteAbreviation(): ?string
     {
-        return $this->dossierAbreviation;
+        return $this->entiteAbreviation;
     }
 
-    public function setDossierAbreviation(?string $dossierAbreviation): self
+    public function setEntiteAbreviation(?string $entiteAbreviation): self
     {
-        $this->dossierAbreviation = $dossierAbreviation;
+        $this->entiteAbreviation = $entiteAbreviation;
 
         return $this;
     }

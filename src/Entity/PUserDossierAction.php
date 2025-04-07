@@ -8,7 +8,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ORM\Entity(repositoryClass: PUserDossierActionRepository::class)]
-#[ORM\Table(name:"p_pv005_user_dossier_action")]
+#[ORM\Table(name:"p_pv005_user_entite_action")]
 class PUserDossierAction
 {
     #[ORM\Id]
@@ -20,7 +20,7 @@ class PUserDossierAction
     private ?User $userr = null;
 
     #[ORM\ManyToOne(inversedBy: 'pUserDossierActions' , fetch:"EAGER")]
-    private ?PDossier $dossier = null;
+    private ?PEntite $dossier = null;
 
     #[ORM\ManyToOne(inversedBy: 'pUserDossierActions' , fetch:"EAGER")]
     private ?PAction $action = null;
@@ -42,12 +42,12 @@ class PUserDossierAction
         return $this;
     }
 
-    public function getDossier(): ?PDossier
+    public function getDossier(): ?PEntite
     {
         return $this->dossier;
     }
 
-    public function setDossier(?PDossier $dossier): self
+    public function setDossier(?PEntite $dossier): self
     {
         $this->dossier = $dossier;
 

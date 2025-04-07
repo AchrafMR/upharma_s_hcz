@@ -21,24 +21,6 @@ class PProfessionRepository extends ServiceEntityRepository
         parent::__construct($registry, PProfession::class);
     }
 
-    public function save(PProfession $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    public function remove(PProfession $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
 //    /**
 //     * @return PProfession[] Returns an array of PProfession objects
 //     */

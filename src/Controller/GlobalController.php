@@ -6,7 +6,7 @@ use PDO;
 use App\Entity\User;
 use App\Entity\TPanier;
 use App\Entity\PArticle;
-use App\Entity\PDossier;
+use App\Entity\PEntite;
 use App\Entity\PMedecin;
 use App\Entity\PConvention;
 use App\Entity\PRepartition;
@@ -20,7 +20,7 @@ use App\Repository\UserRepository;
 use App\Entity\TDossierImputationDet;
 use App\Repository\PActionRepository;
 use App\Repository\PModuleRepository;
-use App\Repository\PDossierRepository;
+use App\Repository\PEntiteRepository;
 use function PHPUnit\Framework\isNull;
 use App\Entity\FactureDetTechniqueHosix;
 use App\Entity\PAgenda;
@@ -57,7 +57,7 @@ use App\Entity\TRendezvous;
 use App\Entity\TRetenueHonoraireMedecin;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\PUserDossierActionRepository;
-use App\Repository\PDossierOrganisationRepository;
+use App\Repository\PEntiteOrgRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -86,44 +86,42 @@ class GlobalController extends AbstractController
     {
        $this->security = $security;
        $this->em = $doctrine->getManager();
-    
+
     }
 
     //FOR TEST
 
     #[Route('/addAffectation', name: 'addAffectation')]
-    public function addAffectation(ManagerRegistry $doctrin, PActionRepository $pActionRepository , PDossierRepository $pDossierRepository , UserRepository $userRep)
-    { 
+    public function addAffectation(ManagerRegistry $doctrin, PActionRepository $pActionRepository , PEntiteRepository $pEntiteRepository , UserRepository $userRep)
+    {
         $em = $doctrin->getManager();
 
         $u = new PUserDossierAction();
         $u->setUserr($userRep->find(1));
-        $u->setDossier($pDossierRepository->find(1));
+        $u->setDossier($pEntiteRepository->find(1));
         $u->setAction($pActionRepository->find(1));
 
         $em->persist($u);
         $em->flush();
     }
-    
+
     #[Route('/app', name: 'app_global')]
-    public function index(PActionRepository $pActionRepository , PDossierRepository $pDossierRepository , PDossierOrganisationRepository $pDossierOrganisationRepository)
-    {   
-        $organisations = $pDossierOrganisationRepository->findBy(["active" => true]);
+    public function index(PActionRepository $pActionRepository , PEntiteRepository $pEntiteRepository , PEntiteOrgRepository $pEntiteOrgRepository)
+    {
+        $organisations = $pEntiteOrgRepository->findBy(["active" => true]);
 
         $user = $this->getUser();
 
-        // $sites = $pDossierRepository->findSites($user);
-        
         if(in_array('ROLE_ADMIN',$user->getRoles())){
-            $sites = $pDossierRepository->findBy(['active' => true]);
+            $sites = $pEntiteRepository->findBy(['active' => true]);
         }
         else{
-            $sites = $pDossierRepository->findSites($user);
+            $sites = $pEntiteRepository->findSites($user);
         }
 
         if (count($sites) === 1) {
             $site = $sites[0];
-            
+
             return $this->redirectToRoute('app_site_chois', ['id' => $site->getId()]);
         } else {
             return $this->render('global/index.html.twig', [
@@ -134,13 +132,13 @@ class GlobalController extends AbstractController
     }
 
     #[Route('/app1', name: 'app1_global')]
-    public function index1(PActionRepository $pActionRepository , PDossierRepository $pDossierRepository , PDossierOrganisationRepository $pDossierOrganisationRepository)
-    {   
-        $organisations = $pDossierOrganisationRepository->findBy(["active" => true]);
+    public function index1(PActionRepository $pActionRepository , PEntiteRepository $pEntiteRepository , PEntiteOrgRepository $pEntiteOrgRepository)
+    {
+        $organisations = $pEntiteOrgRepository->findBy(["active" => true]);
 
         $user = $this->getUser();
 
-        $sites = $pDossierRepository->findSites($user);
+        $sites = $pEntiteRepository->findSites($user);
 
 
         return $this->render('global/index1.html.twig', [
@@ -150,25 +148,25 @@ class GlobalController extends AbstractController
     }
 
     #[Route('/dossier/{id}', name: 'app_site_chois')]
-    public function site(Request $request, $id, UserOperation $userOperation, PUserDossierActionRepository $pUserDossierActionRepository ,PActionRepository $pActionRepository, PDossierRepository $pDossierRepository, PModuleRepository $pModuleRepository)
-    {   
+    public function site(Request $request, $id, UserOperation $userOperation, PUserDossierActionRepository $pUserDossierActionRepository ,PActionRepository $pActionRepository, PEntiteRepository $pEntiteRepository, PModuleRepository $pModuleRepository)
+    {
         $session = new Session();
 
-        
+
         $currentUser = $this->security->getUser();
 
         if(in_array('ROLE_ADMIN',$currentUser->getRoles())){
             $modules = $pModuleRepository->findBy(['active' => true], ['ord' => 'ASC']);
         }
         else{
-            $modules = $pModuleRepository->findUserModulesBySite($currentUser, $pDossierRepository->find($id));
+            $modules = $pModuleRepository->findUserModulesBySite($currentUser, $pEntiteRepository->find($id));
         }
 
         // dd($modules[0]->getPSousModule()[0]);
         // dd($modules);
         $session->set("modules", $modules);
 
-        $dossier = $this->em->getRepository(PDossier::class)->find($id);
+        $dossier = $this->em->getRepository(PEntite::class)->find($id);
         $session->set("dossier", $dossier);
 
         $actions = $userOperation->getOperations($this->getUser(), 'app_list_rendezvous', $request);
@@ -191,8 +189,8 @@ class GlobalController extends AbstractController
     }
 
     #[Route('/dossier/module/{id}', name: 'app_dossier_modules_chois')]
-    public function setting_modules($id, PUserDossierActionRepository $pUserDossierActionRepository ,PActionRepository $pActionRepository, PDossierRepository $pDossierRepository, PModuleRepository $pModuleRepository)
-    {   
+    public function setting_modules($id, PUserDossierActionRepository $pUserDossierActionRepository ,PActionRepository $pActionRepository, PEntiteRepository $pEntiteRepository, PModuleRepository $pModuleRepository)
+    {
 
         return $this->render('global/list_modules.html.twig');
     }
