@@ -92,11 +92,19 @@ class PEntite
     #[ORM\OneToMany(mappedBy: 'dossier', targetEntity: PUserDossierAction::class )]
     private Collection $pUserDossierActions;
 
+    #[ORM\OneToMany(mappedBy: 'entite', targetEntity: PPartenaires::class)]
+    private Collection $pPartenaires;
+
+    #[ORM\OneToMany(mappedBy: 'entite', targetEntity: PDepots::class)]
+    private Collection $pDepots;
+
     public function __construct()
     {
         $this->pUserDossierActions = new ArrayCollection();
         $this->pEntites = new ArrayCollection();
         $this->counters = new ArrayCollection();
+        $this->pPartenaires = new ArrayCollection();
+        $this->pDepots = new ArrayCollection();
 
     }
 
@@ -418,6 +426,96 @@ class PEntite
     public function setOrganisation(?PEntiteOrg $organisation): static
     {
         $this->organisation = $organisation;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PUserDossierAction>
+     */
+    public function getPUserDossierActions(): Collection
+    {
+        return $this->pUserDossierActions;
+    }
+
+    public function addPUserDossierAction(PUserDossierAction $pUserDossierAction): self
+    {
+        if (!$this->pUserDossierActions->contains($pUserDossierAction)) {
+            $this->pUserDossierActions->add($pUserDossierAction);
+            $pUserDossierAction->setDossier($this);
+        }
+
+        return $this;
+    }
+
+    public function removePUserDossierAction(PUserDossierAction $pUserDossierAction): self
+    {
+        if ($this->pUserDossierActions->removeElement($pUserDossierAction)) {
+            // set the owning side to null (unless already changed)
+            if ($pUserDossierAction->getDossier() === $this) {
+                $pUserDossierAction->setDossier(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PPartenaires>
+     */
+    public function getPPartenaires(): Collection
+    {
+        return $this->pPartenaires;
+    }
+
+    public function addPPartenaire(PPartenaires $pPartenaire): static
+    {
+        if (!$this->pPartenaires->contains($pPartenaire)) {
+            $this->pPartenaires->add($pPartenaire);
+            $pPartenaire->setEntite($this);
+        }
+
+        return $this;
+    }
+
+    public function removePPartenaire(PPartenaires $pPartenaire): static
+    {
+        if ($this->pPartenaires->removeElement($pPartenaire)) {
+            // set the owning side to null (unless already changed)
+            if ($pPartenaire->getEntite() === $this) {
+                $pPartenaire->setEntite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PDepots>
+     */
+    public function getPDepots(): Collection
+    {
+        return $this->pDepots;
+    }
+
+    public function addPDepot(PDepots $pDepot): static
+    {
+        if (!$this->pDepots->contains($pDepot)) {
+            $this->pDepots->add($pDepot);
+            $pDepot->setEntite($this);
+        }
+
+        return $this;
+    }
+
+    public function removePDepot(PDepots $pDepot): static
+    {
+        if ($this->pDepots->removeElement($pDepot)) {
+            // set the owning side to null (unless already changed)
+            if ($pDepot->getEntite() === $this) {
+                $pDepot->setEntite(null);
+            }
+        }
 
         return $this;
     }

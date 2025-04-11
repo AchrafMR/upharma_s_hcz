@@ -58,10 +58,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(targetEntity: self::class)]
     private ?self $userUpdate = null;
 
+    #[ORM\OneToMany(mappedBy: 'userCreated', targetEntity: PPartenaires::class)]
+    private Collection $pPartenaires;
+
+    #[ORM\OneToMany(mappedBy: 'userCreated', targetEntity: PDepots::class)]
+    private Collection $pDepots;
+
 
     public function __construct()
     {
         $this->pUserDossierActions = new ArrayCollection();
+        $this->pPartenaires = new ArrayCollection();
+        $this->pDepots = new ArrayCollection();
 
     }
 
@@ -248,6 +256,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUserUpdate(?self $userUpdate): self
     {
         $this->userUpdate = $userUpdate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PPartenaires>
+     */
+    public function getPPartenaires(): Collection
+    {
+        return $this->pPartenaires;
+    }
+
+    public function addPPartenaire(PPartenaires $pPartenaire): static
+    {
+        if (!$this->pPartenaires->contains($pPartenaire)) {
+            $this->pPartenaires->add($pPartenaire);
+            $pPartenaire->setUserCreated($this);
+        }
+
+        return $this;
+    }
+
+    public function removePPartenaire(PPartenaires $pPartenaire): static
+    {
+        if ($this->pPartenaires->removeElement($pPartenaire)) {
+            // set the owning side to null (unless already changed)
+            if ($pPartenaire->getUserCreated() === $this) {
+                $pPartenaire->setUserCreated(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PDepots>
+     */
+    public function getPDepots(): Collection
+    {
+        return $this->pDepots;
+    }
+
+    public function addPDepot(PDepots $pDepot): static
+    {
+        if (!$this->pDepots->contains($pDepot)) {
+            $this->pDepots->add($pDepot);
+            $pDepot->setUserCreated($this);
+        }
+
+        return $this;
+    }
+
+    public function removePDepot(PDepots $pDepot): static
+    {
+        if ($this->pDepots->removeElement($pDepot)) {
+            // set the owning side to null (unless already changed)
+            if ($pDepot->getUserCreated() === $this) {
+                $pDepot->setUserCreated(null);
+            }
+        }
 
         return $this;
     }
