@@ -44,7 +44,7 @@ class DemandeVenteController extends AbstractController
             return $this->render('errors/403.html.twig');
         }
 
-        return $this->render('vente/demande_vente/index.html.twig', [
+        return $this->render('vente/PointVente/index.html.twig', [
             'professions' => $professions,
             'allModules' => $allModules,
             'dossiers' => $dossiers,

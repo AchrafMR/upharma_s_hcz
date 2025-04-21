@@ -1,0 +1,249 @@
+{% extends 'base.html.twig' %} {% block title %}Point de Vente{% endblock %} {%
+block stylesheets %}
+{{ parent() }}
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  rel="stylesheet"
+/>
+{% endblock %} {% block body %}
+<!-- 🔍 Title + Search + Filter Row -->
+<div
+  class="d-flex align-items-center justify-content-between flex-wrap gap-3 pt-3 mb-4 mt-4 px-3"
+>
+  <!-- 🏷️ Page Title (Left) -->
+  <h3
+    class="text-bold text-primary text-uppercase mb-0"
+    style="white-space: nowrap"
+  >
+    Point de Vente
+  </h3>
+
+  <!-- 🧪 Category Pills (Center) -->
+  <div class="d-flex flex-wrap justify-content-center gap-2">
+    <button
+      class="btn btn-sm rounded-pill px-3 text-dark bg-light border-0 active-category"
+    >
+      Crèmes
+    </button>
+    <button class="btn btn-sm rounded-pill px-3 text-dark bg-light border-0">
+      Antibiotiques
+    </button>
+    <button class="btn btn-sm rounded-pill px-3 text-dark bg-light border-0">
+      Antidouleurs
+    </button>
+    <button class="btn btn-sm rounded-pill px-3 text-dark bg-light border-0">
+      Vitamines
+    </button>
+    <button class="btn btn-sm rounded-pill px-3 text-dark bg-light border-0">
+      Matériel Médical
+    </button>
+  </div>
+
+  <style>
+    .active-category {
+      background-color: rgb(66, 112, 109) !important;
+      color: white !important;
+    }
+  </style>
+  <!-- 🔍 Search Bar (Right) -->
+  <div style="min-width: 220px">
+    <input
+      type="text"
+      class="form-control form-control-sm"
+      placeholder="Search products..."
+    />
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    {% set cart = [ { id: 1, name: 'ORI GIMBER 700ml', price: 24.95, quantity: 1
+    }, { id: 2, name: 'GIMBER N°2 500 ml', price: 26.00, quantity: 2 }, { id: 3,
+    name: 'VITA BOOSTER', price: 18.75, quantity: 1 }, { id: 4, name: 'HERBA
+    MAX', price: 21.50, quantity: 2 }, { id: 5, name: 'IMMUNO PROTECT', price:
+    32.00, quantity: 1 }, { id: 6, name: 'ZINC POWER', price: 15.00, quantity: 3
+    }, { id: 7, name: 'MULTIVIT ACTIVE', price: 27.90, quantity: 1 }, { id: 8,
+    name: 'BIO ENERGY BOOST', price: 19.95, quantity: 2 }, { id: 9, name: 'OMEGA
+    3 PRO', price: 29.99, quantity: 1 }, { id: 10, name: 'MAGNESIUM MAX', price:
+    22.00, quantity: 2 } ] %}
+
+    <!-- LEFT: Product Grid -->
+    <div
+      class="col-md-8"
+      style="max-height: 100vh; overflow-y: auto; padding-right: 1rem"
+    >
+      <div
+        class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 gx-3"
+      >
+        {% for i in 1..15 %}
+        <div class="col mb-4">
+          <div
+            class="card shadow-sm border-0 rounded-4 px-2 pt-3 pb-2 h-100 position-relative overflow-hidden"
+          >
+            <!-- 🛒 Cart Icon -->
+            <button
+              class="btn btn-sm btn-primary position-absolute"
+              style="top: 6px; right: 6px; z-index: 10"
+              title="Ajouter au panier"
+            >
+              <i class="fa-solid fa-cart-plus"></i>
+            </button>
+
+            <!-- 🔢 Quantity Badge -->
+            <div
+              class="position-absolute"
+              style="top: 6px; left: 6px; z-index: 10"
+            >
+              <div
+                class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center"
+                style="
+                  width: 24px;
+                  height: 24px;
+                  font-size: 0.75rem;
+                  font-weight: 600;
+                "
+              >
+                {{ i }}
+              </div>
+            </div>
+
+            <!-- 🖼 Product Image -->
+            <div
+              class="d-flex justify-content-center align-items-center border rounded p-2 mb-2"
+              style="height: 110px"
+            >
+              <img
+                src="https://as1.ftcdn.net/v2/jpg/05/42/64/78/1000_F_542647814_DXqOh96SDpLhlKUGhO1sCWqfqQLN8u0z.webp"
+                class="img-fluid"
+                style="max-height: 80px; object-fit: contain"
+              />
+            </div>
+
+            <!-- 📋 Product Info -->
+            <div class="text-center">
+              <h6
+                class="text-uppercase mb-1"
+                style="font-size: 0.8rem; font-weight: 600"
+              >
+                Product {{ i }}
+              </h6>
+              <p class="text-danger fw-bold mb-0" style="font-size: 0.85rem">
+                ${{ i * 5 + 19.95 }}
+              </p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- RIGHT: Cart -->
+    <div class="col-md-4">
+      <div
+        class="card shadow-sm rounded-4 border-0"
+        style="margin-bottom: 2rem"
+      >
+        <div
+          class="card-header bg-light d-flex justify-content-between align-items-center"
+        >
+          <h6 class="mb-0 fw-bold text-uppercase">Cart</h6>
+          <i class="fa-solid fa-cart-shopping"></i>
+        </div>
+
+        <div class="card-body" style="max-height: 400px; overflow-y: auto">
+          {% for item in cart %}
+          <div
+            class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3 cart-item"
+            data-id="{{ item.id }}"
+          >
+            <!-- 🔤 Name -->
+            <span
+              class="text-uppercase fw-semibold"
+              style="
+                font-size: 0.85rem;
+                max-width: 120px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              "
+            >
+              {{ item.name }}
+            </span>
+
+            <!-- 💵 Price -->
+            <span
+              class="text-danger fw-bold"
+              style="font-size: 0.9rem; width: 60px"
+            >
+              ${{ item.price | number_format(2) }}
+            </span>
+
+            <!-- 🔢 Quantity Controls -->
+            <!-- 🔢 Compact Rounded Quantity -->
+            <div
+              class="d-flex align-items-center bg-light rounded-pill px-2 py-1 mx-2"
+              style="gap: 8px; min-width: 90px"
+            >
+              <!-- ➖ Minus -->
+              <button
+                class="btn btn-sm p-0 border-0 bg-transparent text-dark"
+                data-id="{{ item.id }}"
+                style="width: 22px"
+              >
+                <i class="fa-solid fa-minus"></i>
+              </button>
+
+              <!-- Qty -->
+              <input
+                type="text"
+                class="form-control form-control-sm text-center border-0 bg-transparent"
+                value="{{ item.quantity }}"
+                style="width: 28px; font-weight: 600; font-size: 13px"
+                readonly
+                data-id="{{ item.id }}"
+              />
+
+              <!-- ➕ Plus -->
+              <button
+                class="btn btn-sm p-0 border-0 bg-transparent text-dark"
+                data-id="{{ item.id }}"
+                style="width: 22px"
+              >
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+
+            <!-- 🗑 Delete Button (icon only, no border, red on hover) -->
+            <button
+              class="btn btn-sm btn-remove text-danger p-1 bg-transparent border-0"
+              data-id="{{ item.id }}"
+              title="Supprimer"
+            >
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Cart Footer -->
+        <div class="px-4 pb-4 border-top pt-3">
+          {% set subtotal = cart | reduce((carry, item) => carry + (item.price *
+          item.quantity), 0) %} {% set discount = subtotal * 0.10 %} {% set
+          gratuity = 4 %} {% set total = subtotal - discount + gratuity %}
+
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0 fw-bold">Total</h5>
+            <h4 class="mb-0 text-success fw-bold">
+              ${{ total | number_format(2) }}
+            </h4>
+          </div>
+
+          <button class="btn btn-primary btn-lg w-100">
+            <i class="fa-solid fa-credit-card me-2"></i> Paiement
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
