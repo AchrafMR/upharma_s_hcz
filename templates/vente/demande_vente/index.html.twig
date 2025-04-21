@@ -1,0 +1,233 @@
+{% extends 'base.html.twig' %} {% block title %}Point de Vente{% endblock %} {%
+block stylesheets %}
+{{ parent() }}
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  rel="stylesheet"
+/>
+{% endblock %} {% block body %}
+<div class="container-fluid">
+  <div class="row">
+    <!-- LEFT: Product Section with Scroll -->
+    <div
+      class="col-md-8"
+      style="max-height: 100vh; overflow-y: auto; padding-right: 1rem"
+    >
+      <div class="pt-3 px-1">
+        <!-- 🔍 Search & Category Filter -->
+        <div
+          class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3"
+        >
+          <!-- 🧪 Category Select -->
+          <div style="min-width: 200px">
+            <select class="form-select form-select-sm">
+              <option selected disabled>Choose category</option>
+              <option>Syrups</option>
+              <option>Antibiotics</option>
+              <option>Painkillers</option>
+              <option>Vitamins</option>
+              <option>Medical Equipment</option>
+            </select>
+          </div>
+
+          <!-- 🔍 Search Input -->
+          <div style="min-width: 250px">
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              placeholder="Search all product here..."
+            />
+          </div>
+        </div>
+
+        <!-- 🧱 Product Grid -->
+        <div class="row g-4 pb-5">
+          {% for i in 1..13 %}
+          <div class="col-md-3 mb-4">
+            <div class="card shadow rounded-4 border-0 px-3 py-4 h-100">
+              <!-- 🌐 Relative Wrapper for floating elements -->
+              <div class="position-relative overflow-hidden">
+                <!-- 🛒 Cart Icon (Top-Right) -->
+                <button
+                  class="btn btn-sm btn-primary position-absolute"
+                  style="top: 0px; right: 0px; z-index: 10; padding: 5px 8px"
+                  title="Ajouter au panier"
+                >
+                  <i class="fa-solid fa-cart-plus"></i>
+                </button>
+
+                <!-- 🔢 Quantity Badge (Top-Left) -->
+                <div
+                  class="position-absolute"
+                  style="top: -3px; left: -3px; z-index: 10"
+                >
+                  <div
+                    class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center"
+                    style="
+                      width: 28px;
+                      height: 28px;
+                      font-size: 0.85rem;
+                      font-weight: 600;
+                    "
+                  >
+                    {{ i }}
+                  </div>
+                </div>
+
+                <!-- 🖼 Product Image -->
+                <div
+                  class="d-flex justify-content-center align-items-center p-2 border rounded mb-3"
+                  style="height: 130px"
+                >
+                  <img
+                    src="https://as1.ftcdn.net/v2/jpg/05/42/64/78/1000_F_542647814_DXqOh96SDpLhlKUGhO1sCWqfqQLN8u0z.webp"
+                    class="img-fluid"
+                    style="max-height: 100px; object-fit: contain"
+                  />
+                </div>
+              </div>
+              <!-- 🔚 Close position-relative -->
+
+              <!-- 📋 Product Info -->
+              <div class="text-center">
+                <h6
+                  class="card-title text-uppercase mb-2"
+                  style="font-size: 0.9rem"
+                >
+                  Product Name {{ i }}
+                </h6>
+                <div class="text-center px-2">
+                  <span class="text-danger fw-bold" style="font-size: 0.95rem">
+                    ${{ i * 5 + 19.95 }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Cart -->
+    <div class="col-md-4">
+      <div
+        class="card shadow-sm rounded-4 border-0"
+        style="margin-bottom: 2rem"
+      >
+        <div
+          class="card-header bg-light d-flex justify-content-between align-items-center"
+        >
+          <h6 class="mb-0 fw-bold text-uppercase">Cart</h6>
+          <i class="fa-solid fa-cart-shopping"></i>
+        </div>
+
+        <!-- 🛒 Scrollable Cart Body -->
+        <div class="card-body" style="max-height: 400px; overflow-y: auto">
+          {% set cart = [ { id: 1, name: 'ORI GIMBER 700ml', price: 24.95,
+          quantity: 1, options: ['+ Extra Boba $2.00', '+ Extra Ice $1.00'] }, {
+          id: 2, name: 'GIMBER N°2 500 ml', price: 26.00, quantity: 2, options:
+          ['Less Sugar'] }, { id: 3, name: 'GIMBER N°2 500 ml', price: 26.00,
+          quantity: 1, options: [] }, { id: 4, name: 'GIMBER N°2 500 ml', price:
+          26.00, quantity: 2, options: [] } ] %} {% set subtotal = 0 %} {% for
+          item in cart %} {% set total_item = item.price * item.quantity %} {%
+          set subtotal = subtotal + total_item %}
+          <div class="border-bottom pb-3 mb-3">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <strong class="text-uppercase">{{ item.name }}</strong>
+                {% for option in item.options %}
+                <div class="text-muted small">{{ option }}</div>
+                {% endfor %}
+              </div>
+              <div class="text-end">
+                <span class="fw-bold d-block"
+                  >${{ total_item | number_format(2) }}</span
+                >
+                <button
+                  class="btn btn-sm btn-outline-danger mt-1 px-2 py-0"
+                  title="Remove"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- ➕➖ Quantity Controls -->
+            <div class="text-start mt-2">
+              <div class="input-group" style="width: 120px">
+                <!-- ➖ Minus -->
+                <button
+                  class="btn btn-outline-dark border-end-0 rounded-start"
+                  type="button"
+                  title="Moins"
+                  style="padding: 4px 10px"
+                >
+                  <i class="fa-solid fa-minus"></i>
+                </button>
+
+                <!-- 🔢 Input -->
+                <input
+                  type="text"
+                  class="form-control text-center bg-light border-start-0 border-end-0"
+                  value="1"
+                  style="font-weight: 600; font-size: 14px"
+                  readonly
+                />
+
+                <!-- ➕ Plus -->
+                <button
+                  class="btn btn-outline-dark border-start-0 rounded-end"
+                  type="button"
+                  title="Plus"
+                  style="padding: 4px 10px"
+                >
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- 💵 Cart Footer -->
+        <div class="px-4 pb-4 border-top pt-3">
+          {% set discount = subtotal * 0.10 %} {% set gratuity = 4 %} {% set
+          total = subtotal - discount + gratuity %}
+
+          <!-- Summary Rows -->
+          <div class="d-flex justify-content-between mb-1">
+            <span class="text-muted">Sous-total</span>
+            <span class="fw-semibold">${{ subtotal | number_format(2) }}</span>
+          </div>
+          <div class="d-flex justify-content-between mb-1">
+            <span class="text-muted">Remise (10%)</span>
+            <span class="text-danger"
+              >- ${{ discount | number_format(2) }}</span
+            >
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-muted">Gratuité</span>
+            <span class="fw-semibold">${{ gratuity | number_format(2) }}</span>
+          </div>
+
+          <hr class="my-3" />
+
+          <!-- Final Total -->
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0 fw-bold">Total</h5>
+            <h4 class="mb-0 text-success fw-bold">
+              ${{ total | number_format(2) }}
+            </h4>
+          </div>
+
+          <!-- Payment Button -->
+          <button class="btn btn-primary btn-lg w-100">
+            <i class="fa-solid fa-credit-card me-2"></i> Paiement
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

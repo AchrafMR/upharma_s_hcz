@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Achat;
+namespace App\Controller\Vente;
 
 use App\Service\UserOperation;
 use App\Repository\UserRepository;
@@ -15,8 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route('/achat/demande_achat')]
-class DemandeAchatController extends AbstractController
+#[Route('/vente/demande-vente')]
+class DemandeVenteController extends AbstractController
 {
     /**
      * @var Security
@@ -32,19 +32,19 @@ class DemandeAchatController extends AbstractController
        $this->em = $em;
     }
 
-    #[Route('/', name: 'app_achat_demande_achat')]
+    #[Route('/', name: 'app_vente_demande_vente')]
     public function index(PEntiteRepository $pEntiteRepository , PProfessionRepository $professionRep,PModuleRepository $moduleRepository, UserRepository $userRep , PActionRepository $pActionRep, Request $request): Response
     {
         $allModules = $moduleRepository->findBy(array("active"=> true));
         $dossiers = $pEntiteRepository->findBy(array("active"=> true));
-        $actions = $this->userOperation->getOperations($this->getUser(), 'app_achat_demande_achat', $request);
+        $actions = $this->userOperation->getOperations($this->getUser(), 'app_vente_demande_vente', $request);
         $professions = $professionRep->findAll();
 
         if(!$actions){
             return $this->render('errors/403.html.twig');
         }
 
-        return $this->render('achat/demande_achat/index.html.twig', [
+        return $this->render('vente/demande_vente/index.html.twig', [
             'professions' => $professions,
             'allModules' => $allModules,
             'dossiers' => $dossiers,
