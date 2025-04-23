@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route('/vente/demande-vente')]
+#[Route('/vente')]
 class DemandeVenteController extends AbstractController
 {
     /**
@@ -32,7 +32,7 @@ class DemandeVenteController extends AbstractController
        $this->em = $em;
     }
 
-    #[Route('/', name: 'app_vente_demande_vente')]
+    #[Route('/point-vente', name: 'app_vente_demande_vente')]
     public function index(PEntiteRepository $pEntiteRepository , PProfessionRepository $professionRep,PModuleRepository $moduleRepository, UserRepository $userRep , PActionRepository $pActionRep, Request $request): Response
     {
         $allModules = $moduleRepository->findBy(array("active"=> true));
@@ -43,12 +43,27 @@ class DemandeVenteController extends AbstractController
         if(!$actions){
             return $this->render('errors/403.html.twig');
         }
+        
+        // Simulating product data for demonstration purposes
+        $products = [];
+
+        for ($i = 1; $i <= 19; $i++) {
+            $products[] = [
+                'id' => $i,
+                'name' => 'Product ' . $i,
+                'price' => round(15 + $i * 1.5, 2),
+                'quantity' => rand(1, 5)
+            ];
+        }
+
+
 
         return $this->render('vente/PointVente/index.html.twig', [
             'professions' => $professions,
             'allModules' => $allModules,
             'dossiers' => $dossiers,
             'actions' => $actions,
+            'products'=>$products,
         ]);
     }
 }
