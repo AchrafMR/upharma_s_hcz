@@ -16,7 +16,7 @@
 
   <!-- Center: Search Input -->
   <div class="flex-grow-1 d-flex justify-content-center">
-    <div style="min-width: 220px; max-width: 300px; width: 100%;">
+    <div class="search_input" style=" min-width: 200px; max-width: 200px; width: 100%;">
       <input type="text" class="form-control form-control-sm" placeholder="Search products..." />
     </div>
   </div>
@@ -32,11 +32,11 @@
 </div>
 
 
-<div class="container-fluid">
+<div class="container-fluid ">
   <div class="row">
     <!-- LEFT: Product Grid -->
-    <div class="col-md-8 mb-2 product-area-scroll">
-      <div class="row gx-3 gy-4">
+    <div class="col-md-8 mb-2 product-area-scroll ">
+      <div class="row gx-3 gy-4 border border-primary" style="border-radius: 2%; ";">
         {% for product in products %}
         <div class="col-6 pb-2 col-sm-4 col-md-3 col-lg-2-4">
           <div class="card shadow-sm border-0 rounded-4 px-2 pt-3 pb-2 h-100 position-relative d-flex flex-column justify-content-between">

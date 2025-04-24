@@ -42,6 +42,7 @@
   "build/images/parametrage/dossiers/LOGO_SIM_FCZ.png": "/build/images/parametrage/dossiers/LOGO_SIM_FCZ.70ef45eb.png",
   "build/images/parametrage/dossiers/65.png": "/build/images/parametrage/dossiers/65.2c2294dc.png",
   "build/fonts/fa-brands-400.woff2": "/build/fonts/fa-brands-400.e033a13e.woff2",
+  "build/images/upharma_logo_closed.png": "/build/images/upharma_logo_closed.cb86615f.png",
   "build/images/parametrage/dossiers/38.png": "/build/images/parametrage/dossiers/38.6bcc2fcd.png",
   "build/images/parametrage/dossiers/40.png": "/build/images/parametrage/dossiers/40.2561175b.png",
   "build/images/parametrage/dossiers/21.png": "/build/images/parametrage/dossiers/21.3a06549d.png",
@@ -205,5 +206,7 @@
   "build/fonts/roboto-condensed-greek-ext-400-normal.woff": "/build/fonts/roboto-condensed-greek-ext-400-normal.b6bfc599.woff",
   "build/images/parametrage/dossiers/checked.png": "/build/images/parametrage/dossiers/checked.d6047314.png",
   "build/images/parametrage/dossiers/allo_hopital_fondation_cheikh_zaid.png": "/build/images/parametrage/dossiers/allo_hopital_fondation_cheikh_zaid.6b6689df.png",
-  "build/images/parametrage/dossiers/nochecked.png": "/build/images/parametrage/dossiers/nochecked.4d61f502.png"
+  "build/images/parametrage/dossiers/nochecked.png": "/build/images/parametrage/dossiers/nochecked.4d61f502.png",
+  "build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-69f5e6.css": "/build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-69f5e6.css",
+  "build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-69f5e6.js": "/build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-69f5e6.js"
 }
