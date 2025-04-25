@@ -78,6 +78,7 @@ a {
   flex-wrap: nowrap;
 }
 
+
 .nav_logo,
 .nav_link {
   display: grid;
@@ -101,11 +102,21 @@ a {
 .nav_logo:hover {
   text-decoration: none;
 }
+.logoOpen{
+  width: 100px !important;
+}
+
+.logoClosed{
+  width: 25px !important;
+}
+
 .nav_logo-icon {
   font-size: 1.25rem;
   color: var(--white-color);
 }
-
+.d-none {
+  display: none !important;
+}
 .nav_logo-name {
   color: var(--white-color);
   font-weight: 700;
@@ -152,14 +163,6 @@ a {
 
 #logoutBtn {
   transform: rotate(180deg);
-}
-
-// #logoutBtn:hover {
-//   color: rgb(17, 17, 107) !important;
-// }
-
-#logoHczSideBar {
-  width: 25px !important;
 }
 
 
@@ -260,10 +263,6 @@ body {
 }
 // }
 
-#logo-img {
-  width: 30px;
-  margin-left: -10px;
-}
 
 a {
   text-decoration: none;

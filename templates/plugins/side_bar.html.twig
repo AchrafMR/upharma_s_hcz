@@ -154,10 +154,11 @@
 
       <nav class="nav ">
         <div>
-            <a href="#" class="nav_logo">
-                <img src="{{asset('build/images/upharma_logo.png')}}" alt="logo" id="logoHczSideBar"/>
-                {# <span class="nav_logo-name">UPHARMA</span> #}
+            <a href="#" class="nav_logo" >
+              <img src="{{ asset('build/images/upharma_logo.png') }}" id="logoOpen" class="logoOpen">
+              <img src="{{ asset('build/images/upharma_logo_closed.png') }}"  id="logoClosed" class="logoClosed d-none">
             </a>
+            
             <div class="nav_list menuList">
               <ul>
 
@@ -250,154 +251,10 @@
       </nav>
     </div>
 
-    <script>
-
-          // --------------add active class-on another-page move----------
-
-        // Get current path and find target link
-        var path = window.location.pathname;
-
-        var prefix = window.location.pathname.split('/')[1];
-
-
-
-        // Account for home page with empty path
-        if ( path == '' ) {
-            path = 'login';
-        }
-
-
-        var target = $('.sub-menu li a[href="'+path+'"]');
-        var menu = $('.menuLink').prop('data-id' , prefix);
-
-        // Add active class to target link
-        target.css("color","white");
-        {# menu.css("color","white"); #}
-
-
-      document.addEventListener("DOMContentLoaded", function (event) {
-        const showNavbar = (toggleId, navId, bodyId, headerId , toggleSideBar) => {
-          const toggle = document.getElementById(toggleId),
-            nav = document.getElementById(navId),
-            bodypd = document.getElementById(bodyId),
-            headerpd = document.getElementById(headerId);
-
-
-          // Validate that all variables exist
-          if (toggle && nav && bodypd && headerpd) {
-            toggle.addEventListener("click", () => {
-              // show navbar
-
-                toggle.classList.toggle("toggle_margin")
-                nav.classList.toggle("nav_width")
-
-              nav.classList.toggle("show-sidebar");
-              // change icon
-
-              toggle.classList.toggle("fa-xmark");
-              // add padding to body
-              bodypd.classList.toggle("body-pd");
-              // add padding to header
-              headerpd.classList.toggle("body-pd");
-            });
-          }
-
-        };
-
-        showNavbar("header-toggle", "nav-bar", "body-pd", "header");
-
-        /*===== LINK ACTIVE =====*/
-        /* const linkColor = document.querySelectorAll(".nav_link");
-
-        function colorLink() {
-          if (linkColor) {
-            linkColor.forEach((l) => l.classList.remove("active"));
-            this.classList.add("active");
-          }
-        }
-        linkColor.forEach((l) => l.addEventListener("click", colorLink)); */
-
-        // Your code to run since DOM is loaded and ready
-      });
-      // $('.paginate_button.active').css("background-color","#f00");
-
-      {# $(".sub-menu li").on("click", function() {
-
-          $(this).parent().find(".active").removeClass("active");
-
-            $(this).addClass("active");
-
-      }) #}
-
-
-      {# $("#navbarDropdown").on("click", function(){
-        $("#divMenu").toggle("5ms");
-      }) #}
-
-      {# let selectedTab = localStorage.getItem("selectedTab");
-      $(".sidebarMenu").find("span").each(function() {
-          if ($(this).text() === selectedTab) {
-              $(this).parent().addClass("active");
-
-            var idModule = $(this).parent().attr("id");
-            $(".sub-menu:not(#subModule"+idModule+")").hide("3ms");
-            $("#subModule"+idModule).toggle("5ms");
-            $("#subModule"+idModule).toggleClass("showing");
-
-              $(".fa-caret-right").removeClass("rotate")
-
-              if(!$("#subModule"+idModule).hasClass("showing")){
-                  $(this).parent().find(".fa-caret-right").addClass("rotate")
-              }
-
-              $(this).parent().find(".fa-caret-right").toggleClass("rotate")
-          }
-      }); #}
-
-      $(".sidebarMenu").on("click", function(){
-
-        sidebarIsOpen = $('#nav-bar').hasClass("show-sidebar");
-
-        if(sidebarIsOpen){
-
-            $(".menuList:not(.nav_link_sub)").find(".active").removeClass("active");
-
-
-            $(this).toggleClass("active");
-
-            var idModule = $(this).attr("id");
-            $(".sub-menu:not(#subModule"+idModule+")").hide("3ms");
-            $("#subModule"+idModule).toggle("5ms");
-            $("#subModule"+idModule).toggleClass("showing");
-
-              $(".fa-caret-right").removeClass("rotate")
-
-              if(!$("#subModule"+idModule).hasClass("showing")){
-                  $(this).find(".fa-caret-right").addClass("rotate")
-              }
-
-
-              $(this).find(".fa-caret-right").toggleClass("rotate")
-
-              let tabValue = $(this).find("span").text();
-              localStorage.setItem("selectedTab", tabValue);
-
-
-
-          }
-      })
-
-
-
-
-
-
-      {# $("html").click(function(e) {
-        if ($(e.target).closest('#navbarDropdown').length == 0)
-            $("#divMenu").hide("5ms");
-      }); #}
-
-    </script>
+    {% block javascripts %}
+        {{ encore_entry_script_tags('sidebar') }}
+    {% endblock %}
+    
   </body>
 </html>
 

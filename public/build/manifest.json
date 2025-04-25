@@ -8,6 +8,8 @@
   "build/setting_user_affectation.js": "/build/setting_user_affectation.js",
   "build/setting_profile.js": "/build/setting_profile.js",
   "build/setting_site.js": "/build/setting_site.js",
+  "build/sidebar.js": "/build/sidebar.js",
+  "build/point_vente.js": "/build/point_vente.js",
   "build/login.css": "/build/login.css",
   "build/siteStyle.css": "/build/siteStyle.css",
   "build/listModulesStyle.css": "/build/listModulesStyle.css",
@@ -15,10 +17,10 @@
   "build/runtime.js": "/build/runtime.js",
   "build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-c5c500.js": "/build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-c5c500.js",
   "build/vendors-node_modules_core-js_modules_es_array_concat_js-node_modules_core-js_modules_es_array-098023.js": "/build/vendors-node_modules_core-js_modules_es_array_concat_js-node_modules_core-js_modules_es_array-098023.js",
-  "build/vendors-node_modules_core-js_modules_es_array_find_js-node_modules_core-js_modules_es_array_s-cce63f.js": "/build/vendors-node_modules_core-js_modules_es_array_find_js-node_modules_core-js_modules_es_array_s-cce63f.js",
-  "build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-6ff37f.css": "/build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-6ff37f.css",
-  "build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-6ff37f.js": "/build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-6ff37f.js",
-  "build/vendors-node_modules_react-hot-toast_dist_index_js.js": "/build/vendors-node_modules_react-hot-toast_dist_index_js.js",
+  "build/vendors-node_modules_core-js_modules_es_array_filter_js-node_modules_core-js_modules_es_array-de5070.js": "/build/vendors-node_modules_core-js_modules_es_array_filter_js-node_modules_core-js_modules_es_array-de5070.js",
+  "build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-071658.css": "/build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-071658.css",
+  "build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-071658.js": "/build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-071658.js",
+  "build/vendors-node_modules_core-js_modules_es_array_find_js-node_modules_core-js_modules_es_array_s-99d253.js": "/build/vendors-node_modules_core-js_modules_es_array_find_js-node_modules_core-js_modules_es_array_s-99d253.js",
   "build/node_modules_bpnetguy_webpack-inject-plugin_dist_webpack-inject-plugin_loader_js_id_webpack-i-327ca7.js": "/build/node_modules_bpnetguy_webpack-inject-plugin_dist_webpack-inject-plugin_loader_js_id_webpack-i-327ca7.js",
   "build/images/26807.jpg": "/build/images/26807.cf69af04.jpg",
   "build/images/parametrage/dossiers/79.png": "/build/images/parametrage/dossiers/79.23c7ae12.png",
@@ -206,7 +208,5 @@
   "build/fonts/roboto-condensed-greek-ext-400-normal.woff": "/build/fonts/roboto-condensed-greek-ext-400-normal.b6bfc599.woff",
   "build/images/parametrage/dossiers/checked.png": "/build/images/parametrage/dossiers/checked.d6047314.png",
   "build/images/parametrage/dossiers/allo_hopital_fondation_cheikh_zaid.png": "/build/images/parametrage/dossiers/allo_hopital_fondation_cheikh_zaid.6b6689df.png",
-  "build/images/parametrage/dossiers/nochecked.png": "/build/images/parametrage/dossiers/nochecked.4d61f502.png",
-  "build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-69f5e6.css": "/build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-69f5e6.css",
-  "build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-69f5e6.js": "/build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-69f5e6.js"
+  "build/images/parametrage/dossiers/nochecked.png": "/build/images/parametrage/dossiers/nochecked.4d61f502.png"
 }

@@ -55,6 +55,7 @@ class DemandeVenteController extends AbstractController
                 'quantity' => rand(1, 5)
             ];
         }
+        $categories = ['Crèmes', 'Vitamines', 'Antibiotiques', 'Antiseptiques'];
 
 
 
@@ -64,6 +65,7 @@ class DemandeVenteController extends AbstractController
             'dossiers' => $dossiers,
             'actions' => $actions,
             'products'=>$products,
+            'categories'=>$categories,
         ]);
     }
 }
