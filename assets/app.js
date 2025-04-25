@@ -9,8 +9,6 @@
 import './styles/app.scss';
 import './styles/login.scss';
 
-//import js files
-import './js/vente/cart.js';
 
 
 const $ = require('jquery');

@@ -44,6 +44,8 @@ Encore
   )
   .addEntry("setting_profile", "./assets/js/settings/profile.js")
   .addEntry("setting_site", "./assets/js/settings/site.js")
+  .addEntry("sidebar", "./assets/js/plugins/sidebar.js")
+  .addEntry("point_vente", "./assets/js/vente/point_vente.js")
   
 
   // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
