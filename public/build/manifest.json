@@ -208,5 +208,7 @@
   "build/fonts/roboto-condensed-greek-ext-400-normal.woff": "/build/fonts/roboto-condensed-greek-ext-400-normal.b6bfc599.woff",
   "build/images/parametrage/dossiers/checked.png": "/build/images/parametrage/dossiers/checked.d6047314.png",
   "build/images/parametrage/dossiers/allo_hopital_fondation_cheikh_zaid.png": "/build/images/parametrage/dossiers/allo_hopital_fondation_cheikh_zaid.6b6689df.png",
-  "build/images/parametrage/dossiers/nochecked.png": "/build/images/parametrage/dossiers/nochecked.4d61f502.png"
+  "build/images/parametrage/dossiers/nochecked.png": "/build/images/parametrage/dossiers/nochecked.4d61f502.png",
+  "build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-0926b4.css": "/build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-0926b4.css",
+  "build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-0926b4.js": "/build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-0926b4.js"
 }
