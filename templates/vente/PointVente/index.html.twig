@@ -56,15 +56,7 @@ block stylesheets %}
                 {{ category }}
               </span>
             </button>
-            {% endfor %} {# {% for category in categories %}
-            <button
-              class="category-nav-btn mx-1 mb-1"
-              data-category="{{ category }}"
-              title="{{ category }}"
-            >
-              {{ category|length > 8 ? category|slice(0, 8) ~ '...' : category }}
-            </button>
-            {% endfor %} #}
+            {% endfor %} 
           </div>
 
           <!-- PRODUCT GRID -->
