@@ -46,12 +46,25 @@ block stylesheets %}
             </button>
             {% for category in categories %}
             <button
-              class="category-nav-btn mx-1 mb-1"
+              class="category-nav-btn mx-1 mb-1 overflow-hidden position-relative"
               data-category="{{ category }}"
             >
-              {{ category }}
+              <span class="short-text">
+                {{ category|length > 7 ? category|slice(0, 7) ~ '...' : category }}
+              </span>
+              <span class="full-text">
+                {{ category }}
+              </span>
             </button>
-            {% endfor %}
+            {% endfor %} {# {% for category in categories %}
+            <button
+              class="category-nav-btn mx-1 mb-1"
+              data-category="{{ category }}"
+              title="{{ category }}"
+            >
+              {{ category|length > 8 ? category|slice(0, 8) ~ '...' : category }}
+            </button>
+            {% endfor %} #}
           </div>
 
           <!-- PRODUCT GRID -->
