@@ -30,12 +30,12 @@ block stylesheets %}
   </div>
 </div>
 
-<!-- Main Grid -->
+<!-- Main Grid --> 
 <div class="container-fluid px-0">
   <div class="row gx-0 px-2">
     <!-- Unified Category and Product Container -->
     <div class="col-lg-8 px-0">
-      <div class="h-100 border rounded shadow-sm bg-white py-1 pt-1 pr-2 pl-3">
+      <div class="h-100 border rounded shadow-sm bg-white py-1 pt-1 pr-2 pl-2">
         <div class="d-flex">
           <!-- CATEGORY LIST -->
           <div
@@ -46,11 +46,11 @@ block stylesheets %}
             </button>
             {% for category in categories %}
             <button
-              class="category-nav-btn mx-1 mb-1 overflow-hidden position-relative"
+              class="category-nav-btn mx-1 overflow-hidden position-relative"
               data-category="{{ category }}"
             >
               <span class="short-text">
-                {{ category|length > 7 ? category|slice(0, 7) ~ '...' : category }}
+                {{ category|length > 8 ? category|slice(0,8) ~ '...' : category }}
               </span>
               <span class="full-text">
                 {{ category }}
