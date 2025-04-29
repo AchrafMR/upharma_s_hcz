@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %} {% block title %}Point de Vente{% endblock %} {%
 block stylesheets %}
 {{ parent() }}
+<style>
+
+</style>
 <link
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   rel="stylesheet"
@@ -9,18 +12,24 @@ block stylesheets %}
 {% endblock %} {% block body %}
 
 <!-- Header -->
-<div class="d-flex align-items-center justify-content-between flex-wrap gap-3 pt-3" style="padding-right: 33.2%;">
-  
+<div
+  class="custom-header d-flex align-items-center justify-content-between flex-wrap gap-3 pt-3"
+>
   <!-- Left: Title -->
   <div class="flex-shrink-0">
-    <h3 class="text-bold pb-3 text-primary text-uppercase point-vente-title mb-0">
+    <h3
+      class="text-bold pb-3 text-primary text-uppercase point-vente-title mb-0"
+    >
       Point de Vente
     </h3>
   </div>
-  
+
   <!-- Right: Search Input -->
   <div class="flex-grow-1 d-flex justify-content-end pt-3">
-    <div class="search_input" style="width: 100%; max-width: 260px; min-width: 200px;">
+    <div
+      class="search_input"
+      style="width: 100%; max-width: 260px; min-width: 200px"
+    >
       <input
         type="text"
         class="form-control form-control-sm w-100"
@@ -28,11 +37,9 @@ block stylesheets %}
       />
     </div>
   </div>
-  
 </div>
 
-
-<!-- Main Grid --> 
+<!-- Main Grid -->
 <div class="container-fluid px-0">
   <div class="row gx-0 px-2">
     <!-- Unified Category and Product Container -->
@@ -58,7 +65,7 @@ block stylesheets %}
                 {{ category }}
               </span>
             </button>
-            {% endfor %} 
+            {% endfor %}
           </div>
 
           <!-- PRODUCT GRID -->
@@ -153,7 +160,7 @@ block stylesheets %}
         this.classList.add('active');
 
         const category = this.dataset.category;
-        console.log("Selected category:", category); // Hook your filter here
+        console.log("Selected category:", category);
       });
     });
   });
