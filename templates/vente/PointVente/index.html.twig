@@ -9,26 +9,28 @@ block stylesheets %}
 {% endblock %} {% block body %}
 
 <!-- Header -->
-<div
-  class="d-flex align-items-center justify-content-between flex-wrap gap-3 pt-3 px-3"
->
-  <h3 class="text-bold pb-3 text-primary text-uppercase point-vente-title">
-    Point de Vente
-  </h3>
-  <!-- Center: Search Input -->
-  <div class="flex-grow-1 pt-3 d-flex justify-content-center">
-    <div
-      class="search_input"
-      style="min-width: 200px; max-width: 260px; width: 100%"
-    >
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-3 pt-3" style="padding-right: 33.2%;">
+  
+  <!-- Left: Title -->
+  <div class="flex-shrink-0">
+    <h3 class="text-bold pb-3 text-primary text-uppercase point-vente-title mb-0">
+      Point de Vente
+    </h3>
+  </div>
+  
+  <!-- Right: Search Input -->
+  <div class="flex-grow-1 d-flex justify-content-end pt-3">
+    <div class="search_input" style="width: 100%; max-width: 260px; min-width: 200px;">
       <input
         type="text"
-        class="form-control form-control-sm"
+        class="form-control form-control-sm w-100"
         placeholder="Rechercher des produits..."
       />
     </div>
   </div>
+  
 </div>
+
 
 <!-- Main Grid --> 
 <div class="container-fluid px-0">
@@ -119,7 +121,7 @@ block stylesheets %}
           <i class="fa-solid fa-cart-shopping"></i>
         </div>
 
-        <div class="card-body cart-scroll" id="cart-items-container">
+        <div class="card-body cart-scroll pt-3" id="cart-items-container">
           <!-- JS will inject cart items here -->
         </div>
 

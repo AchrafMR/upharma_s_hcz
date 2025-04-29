@@ -103,7 +103,8 @@ a {
   text-decoration: none;
 }
 .logoOpen{
-  width: 100px !important;
+  width: 120px !important;
+  margin-left: -12px !important;
 }
 
 .logoClosed{
@@ -255,11 +256,11 @@ body {
 }
 
 .show-sidebar {
-  width: calc(var(--nav-width) + 166px);
+  width: calc(var(--nav-width) + 146px);
 }
 
 .body-pd {
-  padding-left: calc(var(--nav-width) + 188px);
+  padding-left: calc(var(--nav-width) + 170px);
 }
 // }
 
