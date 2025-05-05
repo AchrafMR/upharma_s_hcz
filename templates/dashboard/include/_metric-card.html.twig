@@ -1,0 +1,69 @@
+<style>
+  .metric-card {
+    border-left: 7px solid rgb(80, 136, 132);
+    border-radius: 0.75rem;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    transform: translateY(0);
+    height: 100px;
+  }
+  
+  .metric-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    background-color:  rgba(80, 136, 132, 0.1);
+
+  }
+  
+  .metric-card .metric-icon {
+    width: 36px;
+    height: 36px;
+    background-color:  rgba(80, 136, 132, 0.1);
+
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .metric-card:hover .metric-icon {
+    background-color:  rgba(80, 136, 132, 0.1);
+  }
+  
+  /* ✅ Fixed border colors */
+  .metric-card.border-success { border-left-color: #28a745 !important; }
+  .metric-card.border-danger  { border-left-color: #dc3545 !important; }
+  .metric-card.border-primary { border-left-color: rgb(80, 136, 132) !important; }
+  .metric-card.border-yellow  { border-left-color: #f5b942 !important; }
+  .metric-card.border-cyan    { border-left-color: #00bcd4 !important; }
+  
+  /* ✅ Matching icon text colors */
+  .text-yellow { color: #f5b942 !important; }
+  .text-cyan   { color: #00bcd4 !important; }
+  
+</style>
+
+
+{% set metrics = [
+  { title: 'Toutes les Commandes', value: allOrders, icon: 'fas fa-boxes', color: 'yellow' },
+  { title: 'Commandes Validées', value: validatedOrders, icon: 'fas fa-check', color: 'primary' },
+  { title: 'Commandes en Cours', value: ongoingOrders, icon: 'fas fa-truck-loading', color: 'cyan' },
+  { title: 'Commandes Traitées', value: processedOrders, icon: 'fas fa-clipboard-check', color: 'success' },
+  { title: 'Commandes Retournées', value: returnedOrders, icon: 'fas fa-undo', color: 'danger' }
+] %}
+
+{% for metric in metrics %}
+  <div class="col">
+    <div class="card metric-card border-{{ metric.color }} shadow-sm ">
+      <div class="card-body position-relative">
+        <div class="d-flex justify-content-between align-items-start my-2">
+          <div>
+            <h6 class="text-muted text-uppercase small mb-1">{{ metric.title }}</h6>
+            <h4 class="fw-bold mb-2">{{ metric.value }}</h4>
+          </div>
+          <div class="metric-icon rounded-circle d-flex align-items-center justify-content-center">
+            <i class="{{ metric.icon }} text-{{ metric.color }}"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}

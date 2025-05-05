@@ -1,3 +1,17 @@
+
+.custom-header {
+  padding-right: 33.2%;
+}
+
+@media (max-width: 990px) {
+  .custom-header {
+    padding-right: 0;
+  }
+  .search_input {
+    width: 80%;
+  }
+}
+
 .category-nav-btn {
   position: relative;
   overflow: hidden;
