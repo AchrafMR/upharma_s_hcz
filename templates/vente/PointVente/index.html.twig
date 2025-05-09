@@ -1,9 +1,7 @@
 {% extends 'base.html.twig' %} {% block title %}Point de Vente{% endblock %} {%
 block stylesheets %}
 {{ parent() }}
-<style>
-
-</style>
+<style></style>
 <link
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   rel="stylesheet"
@@ -34,6 +32,7 @@ block stylesheets %}
         type="text"
         class="form-control form-control-sm w-100"
         placeholder="Rechercher des produits..."
+        id="product-search"
       />
     </div>
   </div>
@@ -70,48 +69,8 @@ block stylesheets %}
 
           <!-- PRODUCT GRID -->
           <div class="flex-grow-1 px-3 product-area-scroll">
-            <div class="row gx-3 gy-4">
-              {% for product in products %}
-              <div class="col-6 p-1 col-sm-4 col-md-3 col-lg-2-4">
-                <div
-                  class="card product-card shadow-sm border-0 rounded-4 px-2 pt-3 pb-2 h-100 position-relative d-flex flex-column justify-content-between"
-                >
-                  <button
-                    class="btn btn-sm btn-primary position-absolute top-right-btn"
-                    data-id="{{ product.id }}"
-                  >
-                    <i class="fa-solid fa-cart-plus"></i>
-                  </button>
-
-                  <div class="position-absolute top-left-badge">
-                    <div
-                      class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center product-badge"
-                    >
-                      {{ product.quantity }}
-                    </div>
-                  </div>
-
-                  <div
-                    class="d-flex justify-content-center align-items-center border rounded p-2 product-img-wrapper"
-                  >
-                    <img
-                      src="https://as1.ftcdn.net/v2/jpg/05/42/64/78/1000_F_542647814_DXqOh96SDpLhlKUGhO1sCWqfqQLN8u0z.webp"
-                      class="img-fluid"
-                      style="max-height: 80px; object-fit: contain"
-                    />
-                  </div>
-
-                  <div class="text-center mt-2">
-                    <h6 class="text-uppercase mb-1 product-title">
-                      {{ product.name }}
-                    </h6>
-                    <p class="text-danger fw-bold mb-0 product-price">
-                      {{ product.price|number_format(2) }} DH
-                    </p>
-                  </div>
-                </div>
-              </div>
-              {% endfor %}
+            <div class="row gx-3 gy-4" id="product-list">
+              <p class="text-center text-muted">Chargement des produits...</p>
             </div>
           </div>
         </div>
@@ -140,7 +99,7 @@ block stylesheets %}
             </h4>
           </div>
           <button class="btn btn-primary btn-lg w-100">
-            <i class="fa-solid fa-credit-card me-2"></i> Commander
+            <i class="fa-solid fa-credit-card me-2"></i> Demander
           </button>
         </div>
       </div>
@@ -148,22 +107,22 @@ block stylesheets %}
   </div>
 </div>
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const categoryButtons = document.querySelectorAll('.category-nav-btn');
+    document.addEventListener("DOMContentLoaded", () => {
+      const categoryButtons = document.querySelectorAll('.category-nav-btn');
 
-    categoryButtons.forEach(btn => {
-      btn.addEventListener('click', function () {
-        // Remove active class from all buttons
-        categoryButtons.forEach(b => b.classList.remove('active'));
+      categoryButtons.forEach(btn => {
+        btn.addEventListener('click', function () {
+          // Remove active class from all buttons
+          categoryButtons.forEach(b => b.classList.remove('active'));
 
-        // Add active class to the clicked one
-        this.classList.add('active');
+          // Add active class to the clicked one
+          this.classList.add('active');
 
-        const category = this.dataset.category;
-        console.log("Selected category:", category);
+          const category = this.dataset.category;
+          console.log("Selected category:", category);
+        });
       });
     });
-  });
     window.PRODUCTS = {{ products|json_encode|raw }};
 </script>
 {% block javascripts %}

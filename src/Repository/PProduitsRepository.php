@@ -24,6 +24,19 @@ class PProduitsRepository extends ServiceEntityRepository
 //    /**
 //     * @return PProduits[] Returns an array of PProduits objects
 //     */
+
+    public function findProductsWithTarification(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p.id, p.titre AS name, p.image, p.liste AS category, t.prixVente AS price')
+            ->leftJoin('p.pPrTarifications', 't', 'WITH', 't.active = 1')
+            ->where('p.active = 1')
+            ->getQuery()
+            ->getArrayResult();
+    }
+
+
+
 //    public function findByExampleField($value): array
 //    {
 //        return $this->createQueryBuilder('p')
