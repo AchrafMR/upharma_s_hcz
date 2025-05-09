@@ -10,6 +10,7 @@
   "build/setting_site.js": "/build/setting_site.js",
   "build/sidebar.js": "/build/sidebar.js",
   "build/point_vente.js": "/build/point_vente.js",
+  "build/gestion_vente.js": "/build/gestion_vente.js",
   "build/login.css": "/build/login.css",
   "build/siteStyle.css": "/build/siteStyle.css",
   "build/listModulesStyle.css": "/build/listModulesStyle.css",

@@ -9,6 +9,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PProduitsRepository::class)]
+
+#[ORM\Table(name: 'p_produits')]
 class PProduits
 {
     #[ORM\Id]
@@ -79,9 +81,16 @@ class PProduits
     #[ORM\OneToMany(mappedBy: 'produit', targetEntity: PPrTarifications::class)]
     private Collection $pPrTarifications;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
+
+    #[ORM\OneToMany(mappedBy: 'pProduit', targetEntity: TMsDemandelg::class)]
+    private Collection $tMsDemandelgs;
+
     public function __construct()
     {
         $this->pPrTarifications = new ArrayCollection();
+        $this->tMsDemandelgs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -353,6 +362,48 @@ class PProduits
             // set the owning side to null (unless already changed)
             if ($pPrTarification->getProduit() === $this) {
                 $pPrTarification->setProduit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsDemandelg>
+     */
+    public function getTMsDemandelgs(): Collection
+    {
+        return $this->tMsDemandelgs;
+    }
+
+    public function addTMsDemandelg(TMsDemandelg $tMsDemandelg): static
+    {
+        if (!$this->tMsDemandelgs->contains($tMsDemandelg)) {
+            $this->tMsDemandelgs->add($tMsDemandelg);
+            $tMsDemandelg->setPProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsDemandelg(TMsDemandelg $tMsDemandelg): static
+    {
+        if ($this->tMsDemandelgs->removeElement($tMsDemandelg)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsDemandelg->getPProduit() === $this) {
+                $tMsDemandelg->setPProduit(null);
             }
         }
 

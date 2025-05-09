@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\PEntite;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -24,6 +25,24 @@ class PEntiteRepository extends ServiceEntityRepository
 //    /**
 //     * @return PEntite[] Returns an array of PEntite objects
 //     */
+/**
+     * Get active PEntite (sites) for a specific user
+     *
+     * @param User $user
+     * @return PEntite[]
+     */
+    public function findSites(User $user): array
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.pUserDossierActions', 'u')
+            ->where('p.active = 1')
+            // ->andWhere('p.parent IS NOT NULL') // Optional: Uncomment if needed
+            ->andWhere('u.userr = :user')
+            ->orderBy('p.ord', 'ASC')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
 //    public function findByExampleField($value): array
 //    {
 //        return $this->createQueryBuilder('p')
