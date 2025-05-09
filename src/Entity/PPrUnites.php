@@ -31,9 +31,13 @@ class PPrUnites
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $created = null;
 
+    #[ORM\OneToMany(mappedBy: 'pPrUnite', targetEntity: TMsDemandelg::class)]
+    private Collection $tMsDemandelgs;
+
     public function __construct()
     {
         $this->pProduits = new ArrayCollection();
+        $this->tMsDemandelgs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -115,6 +119,36 @@ class PPrUnites
     public function setCreated(?\DateTimeInterface $created): static
     {
         $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsDemandelg>
+     */
+    public function getTMsDemandelgs(): Collection
+    {
+        return $this->tMsDemandelgs;
+    }
+
+    public function addTMsDemandelg(TMsDemandelg $tMsDemandelg): static
+    {
+        if (!$this->tMsDemandelgs->contains($tMsDemandelg)) {
+            $this->tMsDemandelgs->add($tMsDemandelg);
+            $tMsDemandelg->setPPrUnite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsDemandelg(TMsDemandelg $tMsDemandelg): static
+    {
+        if ($this->tMsDemandelgs->removeElement($tMsDemandelg)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsDemandelg->getPPrUnite() === $this) {
+                $tMsDemandelg->setPPrUnite(null);
+            }
+        }
 
         return $this;
     }

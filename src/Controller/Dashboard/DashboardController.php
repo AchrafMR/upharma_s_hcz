@@ -11,6 +11,7 @@ class DashboardController extends AbstractController
     #[Route('/tableau-de-bord', name: 'app_tableau_de_bord')]
     public function index(): Response
     {
+        
         return $this->render('dashboard/index.html.twig', [
             'controller_name' => 'Tableau de Bord',
         ]);

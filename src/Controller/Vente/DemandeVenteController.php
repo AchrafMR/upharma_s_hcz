@@ -68,4 +68,47 @@ class DemandeVenteController extends AbstractController
             'categories'=>$categories,
         ]);
     }
+    #[Route('/gestion-vente', name: 'app_vente_gestion_vente')]
+    public function gestionVente(
+        Request $request,
+        PEntiteRepository $pEntiteRepository,
+        PProfessionRepository $professionRep,
+        PModuleRepository $moduleRepository,
+        UserRepository $userRep,
+        PActionRepository $pActionRep
+    ): Response {
+        $actions = $this->userOperation->getOperations($this->getUser(), 'app_vente_gestion_vente', $request);
+        
+        // if (!$actions) {
+        //     return $this->render('errors/403.html.twig');
+        // }
+
+        // Fetch data as needed for the view
+        $professions = $professionRep->findAll();
+        $dossiers = $pEntiteRepository->findBy(['active' => true]);
+        $allModules = $moduleRepository->findBy(['active' => true]);
+
+        // Placeholder sales data (could be replaced with real sales data from DB)
+        $sales = [];
+
+    for ($i = 1; $i <= 90; $i++) {
+        $sales[] = [
+            'id' => $i,
+            'code' => 'CMD-' . str_pad($i, 4, '0', STR_PAD_LEFT),
+            'client' => 'Client ' . $i, // A, B, C...
+            'quantity' => rand(1, 5),
+            'price' => rand(50, 150),
+            'status' => ['Payée', 'En attente', 'Annulée'][rand(0, 2)],
+        ];
+    }
+
+        return $this->render('vente/GestionVente/index.html.twig', [
+            'professions' => $professions,
+            'dossiers' => $dossiers,
+            'allModules' => $allModules,
+            'actions' => $actions,
+            'sales' => $sales,
+        ]);
+    }
+
 }

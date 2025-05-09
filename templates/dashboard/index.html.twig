@@ -1,76 +1,85 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}{{ controller_name }}{% endblock %}
-
-{% block stylesheets %}
+{% extends 'base.html.twig' %} {% block title %}{{ controller_name }}{% endblock
+%} {% block stylesheets %}
+<style>
+  .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+</style>
 {{ parent() }}
-{% endblock %}
-
-{% block body %}
+{% endblock %} {% block body %}
 <div class="container py-4">
-
   <!-- Top Metrics -->
   <div class="row row-cols-1 row-cols-md-5 g-3 justify-content-between">
-    {% include 'dashboard/include/_metric-card.html.twig' with {
-      allOrders: 1150,
-      validatedOrders: 1456,
-      ongoingOrders: 3345,
-      processedOrders: 780,
-      returnedOrders: 35
-    } %}
+    {% include 'dashboard/inc/_metric-card.html.twig' with { allOrders: 1150,
+    validatedOrders: 1456, ongoingOrders: 3345, processedOrders: 780,
+    returnedOrders: 35 } %}
   </div>
 
   <div class="row g-4 mt-4 align-items-stretch">
-
-    <!-- Donut Chart -->
-    <div class="col-md-6 col-lg-4">
-      <div class="card shadow-sm p-4 h-75">
-        <h6 class="text-muted text-uppercase small mb-3">Invoice Statistics</h6>
-        <div class="d-flex align-items-center justify-content-between flex-wrap">
-          <div style="width: 160px; height: 160px; position: relative;">
-            <canvas id="invoiceDonut" width="160" height="160"></canvas>
-            <div class="position-absolute top-50 start-50 translate-middle text-center">
-              <h4 class="fw-bold mb-0">1.135</h4>
-              <small class="text-muted">Invoices</small>
-            </div>
-          </div>
-          <div class="ms-4">
-            <div class="d-flex align-items-center mb-2">
-              <span class="dot me-2" style="background-color:#0F172A;"></span>
-              <div><strong class="me-1">234</strong><span class="text-muted">Total Paid</span></div>
-            </div>
-            <div class="d-flex align-items-center mb-2">
-              <span class="dot me-2" style="background-color:rgb(80, 136, 132);"></span>
-              <div><strong class="me-1">514</strong><span class="text-muted">Total Overdue</span></div>
-            </div>
-            <div class="d-flex align-items-center">
-              <span class="dot me-2" style="background-color:#CBD5E1;"></span>
-              <div><strong class="me-1">345</strong><span class="text-muted">Total Unpaid</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Line Chart -->
     <div class="col-md-6 col-lg-8">
       <div class="card shadow-sm p-4 h-100">
-        <h6 class="text-muted text-uppercase small mb-3">Nombre de Commandes par Mois</h6>
-        <div style="height: 300px;">
+        <h6 class="text-muted text-uppercase small mb-3">
+          Nombre de Commandes par Mois
+        </h6>
+        <div style="height: 300px">
           <canvas id="salesChart"></canvas>
         </div>
       </div>
     </div>
+
+    <!-- Donut Chart -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm pl-4 py-4 h-75">
+        <h6 class="text-muted text-uppercase small mb-3">
+          Statistiques des Factures
+        </h6>
+        <div class="d-flex justify-content-center align-items-center flex-wrap gap-4">
+
+          <div style="width: 160px; height: 160px; position: relative">
+            <canvas id="invoiceDonut" width="160" height="160"></canvas>
+          </div>
+          <div class="m-4">
+            <div
+              class="d-flex align-items-center mb-2"
+              style="font-size: 14px"
+          >
+            <h4 class="fw-bold mb-0">1.135</h4>
+            <small class="m-2 text-muted">Factures</small>
+          </div>
+            <div class="d-flex align-items-center mb-2">
+              <span class="dot m-2" style="background-color: #0f172a"></span>
+              <div style="font-size: 14px">
+                <strong class="me-1">234</strong>
+                <span class="text-muted">Payées</span>
+              </div>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+              <span
+                class="dot m-2"
+                style="background-color: rgb(80, 136, 132)"
+              ></span>
+              <div style="font-size: 14px">
+                <strong class="me-1">514</strong>
+                <span class="text-muted">En Retard</span>
+              </div>
+            </div>
+            <div class="d-flex align-items-center">
+              <span class="dot m-2" style="background-color: #ab4459"></span>
+              <div style="font-size: 14px">
+                <strong class="me-1">345</strong>
+                <span class="text-muted">Impayées</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <style>
-    .dot {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-  </style>
 
 </div>
 
@@ -79,98 +88,120 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  // Donut Chart
-  new Chart(document.getElementById('invoiceDonut'), {
-    type: 'doughnut',
-    data: {
-      labels: ['Paid', 'Overdue', 'Unpaid'],
-      datasets: [{
-        data: [234, 514, 345],
-        backgroundColor: ['#0F172A', 'rgb(80, 136, 132)', '#CBD5E1'],
-        borderWidth: 0,
-        hoverOffset: 10
-      }]
-    },
-    options: {
-      cutout: '60%', // Thicker donut
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: function(ctx) {
-              const val = ctx.parsed;
-              const total = ctx.chart._metasets[0].total;
-              const percent = ((val / total) * 100).toFixed(1);
-              return `${val} (${percent}%)`;
-            }
-          }
-        },
-        datalabels: {
-          color: '#fff', // white percent text
-          font: { weight: 'bold', size: 14 },
-          formatter: (value, ctx) => {
-            const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-            const percent = (value / total) * 100;
-            return percent > 5 ? `${percent.toFixed(1)}%` : '';
-          }
-        }
-      }
-    },
-    plugins: [ChartDataLabels]
-  });
-
-  // Line Chart
-  const year = new Date().getFullYear();
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const labels = months.map(month => `${month} ${year}`);
-
-  new Chart(document.getElementById('salesChart'), {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Commandes',
-        data: [4200, 5400, 6000, 8800, 7500, 5000, 7600, 6200, 7000, 6900, 6800, 4900],
-        borderColor: 'rgb(80, 136, 132)',
-        backgroundColor: 'rgba(80, 136, 132, 0.1)',
-        fill: true,
-        pointBackgroundColor: 'rgb(80, 136, 132)',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgb(80, 136, 132)',
-        tension: 0.4,
-        borderWidth: 2,
-        pointRadius: 4
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: {
-          ticks: { font: { size: 12 } },
-          grid: { color: '#f0f0f0' }
-        },
-        x: {
-          ticks: { font: { size: 12 } },
-          grid: { display: false }
-        }
+  document.addEventListener("DOMContentLoaded", () => {
+    // Donut Chart
+    new Chart(document.getElementById("invoiceDonut"), {
+      type: "doughnut",
+      data: {
+        labels: ["Paid", "Overdue", "Unpaid"],
+        datasets: [
+          {
+            data: [234, 514, 345],
+            backgroundColor: ["#0F172A", "rgb(80, 136, 132)", "#AB4459"],
+            borderWidth: 0,
+            hoverOffset: 10,
+          },
+        ],
       },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#111',
-          titleFont: { size: 12 },
-          bodyFont: { size: 14 },
-          callbacks: {
-            label: ctx => `${ctx.parsed.y.toLocaleString()} commandes`
-          }
-        }
-      }
-    }
+      options: {
+        cutout: '50%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function (ctx) {
+                const val = ctx.parsed;
+                const total = ctx.chart._metasets[0].total;
+                const percent = ((val / total) * 100).toFixed(1);
+                return `${val} (${percent}%)`;
+              },
+            },
+          },
+          datalabels: {
+            color: "#fff", // white percent text
+            font: { weight: "bold", size: 14 },
+            formatter: (value, ctx) => {
+              const total = ctx.chart.data.datasets[0].data.reduce(
+                (a, b) => a + b,
+                0
+              );
+              const percent = (value / total) * 100;
+              return percent > 5 ? `${percent.toFixed(1)}%` : "";
+            },
+          },
+        },
+      },
+      plugins: [ChartDataLabels],
+    });
+
+    // Line Chart
+    const year = new Date().getFullYear();
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const labels = months.map((month) => `${month} ${year}`);
+
+    new Chart(document.getElementById("salesChart"), {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Commandes",
+            data: [
+              4200, 5400, 6000, 8800, 7500, 5000, 7600, 6200, 7000, 6900, 6800,
+              4900,
+            ],
+            borderColor: "rgb(80, 136, 132)",
+            backgroundColor: "rgba(80, 136, 132, 0.1)",
+            fill: true,
+            pointBackgroundColor: "rgb(80, 136, 132)",
+            pointBorderColor: "#fff",
+            pointHoverBackgroundColor: "#fff",
+            pointHoverBorderColor: "rgb(80, 136, 132)",
+            tension: 0.4,
+            borderWidth: 2,
+            pointRadius: 4,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            ticks: { font: { size: 12 } },
+            grid: { color: "#f0f0f0" },
+          },
+          x: {
+            ticks: { font: { size: 12 } },
+            grid: { display: false },
+          },
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: "#111",
+            titleFont: { size: 12 },
+            bodyFont: { size: 14 },
+            callbacks: {
+              label: (ctx) => `${ctx.parsed.y.toLocaleString()} commandes`,
+            },
+          },
+        },
+      },
+    });
   });
-});
 </script>
 {% endblock %}
