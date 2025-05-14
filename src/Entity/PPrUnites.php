@@ -34,10 +34,18 @@ class PPrUnites
     #[ORM\OneToMany(mappedBy: 'pPrUnite', targetEntity: TMsDemandelg::class)]
     private Collection $tMsDemandelgs;
 
+    #[ORM\OneToMany(mappedBy: 'pPrUnite', targetEntity: TStStockdyna::class)]
+    private Collection $tStStockdynas;
+
+    #[ORM\OneToMany(mappedBy: 'pPrUnite', targetEntity: TStStockstatic::class)]
+    private Collection $tStStockstatics;
+
     public function __construct()
     {
         $this->pProduits = new ArrayCollection();
         $this->tMsDemandelgs = new ArrayCollection();
+        $this->tStStockdynas = new ArrayCollection();
+        $this->tStStockstatics = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -147,6 +155,66 @@ class PPrUnites
             // set the owning side to null (unless already changed)
             if ($tMsDemandelg->getPPrUnite() === $this) {
                 $tMsDemandelg->setPPrUnite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TStStockdyna>
+     */
+    public function getTStStockdynas(): Collection
+    {
+        return $this->tStStockdynas;
+    }
+
+    public function addTStStockdyna(TStStockdyna $tStStockdyna): static
+    {
+        if (!$this->tStStockdynas->contains($tStStockdyna)) {
+            $this->tStStockdynas->add($tStStockdyna);
+            $tStStockdyna->setPPrUnite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTStStockdyna(TStStockdyna $tStStockdyna): static
+    {
+        if ($this->tStStockdynas->removeElement($tStStockdyna)) {
+            // set the owning side to null (unless already changed)
+            if ($tStStockdyna->getPPrUnite() === $this) {
+                $tStStockdyna->setPPrUnite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TStStockstatic>
+     */
+    public function getTStStockstatics(): Collection
+    {
+        return $this->tStStockstatics;
+    }
+
+    public function addTStStockstatic(TStStockstatic $tStStockstatic): static
+    {
+        if (!$this->tStStockstatics->contains($tStStockstatic)) {
+            $this->tStStockstatics->add($tStStockstatic);
+            $tStStockstatic->setPPrUnite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTStStockstatic(TStStockstatic $tStStockstatic): static
+    {
+        if ($this->tStStockstatics->removeElement($tStStockstatic)) {
+            // set the owning side to null (unless already changed)
+            if ($tStStockstatic->getPPrUnite() === $this) {
+                $tStStockstatic->setPPrUnite(null);
             }
         }
 

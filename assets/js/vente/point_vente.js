@@ -1,5 +1,4 @@
-import facke_img_product from '../../images/facke_img_product.png';
-
+import facke_img_product from "../../images/facke_img_product.png";
 
 window.addEventListener("DOMContentLoaded", () => {
   const PRODUCTS = window.PRODUCTS || [];
@@ -40,8 +39,8 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 
     function getProductImage(product) {
-      const basePath = '/images/products/';
-      if (product.image && product.image.trim() !== '') {
+      const basePath = "/images/products/";
+      if (product.image && product.image.trim() !== "") {
         return `${basePath}${product.image}`;
       }
       return facke_img_product;
@@ -59,7 +58,9 @@ window.addEventListener("DOMContentLoaded", () => {
             </button>
 
             <div class="position-absolute top-left-badge">
-              <div class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center product-badge">10</div>
+              <div class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center product-badge">${
+                product.quantity
+              }</div>
             </div>
 
             <div class="d-flex justify-content-center align-items-center border rounded p-1 product-img-wrapper">
@@ -176,6 +177,90 @@ window.addEventListener("DOMContentLoaded", () => {
     cart = cart.filter((item) => item.id !== id);
     renderCart();
   };
+   renderFilteredProducts();
 
-  renderFilteredProducts();
+// Holds the current cart before sending to the server
+let pendingDemande = [];
+
+const commanderButton = document.querySelector('[data-target="#addCommande"]');
+if (commanderButton) {
+  commanderButton.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    if (cart.length === 0) {
+      toastr.error("Votre panier est vide. Ajoutez des produits avant de commander.")
+      return;
+    }
+
+    pendingDemande = [...cart.map((item) => ({ ...item }))];
+    // console.log(pendingDemande);
+
+    $("#addCommande").modal("show");
+  });
+}
+// Save Demande logic
+document.getElementById("submit-demande").addEventListener("click", () => {
+  if (!pendingDemande || pendingDemande.length === 0) {
+    toastr.error("Aucune donnée de panier à envoyer.");
+    return;
+  }
+
+  const data = {
+    demandeur_id: document.getElementById("demandeur_id").value,
+    recepteur_id: document.getElementById("recepteur_id").value,
+    type_demande: document.getElementById("type_demande").value,
+    urgent: document.getElementById("urgent").checked ? 1 : 0,
+    description: document.getElementById("description").value,
+    ipp: document.getElementById("ipp").value,
+    nom_patient: document.getElementById("nom_patient").value,
+    dossier_patient: document.getElementById("dossier_patient").value,
+    lignes: pendingDemande,
+  };
+
+  fetch("/vente/save-demande", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error("Erreur serveur");
+      return res.json();
+    })
+    .then((response) => {
+      toastr.success("Demande enregistrée avec succès!");
+      $("#addCommande").modal("hide");
+
+      // Clear cart
+      cart = [];
+      renderCart();
+
+      // Reset modal form fields
+      document.getElementById("demandeur_id").value = "";
+      document.getElementById("recepteur_id").value = "";
+      document.getElementById("type_demande").value = "consommation";
+      document.getElementById("urgent").checked = false;
+      document.getElementById("description").value = "";
+      document.getElementById("ipp").value = "";
+      document.getElementById("nom_patient").value = "";
+      document.getElementById("dossier_patient").value = "";
+
+      // reset filters
+      selectedCategory = "";
+      searchQuery = "";
+      searchInput.value = "";
+      renderFilteredProducts();
+    })
+    .catch((err) => {
+      console.error(err);
+      toastr.error("Erreur lors de l'enregistrement de la demande.");
+    });
+});
+
+
+
+
+ 
 });

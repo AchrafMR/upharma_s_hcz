@@ -64,12 +64,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'userCreated', targetEntity: PDepots::class)]
     private Collection $pDepots;
 
+    #[ORM\OneToMany(mappedBy: 'userupdate', targetEntity: TStStockdyna::class)]
+    private Collection $tStStockdynas;
+
+    #[ORM\OneToMany(mappedBy: 'userupdate', targetEntity: TStStockstatic::class)]
+    private Collection $tStStockstatics;
+
 
     public function __construct()
     {
         $this->pUserDossierActions = new ArrayCollection();
         $this->pPartenaires = new ArrayCollection();
         $this->pDepots = new ArrayCollection();
+        $this->tStStockdynas = new ArrayCollection();
+        $this->tStStockstatics = new ArrayCollection();
 
     }
 
@@ -314,6 +322,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($pDepot->getUserCreated() === $this) {
                 $pDepot->setUserCreated(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TStStockdyna>
+     */
+    public function getTStStockdynas(): Collection
+    {
+        return $this->tStStockdynas;
+    }
+
+    public function addTStStockdyna(TStStockdyna $tStStockdyna): static
+    {
+        if (!$this->tStStockdynas->contains($tStStockdyna)) {
+            $this->tStStockdynas->add($tStStockdyna);
+            $tStStockdyna->setUserupdate($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTStStockdyna(TStStockdyna $tStStockdyna): static
+    {
+        if ($this->tStStockdynas->removeElement($tStStockdyna)) {
+            // set the owning side to null (unless already changed)
+            if ($tStStockdyna->getUserupdate() === $this) {
+                $tStStockdyna->setUserupdate(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TStStockstatic>
+     */
+    public function getTStStockstatics(): Collection
+    {
+        return $this->tStStockstatics;
+    }
+
+    public function addTStStockstatic(TStStockstatic $tStStockstatic): static
+    {
+        if (!$this->tStStockstatics->contains($tStStockstatic)) {
+            $this->tStStockstatics->add($tStStockstatic);
+            $tStStockstatic->setUserupdate($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTStStockstatic(TStStockstatic $tStStockstatic): static
+    {
+        if ($this->tStStockstatics->removeElement($tStStockstatic)) {
+            // set the owning side to null (unless already changed)
+            if ($tStStockstatic->getUserupdate() === $this) {
+                $tStStockstatic->setUserupdate(null);
             }
         }
 

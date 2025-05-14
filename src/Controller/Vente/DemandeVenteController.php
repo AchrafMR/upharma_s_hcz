@@ -2,11 +2,18 @@
 
 namespace App\Controller\Vente;
 
+use App\Entity\PMagasins;
+use App\Entity\PProduits;
+use App\Entity\PPrUnites;
+use App\Entity\PTypeOprt;
+use App\Entity\TMsDemande;
+use App\Entity\TMsDemandelg;
 use App\Service\UserOperation;
 use App\Repository\UserRepository;
 use App\Repository\PActionRepository;
 use App\Repository\PModuleRepository;
 use App\Repository\PEntiteRepository;
+use App\Repository\PMagasinsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PProfessionRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Repository\PProduitsRepository;
+use DateTime;
 
 #[Route('/vente')]
 class DemandeVenteController extends AbstractController
@@ -34,71 +42,126 @@ class DemandeVenteController extends AbstractController
     }
 
     #[Route('/point-vente', name: 'app_vente_demande_vente')]
-    public function index(PEntiteRepository $pEntiteRepository ,PProduitsRepository $produitsRepository, PProfessionRepository $professionRep,PModuleRepository $moduleRepository, UserRepository $userRep , PActionRepository $pActionRep, Request $request): Response
-    {
-        $allModules = $moduleRepository->findBy(array("active"=> true));
-        $dossiers = $pEntiteRepository->findBy(array("active"=> true));
+    public function index(
+        PEntiteRepository $pEntiteRepository,
+        PProduitsRepository $produitsRepository,
+        PProfessionRepository $professionRep,
+        PModuleRepository $moduleRepository,
+        UserRepository $userRep,
+        PActionRepository $pActionRep,
+        PMagasinsRepository $magasinsRepository,
+        Request $request
+    ): Response {
+        $allModules = $moduleRepository->findBy(['active' => true]);
+        $dossiers = $pEntiteRepository->findBy(['active' => true]);
         $actions = $this->userOperation->getOperations($this->getUser(), 'app_vente_demande_vente', $request);
         $professions = $professionRep->findAll();
 
-        if(!$actions){
+        if (!$actions) {
             return $this->render('errors/403.html.twig');
         }
-        
-        // Fetch data from the repository produitsRepository
-        $products = $produitsRepository->findProductsWithTarification();
+
+        $products = $produitsRepository->findProductsWithTarificationAndSolde();
         $categories = array_unique(array_column($products, 'category'));
 
-        
+        $magasins = $magasinsRepository->findMagasinsByUserEntite($this->getUser(), $pEntiteRepository);
+        $defaultMagasin = $magasinsRepository->findDefaultMagasinForUser($this->getUser(), $pEntiteRepository);
+
         return $this->render('vente/PointVente/index.html.twig', [
             'professions' => $professions,
             'allModules' => $allModules,
             'dossiers' => $dossiers,
             'actions' => $actions,
-            'products'=>$products,
-            'categories'=>$categories,
+            'products' => $products,
+            'categories' => $categories,
+            'magasins' => $magasins,
+            'defaultMagasin' => $defaultMagasin,
         ]);
     }
-    #[Route('/gestion-vente', name: 'app_vente_gestion_vente')]
-    public function gestionVente(
-        Request $request,
-        PEntiteRepository $pEntiteRepository,
-        PProfessionRepository $professionRep,
-        PModuleRepository $moduleRepository,
-        UserRepository $userRep,
-        PActionRepository $pActionRep
-    ): Response {
-        $actions = $this->userOperation->getOperations($this->getUser(), 'app_vente_gestion_vente', $request);
-        
-        // if (!$actions) {
-        //     return $this->render('errors/403.html.twig');
-        // }
 
-        // Fetch data as needed for the view
-        $professions = $professionRep->findAll();
-        $dossiers = $pEntiteRepository->findBy(['active' => true]);
-        $allModules = $moduleRepository->findBy(['active' => true]);
+    #[Route('/save-demande', name: 'vente_save_demande', methods: ['POST'])]
+    public function saveDemande(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
 
-        // Placeholder sales data (could be replaced with real sales data from DB)
-        $sales = [];
+        if (!$data || empty($data['lignes'])) {
+            return $this->json(['status' => 'error', 'message' => 'Aucune donnée reçue.'], 400);
+        }
 
-    for ($i = 1; $i <= 90; $i++) {
-        $sales[] = [
-            'id' => $i,
-            'code' => 'CMD-' . str_pad($i, 4, '0', STR_PAD_LEFT),
-            'client' => 'Client ' . $i, // A, B, C...
-            'quantity' => rand(1, 5),
-            'price' => rand(50, 150),
-            'status' => ['Payée', 'En attente', 'Annulée'][rand(0, 2)],
-        ];
-    }
+        $demande = new TMsDemande();
 
-        return $this->render('vente/GestionVente/index.html.twig', [
-            'professions' => $professions,
-            'dossiers' => $dossiers,
-            'allModules' => $allModules,
-            'actions' => $actions,
-            'sales' => $sales,
+        // --- Base values ---
+        $demande->setCode(null); // code is handled by trigger
+        $demande->setDescription($data['description'] ?? null);
+        $demande->setNomPatient($data['nom_patient'] ?? null);
+        $demande->setDossierPatient($data['dossier_patient'] ?? null);
+        $demande->setIpp((int)($data['ipp'] ?? 0));
+
+        // --- Required workflow fields ---
+        $demande->setPositionActuel('creer');
+        $demande->setHistorique(null);
+        $demande->setUrgent(!empty($data['urgent']));
+        $demande->setCreated(new DateTime());
+        $demande->setActif(true);
+        $demande->setFlagSynchronisationLocale(null);
+
+        // --- Relations ---
+        $user = $this->getUser();
+        $demande->setUserCreated($user);
+
+        $demandeur = $this->em->getRepository(PMagasins::class)->find($data['demandeur_id'] ?? null);
+        $recepteur = $this->em->getRepository(PMagasins::class)->find($data['recepteur_id'] ?? null);
+
+        $demande->setDemandeurId($demandeur);
+        $demande->setRecepteurId($recepteur);
+
+        $typeDemande = $this->em->getRepository(PTypeOprt::class)
+            ->findOneBy(['code' => $data['type_demande'] ?? 'consommation']);
+        $demande->setTypeDemande($typeDemande);
+
+        $this->em->persist($demande);
+        $this->em->flush(); 
+
+        // --- Save lines ---
+        foreach ($data['lignes'] as $ligne) {
+            $produit = $this->em->getRepository(PProduits::class)->find($ligne['id']);
+            if (!$produit) {
+                continue; // Or throw error
+            }
+
+            $unite = $produit->getPPrUnite();
+
+            $remise = $ligne['remise'] ?? 0;
+            $tva = $ligne['tva'] ?? 0;
+            $quantite = (float) $ligne['quantity'];
+            $prixUnitaire = (float) $ligne['price'];
+            $montantHt = ($prixUnitaire * $quantite) - $remise;
+            $montantTtc = $montantHt + ($montantHt * $tva / 100);
+
+            $demandelg = new TMsDemandelg();
+            $demandelg->setTmsDemande($demande);
+            $demandelg->setPProduit($produit);
+            $demandelg->setPPrUnite($unite);
+            $demandelg->setQuantite($quantite);
+            $demandelg->setPrixUnitaire($prixUnitaire);
+            $demandelg->setRemise((float) $remise);
+            $demandelg->setTva((float) $tva);
+            $demandelg->setMontantHt($montantHt);
+            $demandelg->setMontantTtc($montantTtc);
+            $demandelg->setObservation(null);
+            $demandelg->setCodeComptable(null);
+            $demandelg->setFlagSynchronisationLocale(null);
+
+            $this->em->persist($demandelg);
+        }
+
+
+        $this->em->flush();
+
+        return $this->json([
+            'status' => 'success',
+            'message' => 'Demande enregistrée avec succès.',
+            'demande_id' => $demande->getId(),
         ]);
     }
 

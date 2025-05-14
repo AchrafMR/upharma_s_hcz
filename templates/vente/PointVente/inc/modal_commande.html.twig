@@ -1,0 +1,130 @@
+    <!-- Modal Commander -->
+    <div
+      class="modal right fade"
+      id="addCommande"
+      role="dialog"
+      aria-labelledby="addCommande"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" style="width: 50%" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">INFORMATIONS DE LA DEMANDE</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <div class="row">
+              <!-- Demandeur -->
+             <div class="form-group col-md-6">
+                <label for="demandeur_id">Demandeur</label>
+                <select id="demandeur_id" class="form-control">
+                  <option value="">-- Sélectionner un magasin Demandeur --</option>
+                  {% for magasin in magasins %}
+                    <option value="{{ magasin.id }}"
+                      {% if defaultMagasin and magasin.id == defaultMagasin.id %}selected{% endif %}
+                    >
+                      {{ magasin.designation }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+
+              <!-- Récepteur -->
+              <div class="form-group col-md-6">
+                <label for="recepteur_id">Récepteur</label>
+                <select id="recepteur_id" class="form-control">
+                  <option value="">
+                    -- Sélectionner un magasin Récepteur--
+                  </option>
+                  {% for magasin in magasins %}
+                    <option value="{{ magasin.id }}"
+
+                    >
+                      {{ magasin.designation }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="row align-items-end">
+        <!-- Type de Demande -->
+        <div class="form-group col-md-6">
+          <label for="type_demande">Type de Demande</label>
+          <select id="type_demande" class="form-control">
+            <option value="consommation" selected>Consommation</option>
+            <option value="alimentation">Alimentation</option>
+          </select>
+        </div>
+
+        <!-- Urgent -->
+        <div class="form-group col-md-6 d-flex align-items-end">
+          <div class="form-check mb-2 ms-3">
+            <input class="form-check-input " type="checkbox" id="urgent" />
+            <label class="form-check-label " for="urgent">Urgent</label>
+          </div>
+        </div>
+      </div>
+
+
+            <!-- Description -->
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea
+                id="description"
+                class="form-control"
+                rows="2"
+                placeholder="Ex. Stock de janvier..."
+              ></textarea>
+            </div>
+
+            <!-- IPP -->
+            <div class="form-group">
+              <label for="ipp">IPP (ID Patient)</label>
+              <input
+                type="number"
+                id="ipp"
+                class="form-control"
+                placeholder="Identifiant du patient"
+              />
+            </div>
+
+            <!-- Nom Patient -->
+            <div class="form-group">
+              <label for="nom_patient">Nom du Patient</label>
+              <input
+                type="text"
+                id="nom_patient"
+                class="form-control"
+                placeholder="Nom complet du patient"
+              />
+            </div>
+
+            <!-- Dossier Patient -->
+            <div class="form-group">
+              <label for="dossier_patient">Dossier Patient</label>
+              <input
+                type="text"
+                id="dossier_patient"
+                class="form-control"
+                placeholder="Code dossier patient"
+              />
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" id="submit-demande" class="btn btn-primary">
+              <i class="fa-regular fa-paper-plane"></i> Enregistrer Demande
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>

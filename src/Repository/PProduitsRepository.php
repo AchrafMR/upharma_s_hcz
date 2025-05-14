@@ -25,12 +25,34 @@ class PProduitsRepository extends ServiceEntityRepository
 //     * @return PProduits[] Returns an array of PProduits objects
 //     */
 
-    public function findProductsWithTarification(): array
+
+    // public function findProductsWithTarificationAndSolde(): array
+    // {
+    //     return $this->createQueryBuilder('p')
+    //         ->select('p.id, p.titre AS name, p.image, p.liste AS category, t.prixVentePpv AS price, COALESCE(s.solde, 0) AS quantity')
+    //         ->leftJoin('p.pPrTarifications', 't', 'WITH', 't.active = 1')
+    //         ->leftJoin('p.tStStockstatics', 's')
+    //         ->where('p.active = 1')
+    //         ->getQuery()
+    //         ->getArrayResult();
+    // }
+
+    public function findProductsWithTarificationAndSolde(): array
     {
         return $this->createQueryBuilder('p')
-            ->select('p.id, p.titre AS name, p.image, p.liste AS category, t.prixVente AS price')
+            ->select('
+                p.id,
+                p.titre AS name,
+                p.image,
+                n.designation AS category,
+                t.prixVentePpv AS price,
+                COALESCE(s.solde, 0) AS quantity
+            ')
             ->leftJoin('p.pPrTarifications', 't', 'WITH', 't.active = 1')
+            ->leftJoin('p.tStStockstatics', 's')
+            ->leftJoin('p.niveau', 'n')  
             ->where('p.active = 1')
+            ->andWhere('n.niveau = 4')
             ->getQuery()
             ->getArrayResult();
     }
