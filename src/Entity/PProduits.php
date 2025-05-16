@@ -9,7 +9,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PProduitsRepository::class)]
-
 #[ORM\Table(name: 'p_produits')]
 class PProduits
 {
@@ -87,10 +86,18 @@ class PProduits
     #[ORM\OneToMany(mappedBy: 'pProduit', targetEntity: TMsDemandelg::class)]
     private Collection $tMsDemandelgs;
 
+    #[ORM\OneToMany(mappedBy: 'pProduit', targetEntity: TStStockdyna::class)]
+    private Collection $tStStockdynas;
+
+    #[ORM\OneToMany(mappedBy: 'pProduit', targetEntity: TStStockstatic::class)]
+    private Collection $tStStockstatics;
+
     public function __construct()
     {
         $this->pPrTarifications = new ArrayCollection();
         $this->tMsDemandelgs = new ArrayCollection();
+        $this->tStStockdynas = new ArrayCollection();
+        $this->tStStockstatics = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -404,6 +411,66 @@ class PProduits
             // set the owning side to null (unless already changed)
             if ($tMsDemandelg->getPProduit() === $this) {
                 $tMsDemandelg->setPProduit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TStStockdyna>
+     */
+    public function getTStStockdynas(): Collection
+    {
+        return $this->tStStockdynas;
+    }
+
+    public function addTStStockdyna(TStStockdyna $tStStockdyna): static
+    {
+        if (!$this->tStStockdynas->contains($tStStockdyna)) {
+            $this->tStStockdynas->add($tStStockdyna);
+            $tStStockdyna->setPProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTStStockdyna(TStStockdyna $tStStockdyna): static
+    {
+        if ($this->tStStockdynas->removeElement($tStStockdyna)) {
+            // set the owning side to null (unless already changed)
+            if ($tStStockdyna->getPProduit() === $this) {
+                $tStStockdyna->setPProduit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TStStockstatic>
+     */
+    public function getTStStockstatics(): Collection
+    {
+        return $this->tStStockstatics;
+    }
+
+    public function addTStStockstatic(TStStockstatic $tStStockstatic): static
+    {
+        if (!$this->tStStockstatics->contains($tStStockstatic)) {
+            $this->tStStockstatics->add($tStStockstatic);
+            $tStStockstatic->setPProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTStStockstatic(TStStockstatic $tStStockstatic): static
+    {
+        if ($this->tStStockstatics->removeElement($tStStockstatic)) {
+            // set the owning side to null (unless already changed)
+            if ($tStStockstatic->getPProduit() === $this) {
+                $tStStockstatic->setPProduit(null);
             }
         }
 
