@@ -1,13 +1,9 @@
-import Routing from 'symfony-routing'; // ensure Routing is available
-import 'datatables.net-bs5';
-import 'datatables.net';
 
 $(document).ready(function () {
-  const salesTable = $('#salesTable').DataTable({
+  const table = $('#salesTable').DataTable({
     language: {
       url: window.frenchJsonUrl,
-      processing:
-        '<i style="color:#508884; margin-top:100px !important; font-size:25px !important;" class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only"></span> ',
+      processing: '<i class="fa fa-spinner fa-spin fa-3x" style="color:#508884;"></i>',
     },
     lengthMenu: [
       [20, 50, 100, 200],
@@ -23,9 +19,7 @@ $(document).ready(function () {
         d.length = d.length || 15;
       },
       dataSrc: function (json) {
-        window.globalActions = Array.isArray(json.actions)
-          ? json.actions
-          : Object.values(json.actions);
+        window.globalActions = Array.isArray(json.actions) ? json.actions : Object.values(json.actions);
         return json.data;
       },
     },
@@ -62,14 +56,12 @@ $(document).ready(function () {
             <div class="dropdown">
               <i class="menuActions fa-solid fa-ellipsis-vertical" id="${data.demande_id}"></i>
               <div class="dropdown-menu dropdown-content divMenu" id="divMenu${data.demande_id}">`;
-
           window.globalActions.forEach((action) => {
             html += `
               <button class="${action.className} dropdown-item" data-id="${data.demande_id}" data-toggle="modal" data-target="#${action.idName}">
                 <i class="${action.icon} menuIcon"></i> ${action.nom}
               </button>`;
           });
-
           html += '</div></div>';
           return html;
         },
