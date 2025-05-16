@@ -90,22 +90,22 @@ class DemandeVenteController extends AbstractController
 
         $demande = new TMsDemande();
 
-        // --- Base values ---
+        // Set Demande properties
         $demande->setCode(null); // code is handled by trigger
         $demande->setDescription($data['description'] ?? null);
         $demande->setNomPatient($data['nom_patient'] ?? null);
         $demande->setDossierPatient($data['dossier_patient'] ?? null);
         $demande->setIpp((int)($data['ipp'] ?? 0));
 
-        // --- Required workflow fields ---
+       
         $demande->setPositionActuel('creer');
         $demande->setHistorique(null);
         $demande->setUrgent(!empty($data['urgent']));
         $demande->setCreated(new DateTime());
         $demande->setActif(true);
-        $demande->setFlagSynchronisationLocale(null);
+        // $demande->setFlagSynchronisationLocale(null);
 
-        // --- Relations ---
+    
         $user = $this->getUser();
         $demande->setUserCreated($user);
 
@@ -114,11 +114,8 @@ class DemandeVenteController extends AbstractController
 
         $demande->setDemandeurId($demandeur);
         $demande->setRecepteurId($recepteur);
-
-        $typeDemande = $this->em->getRepository(PTypeOprt::class)
-            ->findOneBy(['code' => $data['type_demande'] ?? 'consommation']);
+        $typeDemande = $this->em->getRepository(PTypeOprt::class)->find(2);
         $demande->setTypeDemande($typeDemande);
-
         $this->em->persist($demande);
         $this->em->flush(); 
 
@@ -126,7 +123,7 @@ class DemandeVenteController extends AbstractController
         foreach ($data['lignes'] as $ligne) {
             $produit = $this->em->getRepository(PProduits::class)->find($ligne['id']);
             if (!$produit) {
-                continue; // Or throw error
+                continue; 
             }
 
             $unite = $produit->getPPrUnite();
@@ -150,7 +147,7 @@ class DemandeVenteController extends AbstractController
             $demandelg->setMontantTtc($montantTtc);
             $demandelg->setObservation(null);
             $demandelg->setCodeComptable(null);
-            $demandelg->setFlagSynchronisationLocale(null);
+            // $demandelg->setFlagSynchronisationLocale(null);
 
             $this->em->persist($demandelg);
         }

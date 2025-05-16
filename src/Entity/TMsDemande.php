@@ -79,8 +79,8 @@ class TMsDemande
     #[ORM\ManyToOne(targetEntity: User::class)]
     private ?User $userArchiver = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $ipp = null;
+    #[ORM\Column(type: 'string', length: 50, nullable: true)]
+    private ?string $ipp = null;
 
     #[ORM\ManyToOne(inversedBy: 'tMsDemandes')]
     private ?PTypeOprt $typeDemande = null;
@@ -348,15 +348,14 @@ class TMsDemande
         return $this;
     }
 
-    public function getIpp(): ?int
+    public function getIpp(): ?string
     {
         return $this->ipp;
     }
 
-    public function setIpp(?int $ipp): static
+    public function setIpp(?string $ipp): static
     {
         $this->ipp = $ipp;
-
         return $this;
     }
 

@@ -194,7 +194,6 @@ if (commanderButton) {
 
     pendingDemande = [...cart.map((item) => ({ ...item }))];
     // console.log(pendingDemande);
-
     $("#addCommande").modal("show");
   });
 }
@@ -205,10 +204,30 @@ document.getElementById("submit-demande").addEventListener("click", () => {
     return;
   }
 
+  // Define required input/select fields 
+  const requiredFields = [
+    { id: "demandeur_id", label: "Demandeur" },
+    { id: "recepteur_id", label: "Récepteur" },
+    { id: "description", label: "description" },
+    { id: "ipp", label: "IPP" },
+    { id: "nom_patient", label: "Nom du patient" },
+    { id: "dossier_patient", label: "Dossier du patient" }
+  ];
+
+  // Validate each field
+  for (let field of requiredFields) {
+    const el = document.getElementById(field.id);
+    if (!el || !el.value.trim()) {
+      toastr.error(`Veuillez remplir le champ : ${field.label}`);
+      el.focus();
+      return;
+    }
+  }
+
+
   const data = {
     demandeur_id: document.getElementById("demandeur_id").value,
     recepteur_id: document.getElementById("recepteur_id").value,
-    type_demande: document.getElementById("type_demande").value,
     urgent: document.getElementById("urgent").checked ? 1 : 0,
     description: document.getElementById("description").value,
     ipp: document.getElementById("ipp").value,
@@ -240,27 +259,17 @@ document.getElementById("submit-demande").addEventListener("click", () => {
       // Reset modal form fields
       document.getElementById("demandeur_id").value = "";
       document.getElementById("recepteur_id").value = "";
-      document.getElementById("type_demande").value = "consommation";
       document.getElementById("urgent").checked = false;
       document.getElementById("description").value = "";
       document.getElementById("ipp").value = "";
       document.getElementById("nom_patient").value = "";
       document.getElementById("dossier_patient").value = "";
 
-      // reset filters
-      selectedCategory = "";
-      searchQuery = "";
-      searchInput.value = "";
-      renderFilteredProducts();
+
     })
     .catch((err) => {
       console.error(err);
       toastr.error("Erreur lors de l'enregistrement de la demande.");
     });
 });
-
-
-
-
- 
 });

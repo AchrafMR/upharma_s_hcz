@@ -25,7 +25,7 @@
               <!-- Demandeur -->
              <div class="form-group col-md-6">
                 <label for="demandeur_id">Demandeur</label>
-                <select id="demandeur_id" class="form-control">
+                <select id="demandeur_id" class="form-control required">
                   <option value="">-- Sélectionner un magasin Demandeur --</option>
                   {% for magasin in magasins %}
                     <option value="{{ magasin.id }}"
@@ -41,7 +41,7 @@
               <!-- Récepteur -->
               <div class="form-group col-md-6">
                 <label for="recepteur_id">Récepteur</label>
-                <select id="recepteur_id" class="form-control">
+                <select id="recepteur_id" class="form-control required">
                   <option value="">
                     -- Sélectionner un magasin Récepteur--
                   </option>
@@ -56,14 +56,13 @@
               </div>
             </div>
             <div class="row align-items-end">
-        <!-- Type de Demande -->
-        <div class="form-group col-md-6">
-          <label for="type_demande">Type de Demande</label>
-          <select id="type_demande" class="form-control">
-            <option value="consommation" selected>Consommation</option>
-            <option value="alimentation">Alimentation</option>
-          </select>
-        </div>
+  
+             <!-- Description -->
+            <div class="form-group col-md-6">
+              <label for="description">Description</label>
+              <input type="text" id="description" class="form-control" required placeholder="description..." />
+            </div>
+        
 
         <!-- Urgent -->
         <div class="form-group col-md-6 d-flex align-items-end">
@@ -75,49 +74,48 @@
       </div>
 
 
-            <!-- Description -->
-            <div class="form-group">
-              <label for="description">Description</label>
-              <textarea
-                id="description"
-                class="form-control"
-                rows="2"
-                placeholder="Ex. Stock de janvier..."
-              ></textarea>
-            </div>
+         
 
             <!-- IPP -->
             <div class="form-group">
               <label for="ipp">IPP (ID Patient)</label>
               <input
-                type="number"
+                type="text"
                 id="ipp"
                 class="form-control"
                 placeholder="Identifiant du patient"
+                required
               />
             </div>
 
-            <!-- Nom Patient -->
-            <div class="form-group">
-              <label for="nom_patient">Nom du Patient</label>
-              <input
-                type="text"
-                id="nom_patient"
-                class="form-control"
-                placeholder="Nom complet du patient"
-              />
+            <div class="form-row">
+              <!-- Nom Patient -->
+              <div class="form-group col-md-6">
+                <label for="nom_patient">Nom du Patient</label>
+                <input
+                  type="text"
+                  id="nom_patient"
+                  name="nom_patient"
+                  class="form-control"
+                  placeholder="Nom complet du patient"
+                  required
+                />
+              </div>
+
+              <!-- Dossier Patient -->
+              <div class="form-group col-md-6">
+                <label for="dossier_patient">Dossier Patient</label>
+                <input
+                  type="text"
+                  id="dossier_patient"
+                  name="dossier_patient"
+                  class="form-control"
+                  placeholder="Code dossier patient"
+                  required
+                />
+              </div>
             </div>
 
-            <!-- Dossier Patient -->
-            <div class="form-group">
-              <label for="dossier_patient">Dossier Patient</label>
-              <input
-                type="text"
-                id="dossier_patient"
-                class="form-control"
-                placeholder="Code dossier patient"
-              />
-            </div>
           </div>
 
           <div class="modal-footer">

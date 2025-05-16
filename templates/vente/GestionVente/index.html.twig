@@ -21,46 +21,20 @@
         <table id="salesTable" class="table table-striped">
           <thead>
             <tr>
-              <th>#</th>
+              <th>ID</th>
               <th>CODE</th>
-              <th>CLIENT</th>
-              <th>QTE</th>
-              <th>PRIX (MAD)</th>
+              <th>DEMANDEUR</th>
+              <th>RECEPTEUR</th>
+              <th>IPP</th>
+              <th>NOM PATIENT</th>
               <th>TOTAL (MAD)</th>
-              <th>STATUT</th>
+              <th>URGENCE</th>
+              <th>DATE</th>
+              <th>POSITION</th>
               <th>ACTIONS</th>
             </tr>
           </thead>
-          <tbody id="listSales">
-            {% for sale in sales %}
-              <tr id="sale{{ sale.id }}">
-                <td>{{ loop.index }}</td>
-                <td>{{ sale.code }}</td>
-                <td>{{ sale.client }}</td>
-                <td>{{ sale.quantity }}</td>
-                <td>{{ sale.price }}</td>
-                <td>{{ sale.quantity * sale.price }}</td>
-                <td>
-                  {% if sale.status == 'Payée' %}
-                    <span class="badge bg-success text-white">{{ sale.status }}</span>
-                  {% elseif sale.status == 'En attente' %}
-                    <span class="badge bg-warning text-white">{{ sale.status }}</span>
-                  {% else %}
-                    <span class="badge text-white bg-danger">{{ sale.status }}</span>
-                  {% endif %}
-                </td>
-                <td>
-                  <div class="dropdown">
-                    <i class="menuActions fa-solid fa-ellipsis-vertical" id="{{ sale.id }}"></i>
-                    <div class="dropdown-menu dropdown-content divMenu" id="divMenu{{ sale.id }}">
-                      <button class="dropdown-item editSale" data-id="{{ sale.id }}"><i class="fa-solid fa-pen-to-square menuIcon"></i> MODIFIER</button>
-                      <button class="dropdown-item deleteSale" data-id="{{ sale.id }}"><i class="fa-solid fa-trash menuIcon"></i> SUPPRIMER</button>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
+          <tbody></tbody>
         </table>
       </div>
     </div>
@@ -71,4 +45,6 @@
 {% block javascripts %}
   {{ parent() }}
   {{ encore_entry_script_tags('gestion_vente') }}
+  
+
 {% endblock %}
