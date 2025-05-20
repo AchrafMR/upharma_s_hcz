@@ -3,7 +3,7 @@ $(document).ready(function () {
   const table = $('#salesTable').DataTable({
     language: {
       url: window.frenchJsonUrl,
-      processing: '<i class="fa fa-spinner fa-spin fa-3x" style="color:#508884;"></i>',
+      processing:'<i style="color:#508884; margin-top:100px !important; font-size:25px !important;" class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only"></span> ',
     },
     lengthMenu: [
       [20, 50, 100, 200],
@@ -25,48 +25,76 @@ $(document).ready(function () {
     },
     order: [[0, 'desc']],
     columns: [
-      { name: 'd.id', data: 'demande_id' },
-      { name: 'd.code', data: 'demande_code' },
-      { name: 'demandeur.designation', data: 'demandeur' },
-      { name: 'recepteur.designation', data: 'recepteur' },
-      { name: 'd.ipp', data: 'ipp_patient' },
-      { name: 'd.nom_patient', data: 'nom_patient' },
-      {
-        name: 'total_montant_ttc',
-        data: 'total_montant_ttc',
-        render: function (data) {
-          return data
-            ? Number(data).toLocaleString('fr-FR', {
-                style: 'decimal',
-                minimumFractionDigits: 2,
-              }) + ' DH'
-            : '0.00 DH';
+        { name: 'd.id', data: 'id' },
+        { name: 'd.code', data: 'demande_code' },
+        { name: 'demandeur.designation', data: 'demandeur' },
+        { name: 'recepteur.designation', data: 'recepteur' },
+        { name: 'd.ipp', data: 'ipp_patient' },
+        { name: 'd.nom_patient', data: 'nom_patient' },
+        {
+          name: 'total_montant_ttc',
+          data: 'total_montant_ttc',
+          render: function (data) {
+            return data
+              ? Number(data).toLocaleString('fr-FR', {
+                  style: 'decimal',
+                  minimumFractionDigits: 2,
+                }) + ' DH'
+              : '0.00 DH';
+          },
+          createdCell: function (td) {
+            td.classList.add('force-right-align');
+          }
         },
-      },
-      { name: 'niveau_urgence', data: 'niveau_urgence' },
-      { name: 'd.created', data: 'date_demmande' },
-      { name: 'd.position_actuel', data: 'position_actuel' },
-      {
-        name: 'actions',
-        data: null,
-        orderable: false,
-        searchable: false,
-        render: function (data) {
-          let html = `
-            <div class="dropdown">
-              <i class="menuActions fa-solid fa-ellipsis-vertical" id="${data.demande_id}"></i>
-              <div class="dropdown-menu dropdown-content divMenu" id="divMenu${data.demande_id}">`;
-          window.globalActions.forEach((action) => {
-            html += `
-              <button class="${action.className} dropdown-item" data-id="${data.demande_id}" data-toggle="modal" data-target="#${action.idName}">
-                <i class="${action.icon} menuIcon"></i> ${action.nom}
-              </button>`;
-          });
-          html += '</div></div>';
-          return html;
+
+        { name: 'niveau_urgence', data: 'niveau_urgence' },
+        {
+          name: 'd.created',
+          data: 'date_demmande',
+          render: function (data) {
+            return moment(data).format('DD/MM/YYYY ');
+          }
         },
-      },
+        { name: 'd.position_actuel', data: 'position_actuel' },
+        {
+          name: 'actions',
+          data: null,
+          orderable: false,
+          searchable: false,
+          render: function (data) {
+            var actionsHtml = '<div class="dropdown">' +
+              '<i class="menuActions fa-solid fa-ellipsis-vertical" id="' + data.id + '"></i>' +
+              '<div class="dropdown-menu dropdown-content divMenu" id="divMenu' + data.id + '">';
+
+            window.globalActions.forEach(function (action) {
+              actionsHtml += `
+                <button class="${action.className} dropdown-item"
+                        id="${data.id}"
+                        data-toggle="modal"
+                        data-target="#${action.idName}${data.id}">
+                  <i class="${action.icon} menuIcon"></i> ${action.nom}
+                </button>`;
+            });
+
+            actionsHtml += '</div></div>';
+            return actionsHtml;
+          }
+        }
+
     ],
     autoWidth: false,
   });
 });
+
+$(document).on("click", ".edit-demande", function () {
+  const demandeId = $(this).attr("id"); 
+  const modalSelector = `#editCommande${demandeId}`; 
+
+  if (!demandeId || !$(modalSelector).length) {
+    console.warn(" Modal not found or ID missing", { demandeId, modalSelector });
+    return;
+  }
+
+  $(modalSelector).modal("show");
+});
+

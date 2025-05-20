@@ -22,7 +22,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Repository\PProduitsRepository;
+use App\Repository\TMsDemandeRepository;
 use DateTime;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/vente')]
 class DemandeVenteController extends AbstractController
@@ -161,5 +163,6 @@ class DemandeVenteController extends AbstractController
             'demande_id' => $demande->getId(),
         ]);
     }
+
 
 }
