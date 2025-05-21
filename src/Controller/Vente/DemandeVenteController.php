@@ -2,6 +2,7 @@
 
 namespace App\Controller\Vente;
 
+use App\Entity\PEntite;
 use App\Entity\PMagasins;
 use App\Entity\PProduits;
 use App\Entity\PPrUnites;
@@ -49,8 +50,6 @@ class DemandeVenteController extends AbstractController
         PProduitsRepository $produitsRepository,
         PProfessionRepository $professionRep,
         PModuleRepository $moduleRepository,
-        UserRepository $userRep,
-        PActionRepository $pActionRep,
         PMagasinsRepository $magasinsRepository,
         Request $request
     ): Response {
@@ -65,7 +64,6 @@ class DemandeVenteController extends AbstractController
 
         $products = $produitsRepository->findProductsWithTarificationAndSolde();
         $categories = array_unique(array_column($products, 'category'));
-
         $magasins = $magasinsRepository->findMagasinsByUserEntite($this->getUser(), $pEntiteRepository);
         $defaultMagasin = $magasinsRepository->findDefaultMagasinForUser($this->getUser(), $pEntiteRepository);
 
@@ -100,13 +98,15 @@ class DemandeVenteController extends AbstractController
         $demande->setIpp((int)($data['ipp'] ?? 0));
 
        
-        $demande->setPositionActuel('creer');
+        $demande->setPositionActuel('Créer');
         $demande->setHistorique(null);
         $demande->setUrgent(!empty($data['urgent']));
         $demande->setCreated(new DateTime());
         $demande->setActif(true);
-        // $demande->setFlagSynchronisationLocale(null);
 
+        $dossierId = $request->getSession()->get('dossier');
+        $dossier = $this->em->getRepository(PEntite::class)->find($dossierId);
+        $demande->setPEntite($dossier);
     
         $user = $this->getUser();
         $demande->setUserCreated($user);
@@ -121,7 +121,7 @@ class DemandeVenteController extends AbstractController
         $this->em->persist($demande);
         $this->em->flush(); 
 
-        // --- Save lines ---
+        // Save lines
         foreach ($data['lignes'] as $ligne) {
             $produit = $this->em->getRepository(PProduits::class)->find($ligne['id']);
             if (!$produit) {

@@ -2,6 +2,7 @@
 
 namespace App\Controller\Vente;
 
+use App\Entity\TMsDemande;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,6 +12,8 @@ use App\Repository\PEntiteRepository;
 use App\Repository\PProfessionRepository;
 use App\Repository\PActionRepository;
 use App\Repository\PMagasinsRepository;
+use App\Repository\PProduitsRepository;
+use App\Repository\TMsDemandelgRepository;
 use App\Repository\TMsDemandeRepository;
 use App\Repository\UserRepository;
 use App\Service\UserOperation;
@@ -34,7 +37,8 @@ class GestionVenteController extends AbstractController
         PProfessionRepository $professionRep,
         PModuleRepository $moduleRepository,
         PMagasinsRepository $magasinsRepository,
-        TMsDemandeRepository $TMsDemandelgRepository,
+        TMsDemandeRepository $TMsDemandeRepository,
+        PProduitsRepository $produitsRepository,
     ): Response {
         $allModules = $moduleRepository->findBy(array("active"=> true));
         $dossiers = $pEntiteRepository->findBy(array("active"=> true));
@@ -52,8 +56,10 @@ class GestionVenteController extends AbstractController
         $magasins = $magasinsRepository->findMagasinsByUserEntite($this->getUser(), $pEntiteRepository);
         $defaultMagasin = $magasinsRepository->findDefaultMagasinForUser($this->getUser(), $pEntiteRepository);
         
-        $demandes = $TMsDemandelgRepository->findAll();
-//    dd($demandes);
+        $demandes = $TMsDemandeRepository->findAll();
+        $products = $produitsRepository->findProductsWithTarificationAndSolde();
+        // dd($demandes);
+
         return $this->render('vente/GestionVente/index.html.twig', [
             'professions' => $professions,
             'dossiers' => $dossiers,
@@ -62,6 +68,7 @@ class GestionVenteController extends AbstractController
             'magasins' => $magasins,
             'defaultMagasin' => $defaultMagasin,
             'demandes' => $demandes,
+            'produits' => $products,
         ]);
     }
 
@@ -171,8 +178,6 @@ class GestionVenteController extends AbstractController
                 'icon' => $action->getIcon(),
             ];
         }, $filteredActions);
-        // dd($actions);
-        // dd($allActions);
 
         return new JsonResponse([
             'draw' => $draw,

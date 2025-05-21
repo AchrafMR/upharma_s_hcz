@@ -5,21 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d333c816-286a-43c5-ae3f-b7753ac94c76" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/js/vente/gestion_vente.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/vente/gestion_vente.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/build/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/entrypoints.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/build/entrypoints.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/gestion_vente.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/build/gestion_vente.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/build/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/point_vente.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/build/point_vente.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Settings/SettingController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Settings/SettingController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/Vente/DemandeVenteController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Vente/DemandeVenteController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/Vente/GestionVenteController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Vente/GestionVenteController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/dashboard/inc/_metric-card.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dashboard/inc/_metric-card.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/vente/GestionVente/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/vente/GestionVente/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/vente/PointVente/inc/modal_commande.html.twig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/vente/PointVente/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/vente/PointVente/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/PEntite.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/PEntite.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/TMsDemande.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/TMsDemande.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/TMsDemandelg.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/TMsDemandelg.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/vente/GestionVente/inc/edit_demande_modal.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/vente/GestionVente/inc/edit_demande_modal.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -215,19 +208,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "dev",
-    "last_opened_file_path": "C:/Users/ThinkPad/Desktop/new upharma/upharma_s_hcz",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "yarn",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/ThinkPad/Desktop/new upharma/upharma_s_hcz&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="Main" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
       <TestRunner configuration_file="$PROJECT_DIR$/phpunit.xml.dist" scope="XML" use_alternative_configuration_file="true" />
@@ -253,6 +246,8 @@
       <workItem from="1746697296271" duration="234000" />
       <workItem from="1747652387758" duration="6000" />
       <workItem from="1747674398014" duration="604000" />
+      <workItem from="1747754469806" duration="2000" />
+      <workItem from="1747755231786" duration="595000" />
     </task>
     <servers />
   </component>
