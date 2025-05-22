@@ -138,7 +138,7 @@ class GestionVenteController extends AbstractController
                 d.created AS date_demmande,
                 d.position_actuel
             FROM t_ms_Demande d
-            LEFT JOIN t_ms_demandelg lg ON lg.t_ms_demande_id = d.id
+            LEFT JOIN t_ms_demandelg lg ON lg.t_ms_demande_id = d.id AND lg.actif = 1
             LEFT JOIN pmagasins demandeur ON demandeur.id = d.demandeur_id
             LEFT JOIN pmagasins recepteur ON recepteur.id = d.recepteur_id
             $where
