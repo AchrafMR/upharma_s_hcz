@@ -43,27 +43,31 @@
 
 
 {% set metrics = [
-  { title: 'Total des Commandes', value: allOrders, icon: 'fas fa-boxes', color: 'yellow' },
-  { title: 'Commandes Validées', value: validatedOrders, icon: 'fas fa-check', color: 'primary' },
-  { title: 'Commandes en Cours', value: ongoingOrders, icon: 'fas fa-truck-loading', color: 'cyan' },
-  { title: 'Commandes Traitées', value: processedOrders, icon: 'fas fa-clipboard-check', color: 'success' },
-  { title: 'Commandes Retournées', value: returnedOrders, icon: 'fas fa-undo', color: 'danger' }
+  { title: 'Total des Commandes', value: allOrders, icon: 'fas fa-boxes', color: 'yellow', route: 'app_vente_gestion_vente' },
+  { title: 'Commandes Validées', value: validatedOrders, icon: 'fas fa-check', color: 'primary', route: 'app_vente_gestion_vente' },
+  { title: 'Commandes en Cours', value: ongoingOrders, icon: 'fas fa-truck-loading', color: 'cyan', route: 'app_vente_gestion_vente' },
+  { title: 'Commandes Traitées', value: processedOrders, icon: 'fas fa-clipboard-check', color: 'success', route: 'app_vente_gestion_vente' },
+  { title: 'Commandes Retournées', value: returnedOrders, icon: 'fas fa-undo', color: 'danger', route: 'app_vente_gestion_vente' }
 ] %}
+
 
 {% for metric in metrics %}
   <div class="col">
-    <div class="card metric-card border-{{ metric.color }} shadow-sm ">
-      <div class="card-body position-relative">
-        <div class="d-flex justify-content-between align-items-start my-2">
-          <div>
-            <h6 class="text-muted text-uppercase small mb-1">{{ metric.title }}</h6>
-            <h4 class="fw-bold mb-2">{{ metric.value }}</h4>
-          </div>
-          <div class="metric-icon rounded-circle d-flex align-items-center justify-content-center">
-            <i class="{{ metric.icon }} text-{{ metric.color }}"></i>
+    <a href="{{ path(metric.route) }}" class="text-decoration-none text-dark">
+      <div class="card metric-card border-{{ metric.color }} shadow-sm hover-shadow">
+        <div class="card-body position-relative">
+          <div class="d-flex justify-content-between align-items-start my-2">
+            <div>
+              <h6 class="text-muted text-uppercase small mb-1">{{ metric.title }}</h6>
+              <h4 class="fw-bold mb-2">{{ metric.value }}</h4>
+            </div>
+            <div class="metric-icon rounded-circle d-flex align-items-center justify-content-center">
+              <i class="{{ metric.icon }} text-{{ metric.color }}"></i>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </a>
   </div>
 {% endfor %}
+

@@ -136,14 +136,10 @@ window.addEventListener("DOMContentLoaded", () => {
             </button>
             <input type="text" class="form-control form-control-sm text-center border-0 bg-transparent qty-input"
                    value="${item.quantity}" readonly />
-            ${
-              item.quantity < stock
-                ? `<button class="btn btn-sm p-0 border-0 bg-transparent text-dark" style="width: 22px"
-                            onclick="increaseQty(${item.id})">
+            <button class="btn btn-sm p-0 border-0 bg-transparent text-dark" style="width: 22px"
+                    onclick="increaseQty(${item.id})">
                     <i class="fa-solid fa-plus"></i>
-                   </button>`
-                : ""
-            }
+            </button>
           </div>
           <button class="btn btn-sm btn-remove text-danger p-1 bg-transparent border-0"
                   onclick="removeItem(${item.id})" title="Supprimer">
@@ -156,15 +152,22 @@ window.addEventListener("DOMContentLoaded", () => {
     subtotalElement.innerText = `${subtotal.toFixed(2)} DH`;
   }
 
+  // window.increaseQty = function (id) {
+  //   const item = cart.find((p) => p.id === id);
+  //   const stock = PRODUCTS.find((p) => p.id === id)?.quantity ?? 0;
+  //   if (item && item.quantity < stock) {
+  //     item.quantity++;
+  //     renderCart();
+  //   }
+  // };
+
   window.increaseQty = function (id) {
     const item = cart.find((p) => p.id === id);
-    const stock = PRODUCTS.find((p) => p.id === id)?.quantity ?? 0;
-    if (item && item.quantity < stock) {
+    if (item) {
       item.quantity++;
       renderCart();
     }
   };
-
   window.decreaseQty = function (id) {
     const item = cart.find((p) => p.id === id);
     if (item && item.quantity > 1) {

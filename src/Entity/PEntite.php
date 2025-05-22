@@ -98,6 +98,9 @@ class PEntite
     #[ORM\OneToMany(mappedBy: 'entite', targetEntity: PDepots::class)]
     private Collection $pDepots;
 
+    #[ORM\OneToMany(mappedBy: 'pEntite', targetEntity: TMsDemande::class)]
+    private Collection $tMsDemandes;
+
     public function __construct()
     {
         $this->pUserDossierActions = new ArrayCollection();
@@ -105,6 +108,7 @@ class PEntite
         $this->counters = new ArrayCollection();
         $this->pPartenaires = new ArrayCollection();
         $this->pDepots = new ArrayCollection();
+        $this->tMsDemandes = new ArrayCollection();
 
     }
 
@@ -514,6 +518,36 @@ class PEntite
             // set the owning side to null (unless already changed)
             if ($pDepot->getEntite() === $this) {
                 $pDepot->setEntite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsDemande>
+     */
+    public function getTMsDemandes(): Collection
+    {
+        return $this->tMsDemandes;
+    }
+
+    public function addTMsDemande(TMsDemande $tMsDemande): static
+    {
+        if (!$this->tMsDemandes->contains($tMsDemande)) {
+            $this->tMsDemandes->add($tMsDemande);
+            $tMsDemande->setPEntite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsDemande(TMsDemande $tMsDemande): static
+    {
+        if ($this->tMsDemandes->removeElement($tMsDemande)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsDemande->getPEntite() === $this) {
+                $tMsDemande->setPEntite(null);
             }
         }
 

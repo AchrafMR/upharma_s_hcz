@@ -2,6 +2,7 @@
 
 namespace App\Controller\Vente;
 
+use App\Entity\TMsDemande;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -10,6 +11,10 @@ use App\Repository\PModuleRepository;
 use App\Repository\PEntiteRepository;
 use App\Repository\PProfessionRepository;
 use App\Repository\PActionRepository;
+use App\Repository\PMagasinsRepository;
+use App\Repository\PProduitsRepository;
+use App\Repository\TMsDemandelgRepository;
+use App\Repository\TMsDemandeRepository;
 use App\Repository\UserRepository;
 use App\Service\UserOperation;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,8 +36,9 @@ class GestionVenteController extends AbstractController
         PEntiteRepository $pEntiteRepository,
         PProfessionRepository $professionRep,
         PModuleRepository $moduleRepository,
-        UserRepository $userRep,
-        PActionRepository $pActionRep
+        PMagasinsRepository $magasinsRepository,
+        TMsDemandeRepository $TMsDemandeRepository,
+        PProduitsRepository $produitsRepository,
     ): Response {
         $allModules = $moduleRepository->findBy(array("active"=> true));
         $dossiers = $pEntiteRepository->findBy(array("active"=> true));
@@ -46,56 +52,39 @@ class GestionVenteController extends AbstractController
         $dossiers = $pEntiteRepository->findBy(['active' => true]);
         $allModules = $moduleRepository->findBy(['active' => true]);
 
-        // Mock data (can be replaced later)
-        $sales = [];
-        for ($i = 1; $i <= 90; $i++) {
-            $sales[] = [
-                'id' => $i,
-                'code' => 'CMD-' . str_pad($i, 4, '0', STR_PAD_LEFT),
-                'client' => 'Client ' . $i,
-                'quantity' => rand(1, 5),
-                'price' => rand(50, 150),
-                'status' => ['Payée', 'En attente', 'Annulée'][rand(0, 2)],
-            ];
-        }
+
+        $magasins = $magasinsRepository->findMagasinsByUserEntite($this->getUser(), $pEntiteRepository);
+        $defaultMagasin = $magasinsRepository->findDefaultMagasinForUser($this->getUser(), $pEntiteRepository);
+        
+        $demandes = $TMsDemandeRepository->findAll();
+        $products = $produitsRepository->findProductsWithTarificationAndSolde();
+        // dd($demandes);
 
         return $this->render('vente/GestionVente/index.html.twig', [
             'professions' => $professions,
             'dossiers' => $dossiers,
             'allModules' => $allModules,
             'actions' => $actions,
-            'sales' => $sales,
+            'magasins' => $magasins,
+            'defaultMagasin' => $defaultMagasin,
+            'demandes' => $demandes,
+            'produits' => $products,
         ]);
     }
 
- #[Route('/fetch-commandes', name: 'app_fetch_commandes', options: ['expose' => true], methods: 'GET')]
+    #[Route('/fetch-commandes', name: 'app_fetch_commandes', options: ['expose' => true], methods: 'GET')]
     public function fetchCommandes(Request $request, EntityManagerInterface $em): JsonResponse
     {
         $connection = $em->getConnection();
 
         $draw = $request->query->get('draw');
-        $start = $request->query->get('start') ?? 0;
-        $length = $request->query->get('length') ?? 10;
+        $start = (int) $request->query->get('start', 0);
+        $length = (int) $request->query->get('length', 10);
         $search = $request->query->all('search')['value'] ?? '';
-        $orderColumnIndex = $request->query->all('order')[0]['column'] ?? 0;
-        $orderDir = $request->query->all('order')[0]['dir'] ?? 'desc';
+        $orderColumnIndex = (int) $request->query->all('order')[0]['column'] ?? 0;
+        $orderDir = strtoupper($request->query->all('order')[0]['dir'] ?? 'DESC');
 
-        // Search filter
-        $where = '';
-        $params = [];
-
-        if (!empty($search)) {
-            $where = "WHERE (
-                d.code LIKE :search OR
-                d.ipp LIKE :search OR
-                d.nom_patient LIKE :search OR
-                demandeur.designation LIKE :search OR
-                recepteur.designation LIKE :search
-            )";
-            $params['search'] = '%' . $search . '%';
-        }
-
-        // Columns (for future ordering)
+        // Column mapping (raw SQL expressions)
         $columns = [
             'd.id',
             'd.code',
@@ -103,17 +92,39 @@ class GestionVenteController extends AbstractController
             'recepteur.designation',
             'd.ipp',
             'd.nom_patient',
-            'total_montant_ttc',
-            'niveau_urgence',
+            'SUM(lg.montant_ttc)',
+            "CASE WHEN d.urgent = 1 THEN 'Urgent' ELSE 'Normal' END",
             'd.created',
             'd.position_actuel',
         ];
+
         $orderColumn = $columns[$orderColumnIndex] ?? 'd.id';
 
-        // Final SQL
-       $sql = "
+        // Search setup
+        $where = '';
+        $params = [];
+        // CASE WHEN d.urgent = 1 THEN 'Urgent' ELSE 'Normal' END LIKE ? OR
+        if (!empty($search)) {
+            $where = "WHERE (
+                d.code LIKE ? OR
+                d.ipp LIKE ? OR
+                d.position_actuel LIKE ? OR
+                d.created LIKE ? OR
+                d.nom_patient LIKE ? OR
+                demandeur.designation LIKE ? OR
+                recepteur.designation LIKE ?
+            )";
+
+            // Positional parameters
+            for ($i = 0; $i <8; $i++) {
+                $params[] = '%' . $search . '%';
+            }
+        }
+
+        // Main query
+        $sql = "
             SELECT 
-                d.id AS demande_id,
+                d.id AS id,
                 d.code AS demande_code,
                 demandeur.designation AS demandeur,
                 recepteur.designation AS recepteur,
@@ -131,18 +142,18 @@ class GestionVenteController extends AbstractController
             LEFT JOIN pmagasins demandeur ON demandeur.id = d.demandeur_id
             LEFT JOIN pmagasins recepteur ON recepteur.id = d.recepteur_id
             $where
-            GROUP BY d.id, d.code, d.ipp, d.nom_patient, d.created, d.position_actuel, d.urgent, demandeur.designation, recepteur.designation
+            GROUP BY 
+                d.id, d.code, d.ipp, d.nom_patient, d.created, 
+                d.position_actuel, d.urgent, 
+                demandeur.designation, recepteur.designation
             ORDER BY $orderColumn $orderDir
             OFFSET $start ROWS FETCH NEXT $length ROWS ONLY
         ";
 
-
-        
         $stmt = $connection->prepare($sql);
-        
         $results = $stmt->executeQuery($params)->fetchAllAssociative();
-// dd($results);
-        // Count total
+
+        // Count query
         $countSql = "
             SELECT COUNT(DISTINCT d.id) as total
             FROM t_ms_Demande d
@@ -150,27 +161,32 @@ class GestionVenteController extends AbstractController
             LEFT JOIN pmagasins recepteur ON recepteur.id = d.recepteur_id
             $where
         ";
-
         $countStmt = $connection->prepare($countSql);
         $totalRecords = $countStmt->executeQuery($params)->fetchOne();
 
-        // Get actions (same as before)
-        $actions = $this->userOperation->getOperations($this->getUser(), 'app_vente_demande_vente', $request);
-        $filteredActions = array_filter($actions, fn($a) => !$a->isHorizontal());
-        $allActions = array_map(fn($a) => [
-            'idName' => $a->getIdName(),
-            'nom' => $a->getNom(),
-            'className' => $a->getClassName(),
-            'icon' => $a->getIcon(),
-        ], $filteredActions);
+        $actions = $this->userOperation->getOperations($this->getUser(), 'app_vente_gestion_vente', $request);
+        $filteredActions = array_filter($actions, function($action) {
+            return (!$action->isHorizontal());
+        });
+        $allActions = array_map(function($action) {
+            return [
+                'sousModuleId'=> $action->getPSousModule()->getId(),
+                'idOp'=> $action->getId(),
+                'idName' => $action->getIdName(),
+                'nom' => $action->getNom(),
+                'className' => $action->getClassName(),
+                'icon' => $action->getIcon(),
+            ];
+        }, $filteredActions);
 
         return new JsonResponse([
             'draw' => $draw,
             'recordsTotal' => $totalRecords,
             'recordsFiltered' => $totalRecords,
             'data' => $results,
-            'actions' => $allActions,
+            'actions' => $allActions
         ]);
     }
+
 
 }

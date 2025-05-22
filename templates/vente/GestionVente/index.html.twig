@@ -3,18 +3,26 @@
 {% block title %}Gestion des Ventes{% endblock %}
 
 {% block stylesheets %}
+
+  <style>
+  .force-right-align {
+    text-align: right !important;
+    padding-right: 12px !important;
+  }
+  </style>
+
   {{ parent() }}
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
 {% endblock %}
 
 {% block body %}
 <div class="main">
-  <div class="container py-4">
+  <div class="container py-3">
     <div class="row">
       <div class="col-md-12 mt-3">
         <div class="row no-gutters mb-2">
           <div class="col-md-6 d-flex justify-content-start align-items-center">
-            <h5>LISTE DES COMMANDES :</h5>
+            <h5>LISTE DES DEMANDES :</h5>
           </div>
         </div>
 
@@ -29,9 +37,9 @@
               <th>NOM PATIENT</th>
               <th>TOTAL (MAD)</th>
               <th>URGENCE</th>
-              <th>DATE</th>
+              <th>DATE </th>
               <th>POSITION</th>
-              <th>ACTIONS</th>
+              <th>ACT</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -39,6 +47,12 @@
       </div>
     </div>
   </div>
+
+
+
+      {% include 'vente/GestionVente/inc/edit_demande_modal.html.twig' %}
+      {% include 'vente/GestionVente/inc/detail_demande_modal.html.twig' %}
+
 </div>
 {% endblock %}
 

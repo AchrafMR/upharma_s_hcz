@@ -1,0 +1,121 @@
+<!-- Modals loop -->
+{% for demande in demandes %}
+<div
+  class="modal right fade"
+  id="detailsDemande{{ demande.id }}"
+  role="dialog"
+  aria-labelledby="detailsDemande"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" style="width: 60%" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Détails de la commande</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="form-group col-md-6">
+            <label>Demandeur</label>
+            <select class="form-control" disabled>
+              <option value="">-- Sélectionner un magasin Demandeur --</option>
+              {% for magasin in magasins %}
+                <option value="{{ magasin.id }}"
+                  {% if demande.demandeurId.id == magasin.id %}selected{% endif %}>
+                  {{ magasin.designation }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group col-md-6">
+            <label>Récepteur</label>
+            <select class="form-control" disabled>
+              <option value="">-- Sélectionner un magasin Récepteur --</option>
+              {% for magasin in magasins %}
+                <option value="{{ magasin.id }}"
+                  {% if demande.recepteurId.id == magasin.id %}selected{% endif %}>
+                  {{ magasin.designation }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="row align-items-end">
+          <div class="form-group col-md-6">
+            <label>Description</label>
+            <input type="text" class="form-control" value="{{ demande.description }}" disabled>
+          </div>
+
+          <div class="form-group col-md-6 d-flex align-items-end">
+            <div class="form-check mb-2 ms-3">
+              <input type="checkbox" class="form-check-input" {% if demande.urgent %}checked{% endif %} disabled>
+              <label class="form-check-label">Urgent</label>
+            </div>
+          </div>
+        </div>        
+        <div class="row align-items-end">
+          <div class="form-group col-md-6">
+            <label>IPP (ID Patient)</label>
+          <input type="text" class="form-control" value="{{ demande.ipp }}" disabled>
+          </div>
+
+          <div class="form-group col-md-6 d-flex align-items-end">
+            <div class="form-check mb-2 ms-3">
+              <label>Date demande</label>
+            <input type="text" class="form-control" value="{{ demande.created|date('d/m/Y') }}" disabled>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label>Nom du Patient</label>
+            <input type="text" class="form-control" value="{{ demande.nomPatient }}" disabled>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Dossier Patient</label>
+            <input type="text" class="form-control" value="{{ demande.dossierPatient }}" disabled>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <h5>Produits dans la Demande</h5>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Prix</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for ligne in demande.tMsDemandelgs %}
+                <tr>
+                  <td>{{ loop.index }}</td>
+                  <td>{{ ligne.pProduit.titre ?? '—' }}</td>
+                  <td>{{ ligne.quantite }}</td>
+                  <td>{{ ligne.montantTtc }}</td>
+                </tr>
+              {% else %}
+                <tr><td colspan="4">Aucune ligne de demande trouvée</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Fermer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}

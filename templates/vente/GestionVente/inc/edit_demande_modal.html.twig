@@ -1,0 +1,173 @@
+<!-- Modals loop -->
+<style>
+.d-none {
+  display: none !important;
+}
+</style>
+
+{% for demande in demandes %}
+<div
+  class="modal right fade"
+  id="editDemande{{ demande.id }}"
+  role="dialog"
+  aria-labelledby="editCommande"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" style="width: 60%" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">MODIFIER LA DEMANDE</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    <form class="edit-demande-form" data-id="{{ demande.id }}"></form>
+      <div class="modal-body">
+        <!-- Inputs: Demandeur, Recepteur -->
+        <div class="row">
+          <div class="form-group col-md-6">
+            <label>Demandeur</label>
+            <select class="form-control" name="demandeur_id">
+              {% for magasin in magasins %}
+                <option value="{{ magasin.id }}" {% if demande.demandeurId.id == magasin.id %}selected{% endif %}>
+                  {{ magasin.designation }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Récepteur</label>
+            <select class="form-control" name="recepteur_id">
+              {% for magasin in magasins %}
+                <option value="{{ magasin.id }}" {% if demande.recepteurId.id == magasin.id %}selected{% endif %}>
+                  {{ magasin.designation }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <!-- Inputs: Description, Urgent, IPP -->
+        <div class="row">
+          <div class="form-group col-md-6">
+            <label>Description</label>
+            <input type="text" name="description" class="form-control" value="{{ demande.description }}">
+          </div>
+          <div class="form-group col-md-6 d-flex align-items-end">
+            <div class="form-check mb-2 ms-3">
+              <input type="checkbox" name="urgent" class="form-check-input" {% if demande.urgent %}checked{% endif %}>
+              <label class="form-check-label">Urgent</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>IPP</label>
+          <input type="text" name="ipp" class="form-control" value="{{ demande.ipp }}">
+        </div>
+
+        <!-- Patient Fields -->
+        <div class="row">
+          <div class="form-group col-md-6">
+            <label>Nom du Patient</label>
+            <input type="text" name="nom_patient" class="form-control" value="{{ demande.nomPatient }}">
+          </div>
+          <div class="form-group col-md-6">
+            <label>Dossier Patient</label>
+            <input type="text" name="dossier_patient" class="form-control" value="{{ demande.dossierPatient }}">
+          </div>
+        </div>
+
+
+      <!-- Produits Table -->
+<div class="mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h5 class="mb-0">Produits</h5>
+    <button type="button" class="btn btn-sm btn-primary">
+      <i class="fa fa-plus"></i>
+    </button>
+  </div>
+
+  <table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Produit</th>
+      <th>Quantité</th>
+      <th>Prix</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+<tbody>
+  {% for ligne in demande.tMsDemandelgs %}
+    <tr data-id="{{ ligne.pProduit.id }}">
+      <td>{{ loop.index }}</td>
+      <td>
+        <select class="form-control form-control-sm product-select" disabled>
+          {% for produit in produits %}
+            <option value="{{ produit.id }}" data-prix=""
+              {% if produit.id == ligne.pProduit.id %}selected{% endif %}>
+              {{ produit.name }}
+            </option>
+          {% endfor %}
+        </select>
+      </td>
+
+      <td>
+        <input type="number"
+               class="form-control form-control-sm quantity-input"
+               value="{{ ligne.quantite }}"
+               min="1"
+               disabled>
+      </td>
+
+      <td>
+        <input type="number"
+               class="form-control form-control-sm"
+               value="{{ ligne.prixUnitaire }}"
+               readonly>
+      </td>
+      <td class="text-center">
+       <button type="button" class="btn btn-sm btn-edit-line"
+                id="edit-{{ ligne.pProduit.id }}" title="Modifier">
+          <i class="fa fa-edit text-primary"></i>
+        </button>
+        <button type="button" class="btn btn-sm btn-delete-line" title="Supprimer">
+          <i class="fa fa-trash text-danger"></i>
+        </button>
+        <button type="button" class="btn btn-sm btn-save-line d-none" title="Enregistrer">
+          <i class="fa fa-save text-success"></i>
+        </button>
+      </td>
+    </tr>
+  {% else %}
+    <tr>
+      <td colspan="5" class="text-center text-muted">Aucun produit dans cette demande</td>
+    </tr>
+  {% endfor %}
+  <script>
+    window.PRODUITS = {{ produits|json_encode(constant('JSON_UNESCAPED_UNICODE'))|raw }};
+  </script>
+</tbody>
+
+
+</table>
+
+</div>
+
+      </div>
+        <!-- Submit Button -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary btn-save-edit" data-id="{{ demande.id }}">
+            <i class="fa fa-save"></i> Sauvegarder
+          </button>
+        </div>
+
+
+     
+</form>
+
+    </div>
+  </div>
+</div>
+{% endfor %}

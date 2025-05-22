@@ -97,8 +97,11 @@ class TMsDemande
     #[ORM\JoinColumn(name: 'p_partenaires_id', referencedColumnName: 'id', nullable: true)]
     private ?PPartenaires $p_partenaires_id = null;
 
-    #[ORM\OneToMany(mappedBy: 'tmsDemande', targetEntity: TMsDemandelg::class)]
+    #[ORM\OneToMany(mappedBy: 'tMsDemande', targetEntity: TMsDemandelg::class)]
     private Collection $tMsDemandelgs;
+    
+    #[ORM\ManyToOne(inversedBy: 'tMsDemandes')]
+    private ?PEntite $pEntite = null;
 
     public function __construct()
     {
@@ -433,6 +436,18 @@ class TMsDemande
                 $tMsDemandelg->setTmsDemande(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPEntite(): ?PEntite
+    {
+        return $this->pEntite;
+    }
+
+    public function setPEntite(?PEntite $pEntite): static
+    {
+        $this->pEntite = $pEntite;
 
         return $this;
     }

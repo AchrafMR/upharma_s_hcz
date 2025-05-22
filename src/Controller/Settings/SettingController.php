@@ -436,6 +436,7 @@ public function addAction(Request $request , ManagerRegistry $doctrine , PModule
         $action->setClassName($request->get("className"));
         $action->setIdName($request->get("idName"));
         $action->setRoute($request->get("routeName"));
+        $action->setModal(0);
 
         if($request->get("horizontal") == "true"){
             $action->setHorizontal(true);
