@@ -6,8 +6,8 @@ $(document).ready(function () {
         '<i style="color:#508884; margin-top:100px !important; font-size:25px !important;" class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only"></span> ',
     },
     lengthMenu: [
-      [20, 50, 100, 200],
-      [20, 50, 100, 200],
+      [16, 50, 100, 200],
+      [16, 50, 100, 200],
     ],
     processing: true,
     serverSide: true,
@@ -62,7 +62,6 @@ $(document).ready(function () {
           td.classList.add("force-right-align");
         },
       },
-
       { name: "niveau_urgence", data: "niveau_urgence" },
       {
         name: "d.created",
@@ -88,6 +87,7 @@ $(document).ready(function () {
             '">';
 
           window.globalActions.forEach(function (action) {
+            // if (action.ord === 1 && row.position_actuel?.toLowerCase() !== "Créer") return;
             actionsHtml += `
                 <button class="${action.className} dropdown-item"
                         id="${data.id}"
@@ -135,9 +135,11 @@ $(document).on("click", ".details-demande", function () {
   $(modalSelector).modal("show");
 });
 
+
+//edit demande
 window.addEventListener('load', () => {
   const produits = window.PRODUITS || [];
-  window.deletedProduits = []; // 🔥 Global deleted array
+  window.deletedProduits = [];
   window.getDeletedProduits = () => window.deletedProduits;
 
   // All click events inside the document
@@ -261,7 +263,7 @@ window.addEventListener('load', () => {
       const demandeurId = modal.querySelector('[name="demandeur_id"]')?.value;
       const recepteurId = modal.querySelector('[name="recepteur_id"]')?.value;
       const nomPatient = modal.querySelector('[name="nom_patient"]')?.value;
-      const dossierPatient = modal.querySelector('[name="dossier_patient"]')?.value;
+      const dossierPatient = modal.querySelector('[name="dossier_patient"]')?.value; 
       const ipp = modal.querySelector('[name="ipp"]')?.value;
       const urgent = modal.querySelector('[name="urgent"]')?.checked;
 
@@ -333,4 +335,91 @@ window.addEventListener('load', () => {
     }
   });
 });
+
+// Update position of demande
+document.addEventListener("DOMContentLoaded", () => {
+  const updatePosition = async (id, position) => {
+    try {
+      const response = await fetch('/vente/update-position', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({ id, position })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        let actionMessage = '';
+        switch (position) {
+          case 'valider':
+            actionMessage = ' La demande a été validée avec succès.';
+            break;
+          case 'Créer':
+            actionMessage = ' La demande a été dévalidée avec succès.';
+            break;
+          case 'Générer':
+            actionMessage = ' La demande a été générée avec succès.';
+            break;
+          default:
+            actionMessage = ' Mise à jour effectuée.';
+        }
+        toastr.success(actionMessage);
+        updateFooterButtons(id, position); 
+      } else {
+        toastr.error("Erreur lors de la mise à jour.");
+      }
+    } catch (error) {
+      toastr.error("Erreur réseau.");
+      console.error(error);
+    }
+  };
+
+  const updateFooterButtons = (id, newPosition) => {
+    const modal = document.getElementById(`detailsDemande${id}`);
+    const footer = modal.querySelector('.modal-footer');
+
+    if (!footer) return;
+
+    let buttonsHTML = '';
+
+    if (newPosition === 'valider') {
+      buttonsHTML = `
+        <button type="button" class="btn btn-warning btn-devalider" data-id="${id}">
+          Dévalider
+        </button>
+        <button type="button" class="btn btn-primary btn-generer" data-id="${id}">
+          Générer
+        </button>
+      `;
+    } else if (newPosition === 'Créer') {
+      buttonsHTML = `
+        <button type="button" class="btn btn-success btn-valider" data-id="${id}">
+          Valider
+        </button>
+      `;
+    } else if (newPosition === 'Générer') {
+      buttonsHTML = `
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Fermer
+        </button>
+      `;
+    }
+
+    footer.innerHTML = buttonsHTML;
+  };
+
+  document.body.addEventListener("click", (e) => {
+    const btn = e.target;
+    if (btn.classList.contains("btn-valider")) {
+      updatePosition(btn.dataset.id, 'valider');
+    } else if (btn.classList.contains("btn-devalider")) {
+      updatePosition(btn.dataset.id, 'Créer');
+    } else if (btn.classList.contains("btn-generer")) {
+      updatePosition(btn.dataset.id, 'Générer');
+    }
+  });
+});
+
 

@@ -149,6 +149,8 @@ class DemandeVenteController extends AbstractController
             $demandelg->setMontantTtc($montantTtc);
             $demandelg->setObservation(null);
             $demandelg->setCodeComptable(null);
+            $demandelg->setActif(true);
+
             // $demandelg->setFlagSynchronisationLocale(null);
 
             $this->em->persist($demandelg);
@@ -170,7 +172,7 @@ class DemandeVenteController extends AbstractController
         if (!$data || empty($data['demande_id'])) {
             return $this->json(['status' => 'error', 'message' => 'Données manquantes.'], 400);
         }
-
+        // dd($data);
         $demande = $this->em->getRepository(TMsDemande::class)->find($data['demande_id']);
         if (!$demande) {
             return $this->json(['status' => 'error', 'message' => 'Demande introuvable.'], 404);
@@ -259,7 +261,44 @@ class DemandeVenteController extends AbstractController
             'message' => 'Demande mise à jour avec succès.'
         ]);
     }
+    #[Route('/update-position', name: 'update_position', methods: ['POST'])]
+    public function updatePosition(Request $request,EntityManagerInterface $em,TMsDemandeRepository $repo,Security $security): JsonResponse 
+    {
+        $data = json_decode($request->getContent(), true);
+        $id = $data['id'] ?? null;
+        $position = $data['position'] ?? null;
 
+        if (!$id || !$position) {
+            return new JsonResponse(['success' => false, 'message' => 'Données invalides'], 400);
+        }
+
+        $demande = $repo->find($id);
+        if (!$demande) {
+            return new JsonResponse(['success' => false, 'message' => 'Demande introuvable'], 404);
+        }
+
+        $user = $security->getUser();
+        if (!$user) {
+            return new JsonResponse(['success' => false, 'message' => 'Utilisateur non authentifié'], 403);
+        }
+
+        $demande->setPositionActuel($position);
+        switch ($position) {
+            case 'valider':
+                $demande->setUserValider($user);
+                break;
+            case 'Générer':
+                $demande->setUserGenerer($user);
+                break;
+            case 'Créer': // Dévalider
+                $demande->setUserAnnuler($user);
+                break;
+        }
+
+        $em->flush();
+
+        return new JsonResponse(['success' => true]);
+    }
 
 
 }

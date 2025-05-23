@@ -56,7 +56,7 @@ class GestionVenteController extends AbstractController
         $magasins = $magasinsRepository->findMagasinsByUserEntite($this->getUser(), $pEntiteRepository);
         $defaultMagasin = $magasinsRepository->findDefaultMagasinForUser($this->getUser(), $pEntiteRepository);
         
-        $demandes = $TMsDemandeRepository->findAll();
+        $demandes = $TMsDemandeRepository->findAllActifWithActiveLg();
         $products = $produitsRepository->findProductsWithTarificationAndSolde();
         // dd($demandes);
 
@@ -76,7 +76,6 @@ class GestionVenteController extends AbstractController
     public function fetchCommandes(Request $request, EntityManagerInterface $em): JsonResponse
     {
         $connection = $em->getConnection();
-
         $draw = $request->query->get('draw');
         $start = (int) $request->query->get('start', 0);
         $length = (int) $request->query->get('length', 10);
@@ -141,6 +140,7 @@ class GestionVenteController extends AbstractController
             LEFT JOIN t_ms_demandelg lg ON lg.t_ms_demande_id = d.id AND lg.actif = 1
             LEFT JOIN pmagasins demandeur ON demandeur.id = d.demandeur_id
             LEFT JOIN pmagasins recepteur ON recepteur.id = d.recepteur_id
+            WHERE d.actif = 1
             $where
             GROUP BY 
                 d.id, d.code, d.ipp, d.nom_patient, d.created, 

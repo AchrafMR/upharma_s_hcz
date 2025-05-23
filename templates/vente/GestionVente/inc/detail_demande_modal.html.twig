@@ -58,17 +58,15 @@
             </div>
           </div>
         </div>        
-        <div class="row align-items-end">
+        <div class="form-row">
           <div class="form-group col-md-6">
             <label>IPP (ID Patient)</label>
-          <input type="text" class="form-control" value="{{ demande.ipp }}" disabled>
+            <input type="text" class="form-control" value="{{ demande.ipp }}" disabled>
           </div>
 
-          <div class="form-group col-md-6 d-flex align-items-end">
-            <div class="form-check mb-2 ms-3">
+          <div class="form-group col-md-6">
               <label>Date demande</label>
-            <input type="text" class="form-control" value="{{ demande.created|date('d/m/Y') }}" disabled>
-            </div>
+              <input type="text" class="form-control" value="{{ demande.created|date('d/m/Y') }}" disabled>
           </div>
         </div>
 
@@ -111,10 +109,24 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-          Fermer
-        </button>
+          {% if demande.positionActuel == 'Créer' %}
+            <button type="button" class="btn btn-success btn-valider" data-id="{{ demande.id }}">
+              Valider
+            </button>
+          {% elseif demande.positionActuel == 'valider' %}
+            <button type="button" class="btn btn-warning btn-devalider" data-id="{{ demande.id }}">
+              Dévalider
+            </button>
+            <button type="button" class="btn btn-primary btn-generer" data-id="{{ demande.id }}">
+              Générer
+            </button>
+          {% else %}
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              Fermer
+            </button>
+          {% endif %}
       </div>
+
     </div>
   </div>
 </div>
