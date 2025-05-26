@@ -104,18 +104,18 @@ class GestionVenteController extends AbstractController
         $params = [];
         // CASE WHEN d.urgent = 1 THEN 'Urgent' ELSE 'Normal' END LIKE ? OR
         if (!empty($search)) {
-            $where = "WHERE (
-                d.code LIKE ? OR
-                d.ipp LIKE ? OR
-                d.position_actuel LIKE ? OR
-                d.created LIKE ? OR
-                d.nom_patient LIKE ? OR
-                demandeur.designation LIKE ? OR
-                recepteur.designation LIKE ?
-            )";
+            $where = " AND (
+            d.code LIKE ? OR
+            d.ipp LIKE ? OR
+            d.position_actuel LIKE ? OR
+            d.created LIKE ? OR
+            d.nom_patient LIKE ? OR
+            demandeur.designation LIKE ? OR
+            recepteur.designation LIKE ?
+          )";
 
             // Positional parameters
-            for ($i = 0; $i <8; $i++) {
+            for ($i = 0; $i <7; $i++) {
                 $params[] = '%' . $search . '%';
             }
         }

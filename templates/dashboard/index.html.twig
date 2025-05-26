@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %} {% block title %}{{ controller_name }}{% endblock
+{% extends 'base.html.twig' %} {% block title %}{% endblock
 %} {% block stylesheets %}
 <style>
   .dot {
@@ -13,9 +13,13 @@
 <div class="container py-4">
   <!-- Top Metrics -->
   <div class="row row-cols-1 row-cols-md-5 g-3 justify-content-between">
-    {% include 'dashboard/inc/_metric-card.html.twig' with { allOrders: 1150,
-    validatedOrders: 1456, ongoingOrders: 3345, processedOrders: 780,
-    returnedOrders: 35 } %}
+    {% include 'dashboard/inc/_metric-card.html.twig' with {
+      allOrders: allOrders,
+      validatedOrders: validatedOrders,
+      processedOrders: processedOrders,
+      ongoingOrders: ongoingOrders,
+      returnedOrders: returnedOrders
+    } %}
   </div>
 
   <div class="row g-4 mt-4 align-items-stretch">
