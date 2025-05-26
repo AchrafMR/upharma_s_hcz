@@ -6,8 +6,8 @@ $(document).ready(function () {
         '<i style="color:#508884; margin-top:100px !important; font-size:25px !important;" class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only"></span> ',
     },
     lengthMenu: [
-      [20, 50, 100, 200],
-      [20, 50, 100, 200],
+      [16, 50, 100, 200],
+      [16, 50, 100, 200],
     ],
     processing: true,
     serverSide: true,
@@ -62,7 +62,6 @@ $(document).ready(function () {
           td.classList.add("force-right-align");
         },
       },
-
       { name: "niveau_urgence", data: "niveau_urgence" },
       {
         name: "d.created",
@@ -88,6 +87,7 @@ $(document).ready(function () {
             '">';
 
           window.globalActions.forEach(function (action) {
+            // if (action.ord === 1 && row.position_actuel?.toLowerCase() !== "Créer") return;
             actionsHtml += `
                 <button class="${action.className} dropdown-item"
                         id="${data.id}"
@@ -135,51 +135,291 @@ $(document).on("click", ".details-demande", function () {
   $(modalSelector).modal("show");
 });
 
+
+//edit demande
 window.addEventListener('load', () => {
   const produits = window.PRODUITS || [];
+  window.deletedProduits = [];
+  window.getDeletedProduits = () => window.deletedProduits;
 
-  document.body.addEventListener('click', function (e) {
-    const target = e.target;
+  // All click events inside the document
+  document.body.addEventListener('click', async (e) => {
+    const target = e.target.closest('button, .fa-plus');
+    if (!target) return;
+
     const row = target.closest('tr');
-    if (!row) return;
+    const modal = target.closest('.modal');
 
-    // Edit
-    if (target.closest('.btn-edit-line')) {
+    // Edit product
+    if (target.classList.contains('btn-edit-line')) {
       row.querySelector('.product-select').disabled = false;
       row.querySelector('.quantity-input').disabled = false;
-
-      row.querySelector('.btn-edit-line').classList.add('d-none');
-      row.querySelector('.btn-delete-line').classList.add('d-none');
-      row.querySelector('.btn-save-line').classList.remove('d-none');
+      row.querySelector('.btn-edit-line')?.classList.add('d-none');
+      row.querySelector('.btn-delete-line')?.classList.add('d-none');
+      row.querySelector('.btn-save-line')?.classList.remove('d-none');
     }
 
-    // Save
-    if (target.closest('.btn-save-line')) {
+    // Save edited product
+    if (target.classList.contains('btn-save-line')) {
       row.querySelector('.product-select').disabled = true;
       row.querySelector('.quantity-input').disabled = true;
-
-      row.querySelector('.btn-edit-line').classList.remove('d-none');
-      row.querySelector('.btn-delete-line').classList.remove('d-none');
-      row.querySelector('.btn-save-line').classList.add('d-none');
+      row.querySelector('.btn-edit-line')?.classList.remove('d-none');
+      row.querySelector('.btn-delete-line')?.classList.remove('d-none');
+      row.querySelector('.btn-save-line')?.classList.add('d-none');
+      toastr.success('Produit modifié avec succès.');
     }
-  });
 
-  // 🔁 When product changes, update price
-  document.body.addEventListener('change', function (e) {
-    if (e.target.classList.contains('product-select')) {
-      const row = e.target.closest('tr');
-      const selectedId = parseInt(e.target.value);
+    // Delete product
+    if (target.classList.contains('btn-delete-line')) {
+      Swal.fire({
+        title: 'Confirmer la suppression',
+        text: 'Voulez-vous vraiment supprimer ce produit ?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Oui, supprimer',
+        cancelButtonText: 'Annuler'
+      }).then(result => {
+        if (result.isConfirmed) {
+          const demandeId = modal.dataset.id;
+          const produitId = row.dataset.id;
+          const demandelgId = row.dataset.demandelgId;
 
-      const product = produits.find(p => p.id === selectedId);
-      if (product && row) {
-        const priceInput = row.querySelector('input[type="number"][readonly]');
-        if (priceInput) {
-          priceInput.value = product.price;
+          if (demandelgId) {
+            window.deletedProduits.push({
+              demande_id: parseInt(demandeId),
+              produit_id: parseInt(produitId),
+              demandelg_id: parseInt(demandelgId)
+            });
+          }
+
+          row.remove();
+          toastr.success('Produit supprimé avec succès.');
         }
+      });
+    }
+
+    // Add new product row
+    if (target.classList.contains('fa-plus')) {
+      const tableBody = modal.querySelector('tbody');
+      const newRow = document.createElement('tr');
+
+      newRow.innerHTML = `
+        <td>-</td>
+        <td>
+          <select class="form-control form-control-sm product-select">
+            ${produits.map(p => `<option value="${p.id}" data-prix="${p.price}">${p.name}</option>`).join('')}
+          </select>
+        </td>
+        <td>
+          <input type="number" class="form-control form-control-sm quantity-input" min="1" value="1">
+        </td>
+        <td class="text-center">
+          <button type="button" class="btn btn-sm btn-save-new-line" title="Enregistrer">
+            <i class="fa fa-save text-success"></i>
+          </button>
+        </td>
+      `;
+
+      tableBody.appendChild(newRow);
+    }
+
+    // Save newly added product
+    if (target.classList.contains('btn-save-new-line')) {
+      const productSelect = row.querySelector('.product-select');
+      const quantityInput = row.querySelector('.quantity-input');
+
+      const selectedId = productSelect.value;
+      const productName = productSelect.options[productSelect.selectedIndex].text;
+
+      productSelect.disabled = true;
+      quantityInput.disabled = true;
+
+      row.querySelector('td:last-child').innerHTML = `
+        <button type="button" class="btn btn-sm btn-edit-line" title="Modifier">
+          <i class="fa fa-edit text-primary"></i>
+        </button>
+        <button type="button" class="btn btn-sm btn-delete-line" title="Supprimer">
+          <i class="fa fa-trash text-danger"></i>
+        </button>
+        <button type="button" class="btn btn-sm btn-save-line d-none" title="Enregistrer">
+          <i class="fa fa-save text-success"></i>
+        </button>
+      `;
+
+      toastr.success('Nouveau produit ajouté avec succès.');
+    }
+
+    // Handle save full demande (enregistrer button)
+    if (target.classList.contains('btn-save-edit')) {
+      const demandeId = modal.dataset.id;
+      const tableBody = modal.querySelector('tbody');
+
+      if (!tableBody) {
+        toastr.error('Erreur interne : tableau introuvable.');
+        return;
+      }
+
+      const description = modal.querySelector('[name="description"]')?.value;
+      const demandeurId = modal.querySelector('[name="demandeur_id"]')?.value;
+      const recepteurId = modal.querySelector('[name="recepteur_id"]')?.value;
+      const nomPatient = modal.querySelector('[name="nom_patient"]')?.value;
+      const dossierPatient = modal.querySelector('[name="dossier_patient"]')?.value; 
+      const ipp = modal.querySelector('[name="ipp"]')?.value;
+      const urgent = modal.querySelector('[name="urgent"]')?.checked;
+
+      const editedProduits = [];
+      const newProduits = [];
+
+      tableBody.querySelectorAll('tr').forEach(row => {
+        const selectElement = row.querySelector('.product-select');
+        const produitId = selectElement?.value;
+        const quantite = row.querySelector('.quantity-input')?.value;
+        const price = parseFloat(selectElement?.selectedOptions[0]?.getAttribute('data-prix')) || 0;
+        const demandelgId = row.dataset.demandelgId || null;
+
+        if (!produitId || !quantite) return;
+
+        const data = {
+          produit_id: parseInt(produitId),
+          quantite: parseFloat(quantite),
+          price: price
+        };
+
+        if (demandelgId) {
+          data.demandelg_id = parseInt(demandelgId);
+          editedProduits.push(data);
+        } else {
+          newProduits.push(data);
+        }
+      });
+
+      const deleted = window.getDeletedProduits().filter(d => d.demande_id == demandeId);
+
+      try {
+        const response = await fetch('/vente/edit-demande', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: JSON.stringify({
+            demande_id: parseInt(demandeId),
+            description,
+            demandeur_id: parseInt(demandeurId),
+            recepteur_id: parseInt(recepteurId),
+            nom_patient: nomPatient,
+            dossier_patient: dossierPatient,
+            ipp,
+            urgent,
+            edited: editedProduits,
+            added: newProduits,
+            deleted
+          })
+        });
+
+        const result = await response.json();
+        if (result.status === 'success') {
+          toastr.success('Demande sauvegardée avec succès !');
+            // close the modal
+             $(modal).modal('hide');
+
+          // Reset the deleted products array
+          window.deletedProduits = [];
+        } else {
+          toastr.error(result.message || 'Erreur lors de la sauvegarde.');
+        }
+      } catch (err) {
+        console.error('Network error:', err);
+        toastr.error('Erreur réseau lors de la sauvegarde.');
       }
     }
   });
 });
 
+// Update position of demande
+document.addEventListener("DOMContentLoaded", () => {
+  const updatePosition = async (id, position) => {
+    try {
+      const response = await fetch('/vente/update-position', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({ id, position })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        let actionMessage = '';
+        switch (position) {
+          case 'valider':
+            actionMessage = ' La demande a été validée avec succès.';
+            break;
+          case 'Créer':
+            actionMessage = ' La demande a été dévalidée avec succès.';
+            break;
+          case 'Générer':
+            actionMessage = ' La demande a été générée avec succès.';
+            break;
+          default:
+            actionMessage = ' Mise à jour effectuée.';
+        }
+        toastr.success(actionMessage);
+        updateFooterButtons(id, position); 
+      } else {
+        toastr.error("Erreur lors de la mise à jour.");
+      }
+    } catch (error) {
+      toastr.error("Erreur réseau.");
+      console.error(error);
+    }
+  };
+
+  const updateFooterButtons = (id, newPosition) => {
+    const modal = document.getElementById(`detailsDemande${id}`);
+    const footer = modal.querySelector('.modal-footer');
+
+    if (!footer) return;
+
+    let buttonsHTML = '';
+
+    if (newPosition === 'valider') {
+      buttonsHTML = `
+        <button type="button" class="btn btn-warning btn-devalider" data-id="${id}">
+          Dévalider
+        </button>
+        <button type="button" class="btn btn-primary btn-generer" data-id="${id}">
+          Générer
+        </button>
+      `;
+    } else if (newPosition === 'Créer') {
+      buttonsHTML = `
+        <button type="button" class="btn btn-success btn-valider" data-id="${id}">
+          Valider
+        </button>
+      `;
+    } else if (newPosition === 'Générer') {
+      buttonsHTML = `
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Fermer
+        </button>
+      `;
+    }
+
+    footer.innerHTML = buttonsHTML;
+  };
+
+  document.body.addEventListener("click", (e) => {
+    const btn = e.target;
+    if (btn.classList.contains("btn-valider")) {
+      updatePosition(btn.dataset.id, 'valider');
+    } else if (btn.classList.contains("btn-devalider")) {
+      updatePosition(btn.dataset.id, 'Créer');
+    } else if (btn.classList.contains("btn-generer")) {
+      updatePosition(btn.dataset.id, 'Générer');
+    }
+  });
+});
 
 

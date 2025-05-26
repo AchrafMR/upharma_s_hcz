@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Mpdf\Tag\Tr;
 
 #[ORM\Entity(repositoryClass: TMsDemandeRepository::class)]
 #[ORM\Table(name: 't_ms_Demande')]
@@ -90,7 +91,7 @@ class TMsDemande
     private ?PMagasins $demandeur_id = null;
 
     #[ORM\ManyToOne(targetEntity: PMagasins::class)]
-    #[ORM\JoinColumn(name: 'recepteur_id', referencedColumnName: 'id', nullable: false)]
+    #[ORM\JoinColumn(name: 'recepteur_id', referencedColumnName: 'id', nullable: True)]
     private ?PMagasins $recepteur_id = null;
 
     #[ORM\ManyToOne(targetEntity: PPartenaires::class)]

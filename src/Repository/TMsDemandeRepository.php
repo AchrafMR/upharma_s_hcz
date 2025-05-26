@@ -24,6 +24,21 @@ class TMsDemandeRepository extends ServiceEntityRepository
 //    /**
 //     * @return TMsDemande[] Returns an array of TMsDemande objects
 //     */
+
+        public function findAllActifWithActiveLg(): array
+        {
+            return $this->createQueryBuilder('d')
+                ->where('d.actif = 1') 
+                ->leftJoin('d.tMsDemandelgs', 'lg', 'WITH', 'lg.actif = 1') 
+                ->addSelect('lg')
+                ->leftJoin('d.demandeur_id', 'demandeur')
+                ->addSelect('demandeur')
+                ->leftJoin('d.recepteur_id', 'recepteur')
+                ->addSelect('recepteur')
+                ->orderBy('d.created', 'DESC')
+                ->getQuery()
+                ->getResult();
+        }
 //    public function findByExampleField($value): array
 //    {
 //        return $this->createQueryBuilder('t')

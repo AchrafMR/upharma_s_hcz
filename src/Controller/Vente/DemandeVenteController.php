@@ -149,6 +149,8 @@ class DemandeVenteController extends AbstractController
             $demandelg->setMontantTtc($montantTtc);
             $demandelg->setObservation(null);
             $demandelg->setCodeComptable(null);
+            $demandelg->setActif(true);
+
             // $demandelg->setFlagSynchronisationLocale(null);
 
             $this->em->persist($demandelg);
@@ -162,6 +164,140 @@ class DemandeVenteController extends AbstractController
             'message' => 'Demande enregistrée avec succès.',
             'demande_id' => $demande->getId(),
         ]);
+    }
+    #[Route('/edit-demande', name: 'vente_edit_demande', methods: ['POST'])]
+    public function editDemande(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        if (!$data || empty($data['demande_id'])) {
+            return $this->json(['status' => 'error', 'message' => 'Données manquantes.'], 400);
+        }
+        // dd($data);
+        $demande = $this->em->getRepository(TMsDemande::class)->find($data['demande_id']);
+        if (!$demande) {
+            return $this->json(['status' => 'error', 'message' => 'Demande introuvable.'], 404);
+        }
+
+        // Update general info
+        $demande->setDescription($data['description'] ?? null);
+        $demande->setNomPatient($data['nom_patient'] ?? null);
+        $demande->setDossierPatient($data['dossier_patient'] ?? null);
+        $demande->setIpp((int)($data['ipp'] ?? 0));
+        $demande->setUrgent(!empty($data['urgent']));
+
+        $demandeur = $this->em->getRepository(PMagasins::class)->find($data['demandeur_id'] ?? null);
+        $recepteur = $this->em->getRepository(PMagasins::class)->find($data['recepteur_id'] ?? null);
+        $demande->setDemandeurId($demandeur);
+        $demande->setRecepteurId($recepteur);
+        $user = $this->getUser();
+        $demande->setUserUpdated($user);
+
+
+        // EDITED lignes
+        foreach ($data['edited'] ?? [] as $row) {
+            $ligne = $this->em->getRepository(TMsDemandelg::class)->find($row['demandelg_id']);
+            $produit = $this->em->getRepository(PProduits::class)->find($row['produit_id']);
+
+            if (!$ligne || !$produit) continue;
+
+            $unite = $produit->getPPrUnite();
+            $quantite = (float) $row['quantite'];
+            $remise = (float) ($row['remise'] ?? 0);
+            $tva = (float) ($row['tva'] ?? 0);
+            $prixUnitaire = $produit->getPPrTarifications()->first()?->getPrixVentePpv() ?? 0;
+            $montantHt = ($prixUnitaire * $quantite) - $remise;
+            $montantTtc = $montantHt + ($montantHt * $tva / 100);
+
+            $ligne->setPProduit($produit);
+            $ligne->setPPrUnite($unite);
+            $ligne->setQuantite($quantite);
+            $ligne->setPrixUnitaire($prixUnitaire);
+            $ligne->setRemise($remise);
+            $ligne->setTva($tva);
+            $ligne->setMontantHt($montantHt);
+            $ligne->setMontantTtc($montantTtc);
+        }
+
+        //  NEW lignes
+        foreach ($data['added'] ?? [] as $row) {
+            $produit = $this->em->getRepository(PProduits::class)->find($row['produit_id']);
+            if (!$produit) continue;
+
+            $unite = $produit->getPPrUnite();
+            $quantite = (float) $row['quantite'];
+            $remise = (float) ($row['remise'] ?? 0);
+            $tva = (float) ($row['tva'] ?? 0);
+            $prixUnitaire = $produit->getPPrTarifications()->first()?->getPrixVentePpv() ?? 0;
+            $montantHt = ($prixUnitaire * $quantite) - $remise;
+            $montantTtc = $montantHt + ($montantHt * $tva / 100);
+
+            $ligne = new TMsDemandelg();
+            $ligne->setTmsDemande($demande);
+            $ligne->setPProduit($produit);
+            $ligne->setPPrUnite($unite);
+            $ligne->setQuantite($quantite);
+            $ligne->setPrixUnitaire($prixUnitaire);
+            $ligne->setRemise($remise);
+            $ligne->setTva($tva);
+            $ligne->setMontantHt($montantHt);
+            $ligne->setMontantTtc($montantTtc);
+            $ligne->setActif(true);
+
+            $this->em->persist($ligne);
+        }
+
+        //  DELETED lignes
+        foreach ($data['deleted'] ?? [] as $row) {
+            $ligne = $this->em->getRepository(TMsDemandelg::class)->find($row['demandelg_id']);
+            if ($ligne) {
+                $ligne->setActif(false);
+            }
+        }
+
+        $this->em->flush();
+
+        return $this->json([
+            'status' => 'success',
+            'message' => 'Demande mise à jour avec succès.'
+        ]);
+    }
+    #[Route('/update-position', name: 'update_position', methods: ['POST'])]
+    public function updatePosition(Request $request,EntityManagerInterface $em,TMsDemandeRepository $repo,Security $security): JsonResponse 
+    {
+        $data = json_decode($request->getContent(), true);
+        $id = $data['id'] ?? null;
+        $position = $data['position'] ?? null;
+
+        if (!$id || !$position) {
+            return new JsonResponse(['success' => false, 'message' => 'Données invalides'], 400);
+        }
+
+        $demande = $repo->find($id);
+        if (!$demande) {
+            return new JsonResponse(['success' => false, 'message' => 'Demande introuvable'], 404);
+        }
+
+        $user = $security->getUser();
+        if (!$user) {
+            return new JsonResponse(['success' => false, 'message' => 'Utilisateur non authentifié'], 403);
+        }
+
+        $demande->setPositionActuel($position);
+        switch ($position) {
+            case 'valider':
+                $demande->setUserValider($user);
+                break;
+            case 'Générer':
+                $demande->setUserGenerer($user);
+                break;
+            case 'Créer': // Dévalider
+                $demande->setUserAnnuler($user);
+                break;
+        }
+
+        $em->flush();
+
+        return new JsonResponse(['success' => true]);
     }
 
 

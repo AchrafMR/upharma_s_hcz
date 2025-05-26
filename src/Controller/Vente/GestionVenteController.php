@@ -56,7 +56,7 @@ class GestionVenteController extends AbstractController
         $magasins = $magasinsRepository->findMagasinsByUserEntite($this->getUser(), $pEntiteRepository);
         $defaultMagasin = $magasinsRepository->findDefaultMagasinForUser($this->getUser(), $pEntiteRepository);
         
-        $demandes = $TMsDemandeRepository->findAll();
+        $demandes = $TMsDemandeRepository->findAllActifWithActiveLg();
         $products = $produitsRepository->findProductsWithTarificationAndSolde();
         // dd($demandes);
 
@@ -76,7 +76,6 @@ class GestionVenteController extends AbstractController
     public function fetchCommandes(Request $request, EntityManagerInterface $em): JsonResponse
     {
         $connection = $em->getConnection();
-
         $draw = $request->query->get('draw');
         $start = (int) $request->query->get('start', 0);
         $length = (int) $request->query->get('length', 10);
@@ -105,18 +104,18 @@ class GestionVenteController extends AbstractController
         $params = [];
         // CASE WHEN d.urgent = 1 THEN 'Urgent' ELSE 'Normal' END LIKE ? OR
         if (!empty($search)) {
-            $where = "WHERE (
-                d.code LIKE ? OR
-                d.ipp LIKE ? OR
-                d.position_actuel LIKE ? OR
-                d.created LIKE ? OR
-                d.nom_patient LIKE ? OR
-                demandeur.designation LIKE ? OR
-                recepteur.designation LIKE ?
-            )";
+            $where = " AND (
+            d.code LIKE ? OR
+            d.ipp LIKE ? OR
+            d.position_actuel LIKE ? OR
+            d.created LIKE ? OR
+            d.nom_patient LIKE ? OR
+            demandeur.designation LIKE ? OR
+            recepteur.designation LIKE ?
+          )";
 
             // Positional parameters
-            for ($i = 0; $i <8; $i++) {
+            for ($i = 0; $i <7; $i++) {
                 $params[] = '%' . $search . '%';
             }
         }
@@ -138,9 +137,10 @@ class GestionVenteController extends AbstractController
                 d.created AS date_demmande,
                 d.position_actuel
             FROM t_ms_Demande d
-            LEFT JOIN t_ms_demandelg lg ON lg.t_ms_demande_id = d.id
+            LEFT JOIN t_ms_demandelg lg ON lg.t_ms_demande_id = d.id AND lg.actif = 1
             LEFT JOIN pmagasins demandeur ON demandeur.id = d.demandeur_id
             LEFT JOIN pmagasins recepteur ON recepteur.id = d.recepteur_id
+            WHERE d.actif = 1
             $where
             GROUP BY 
                 d.id, d.code, d.ipp, d.nom_patient, d.created, 

@@ -53,6 +53,11 @@ class TMsDemandelg
     #[ORM\ManyToOne(inversedBy: 'tMsDemandelgs')]
     private ?PPrUnites $pPrUnite = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $actif = null;
+
+
+
 
     public function getId(): ?int
     {
@@ -206,5 +211,17 @@ class TMsDemandelg
     public function __toString(): string
     {
         return (string) $this->id;
+    }
+
+    public function getActif(): ?int
+    {
+        return $this->actif;
+    }
+
+    public function setActif(?int $actif): static
+    {
+        $this->actif = $actif;
+
+        return $this;
     }
 }
