@@ -7,7 +7,7 @@
   aria-labelledby="detailsDemande"
   aria-hidden="true"
 >
-  <div class="modal-dialog" style="width: 60%" role="document">
+  <div class="modal-dialog" style="width: 55%" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Détails de la commande</h5>
@@ -17,7 +17,7 @@
       </div>
 
       <div class="modal-body">
-        <div class="row">
+        <div class="form-row">
           <div class="form-group col-md-6">
             <label>Demandeur</label>
             <select class="form-control" disabled>
@@ -30,7 +30,6 @@
               {% endfor %}
             </select>
           </div>
-
           <div class="form-group col-md-6">
             <label>Récepteur</label>
             <select class="form-control" disabled>
@@ -44,20 +43,7 @@
             </select>
           </div>
         </div>
-
-        <div class="row align-items-end">
-          <div class="form-group col-md-6">
-            <label>Description</label>
-            <input type="text" class="form-control" value="{{ demande.description }}" disabled>
-          </div>
-
-          <div class="form-group col-md-6 d-flex align-items-end">
-            <div class="form-check mb-2 ms-3">
-              <input type="checkbox" class="form-check-input" {% if demande.urgent %}checked{% endif %} disabled>
-              <label class="form-check-label">Urgent</label>
-            </div>
-          </div>
-        </div>        
+  
         <div class="form-row">
           <div class="form-group col-md-6">
             <label>IPP (ID Patient)</label>
@@ -81,36 +67,61 @@
           </div>
         </div>
 
-        <div class="mt-4">
-          <h5>Produits dans la Demande</h5>
-          <table class="table table-bordered">
-            <thead>
+        <div class="form-row ">
+          <div class="form-group col-md-6">
+            <label>Description</label>
+            <input type="text" class="form-control" value="{{ demande.description }}" disabled>
+          </div>
+
+          <div class=" urgent-check-wrapper ">
+              <input type="checkbox" class="form-check-input" {% if demande.urgent %}checked{% endif %} disabled>
+              <label class="form-check-label">Urgent</label>           
+          </div>
+        </div>
+
+     <div class="mt-4">
+        <h5>Produits dans la Demande</h5>
+
+        <div style="max-height: 250px; overflow-y: auto;">
+          <table class="table table-bordered mb-0">
+            <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 1;">
               <tr>
                 <th>#</th>
-                <th>Produit</th>
-                <th>Quantité</th>
-                <th>Prix</th>
+                <th style="width: max-content;">Produit</th>
+                <th style="width: 10%;">Quantité</th>
+                <th style="width: 10%;">Prix</th>
+                <th style="width: 10%;">TOTAL</th>
               </tr>
             </thead>
             <tbody>
+              {% set grand_total = 0 %}
               {% for ligne in demande.tMsDemandelgs %}
+                {% set ligne_total = ligne.montantTtc %}
+                {% set grand_total = grand_total + ligne_total %}
                 <tr>
-                  <td>{{ loop.index }}</td>
-                  <td>{{ ligne.pProduit.titre ?? '—' }}</td>
-                  <td>{{ ligne.quantite }}</td>
-                  <td>{{ ligne.montantTtc }}</td>
+                  <td style="vertical-align: top !important;">{{ loop.index }}</td>
+                  <td style="vertical-align: top !important; text-align: left !important;">{{ ligne.pProduit.titre ?? '—' }}</td>
+                  <td style="vertical-align: top !important; text-align: right !important;">{{ ligne.quantite }}</td>
+                  <td style="vertical-align: top !important; text-align: right !important;">{{ ligne.prixUnitaire|number_format(2, ',', ' ') }}</td>
+                  <td style="vertical-align: top !important; text-align: right !important;">{{ ligne_total|number_format(2, ',', ' ') }}</td>
                 </tr>
               {% else %}
-                <tr><td colspan="4">Aucune ligne de demande trouvée</td></tr>
+                <tr><td colspan="5">Aucune ligne de demande trouvée</td></tr>
               {% endfor %}
             </tbody>
           </table>
         </div>
+
+        <div style="text-align: right !important;" class="mt-2">
+          <h5><strong>Total général: {{ grand_total|number_format(2, ',', ' ') }} DH</strong></h5>
+        </div>
+      </div>
+
       </div>
 
       <div class="modal-footer">
           {% if demande.positionActuel == 'Créer' %}
-            <button type="button" class="btn btn-success btn-valider" data-id="{{ demande.id }}">
+            <button type="button" class="btn btn-primary btn-valider" data-id="{{ demande.id }}">
               Valider
             </button>
           {% elseif demande.positionActuel == 'valider' %}

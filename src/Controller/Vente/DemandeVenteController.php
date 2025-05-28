@@ -253,7 +253,6 @@ class DemandeVenteController extends AbstractController
                 $ligne->setActif(false);
             }
         }
-
         $this->em->flush();
 
         return $this->json([
@@ -290,7 +289,7 @@ class DemandeVenteController extends AbstractController
             case 'Générer':
                 $demande->setUserGenerer($user);
                 break;
-            case 'Créer': // Dévalider
+            case 'Créer': // dévalider
                 $demande->setUserAnnuler($user);
                 break;
         }

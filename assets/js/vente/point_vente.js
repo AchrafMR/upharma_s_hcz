@@ -67,7 +67,10 @@ window.addEventListener("DOMContentLoaded", () => {
           </div>
 
           <div class="text-center mt-2">
-            <h6 class="text-uppercase mb-1 product-title">${product.name}</h6>
+            
+            <h6 class="text-uppercase mb-1 product-title">
+              ${product.name.length > 18 ? product.name.substring(0, 18) + '...' : product.name}
+            </h6>
             <p class="text-danger fw-bold mb-0 product-price">${Number(product.price).toFixed(2)} DH</p>
           </div>
         </div>

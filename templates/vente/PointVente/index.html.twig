@@ -1,7 +1,23 @@
 {% extends 'base.html.twig' %} {% block title %}Point de Vente{% endblock %} {%
 block stylesheets %}
 {{ parent() }}
-<style></style>
+<style>
+  .urgent-check-wrapper {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .urgent-check-wrapper input {
+    margin: 0 0 0 45px !important;
+  }
+  .urgent-check-wrapper label {
+    margin: 0 !important;
+    font-weight: normal !important;
+  }
+</style>
 <link
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   rel="stylesheet"
