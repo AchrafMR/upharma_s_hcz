@@ -10,58 +10,68 @@
         </div>
 
         <div class="modal-body">
-          <!-- Infos générales -->
-          <div class="row">
-            <div class="form-group col-md-6">
-              <label>Demandeur</label>
-              <select class="form-control" name="demandeur_id">
-                {% for magasin in magasins %}
-                  <option value="{{ magasin.id }}" {% if demande.demandeurId.id == magasin.id %}selected{% endif %}>
-                    {{ magasin.designation }}
-                  </option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="form-group col-md-6">
-              <label>Récepteur</label>
-              <select class="form-control" name="recepteur_id">
-                {% for magasin in magasins %}
-                  <option value="{{ magasin.id }}" {% if demande.recepteurId.id == magasin.id %}selected{% endif %}>
-                    {{ magasin.designation }}
-                  </option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
+        <!-- Infos générales -->
+            <div class="form-row">
+              <!-- Demandeur -->
+              <div class="form-group col-md-6">
+                <label for="demandeur_id">Demandeur</label>
+                <select id="demandeur_id" name="demandeur_id" class="form-control">
+                  {% for magasin in magasins %}
+                    <option value="{{ magasin.id }}" {% if demande.demandeurId.id == magasin.id %}selected{% endif %}>
+                      {{ magasin.designation }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
 
-          <div class="row">
-            <div class="form-group col-md-6">
-              <label>Description</label>
-              <input type="text" name="description" class="form-control" value="{{ demande.description }}">
-            </div>
-            <div class="form-group col-md-6 d-flex align-items-end">
-              <div class="form-check mb-2 ms-3">
-                <input type="checkbox" name="urgent" class="form-check-input" {% if demande.urgent %}checked{% endif %}>
-                <label class="form-check-label">Urgent</label>
+              <!-- Récepteur -->
+              <div class="form-group col-md-6">
+                <label for="recepteur_id">Récepteur</label>
+                <select id="recepteur_id" name="recepteur_id" class="form-control">
+                  {% for magasin in magasins %}
+                    <option value="{{ magasin.id }}" {% if demande.recepteurId.id == magasin.id %}selected{% endif %}>
+                      {{ magasin.designation }}
+                    </option>
+                  {% endfor %}
+                </select>
               </div>
             </div>
-          </div>
 
-          <div class="form-group">
-            <label>IPP</label>
-            <input type="text" name="ipp" class="form-control" value="{{ demande.ipp }}">
-          </div>
+            <div class="form-row">
+              <!-- IPP -->
+              <div class="form-group col-md-6">
+                <label for="ipp">IPP (ID Patient)</label>
+                <input type="text" id="ipp" name="ipp" class="form-control" value="{{ demande.ipp }}" placeholder="Identifiant du patient" />
+              </div>
 
-          <div class="row">
-            <div class="form-group col-md-6">
-              <label>Nom du Patient</label>
-              <input type="text" name="nom_patient" class="form-control" value="{{ demande.nomPatient }}">
+              <!-- Nom du Patient -->
+              <div class="form-group col-md-6">
+                <label for="nom_patient">Nom du Patient</label>
+                <input type="text" id="nom_patient" name="nom_patient" class="form-control" value="{{ demande.nomPatient }}" placeholder="Nom complet du patient" />
+              </div>
             </div>
-            <div class="form-group col-md-6">
-              <label>Dossier Patient</label>
-              <input type="text" name="dossier_patient" class="form-control" value="{{ demande.dossierPatient }}">
+
+            <div class="form-row">
+              <!-- Dossier Patient -->
+              <div class="form-group col-md-6">
+                <label for="dossier_patient">Dossier Patient</label>
+                <input type="text" id="dossier_patient" name="dossier_patient" class="form-control" value="{{ demande.dossierPatient }}" placeholder="Code dossier patient" />
+              </div>
+
+              <!-- Description -->
+              <div class="form-group col-md-6">
+                <label for="description">Description</label>
+                <input type="text" id="description" name="description" class="form-control" value="{{ demande.description }}" placeholder="Description..." />
+              </div>
             </div>
-          </div>
+
+            <!-- Urgent -->
+            <div class="urgent-check-wrapper">
+              <label class="form-check-label" for="urgent">URGENT</label>
+              <input class="form-check-input" type="checkbox" id="urgent" name="urgent" {% if demande.urgent %}checked{% endif %} />    
+            </div>
+
+
 
           <!-- Produits -->
           <div class="mt-4">
@@ -73,17 +83,16 @@
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>Produit</th>
-                  <th>Quantité</th>
-                  <th>Actions</th>
+                  
+                    <th style="width: max-content;">Produit</th>
+                    <th style="width: 7%;">Quantité</th>
+                    <th style="width: 10%;">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {% for ligne in demande.tMsDemandelgs %}
                   <tr data-id="{{ ligne.pProduit.id }}" data-demandelg-id="{{ ligne.id }}">
-                    <td>{{ loop.index }}</td>
-                    <td>
+                    <td style="vertical-align: top !important; text-align: left !important;">
                       <select class="form-control form-control-sm product-select" disabled>
                         {% for produit in produits %}
                           <option value="{{ produit.id }}" data-prix="{{ produit.price }}"
@@ -94,8 +103,7 @@
                       </select>
                     </td>
                     <td>
-                      <input type="number" class="form-control form-control-sm quantity-input"
-                             value="{{ ligne.quantite }}" min="1" disabled>
+                      <input type="number" class="form-control form-control-sm quantity-input" value="{{ ligne.quantite }}" min="1" disabled>
                     </td>
                     <td class="text-center">
                       <button type="button" class="btn btn-sm btn-edit-line" title="Modifier">

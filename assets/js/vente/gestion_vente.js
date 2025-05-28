@@ -55,8 +55,8 @@ $(document).ready(function () {
             ? Number(data).toLocaleString("fr-FR", {
                 style: "decimal",
                 minimumFractionDigits: 2,
-              }) + " DH"
-            : "0.00 DH";
+              })
+            : "0,00";
         },
         createdCell: function (td) {
           td.classList.add("force-right-align");
