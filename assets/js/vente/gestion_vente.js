@@ -204,8 +204,7 @@ window.addEventListener('load', () => {
       const newRow = document.createElement('tr');
 
       newRow.innerHTML = `
-        <td>-</td>
-        <td>
+        <td style="vertical-align: top !important; text-align: left !important;">
           <select class="form-control form-control-sm product-select">
             ${produits.map(p => `<option value="${p.id}" data-prix="${p.price}">${p.name}</option>`).join('')}
           </select>
@@ -386,7 +385,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (newPosition === 'valider') {
       buttonsHTML = `
-        <button type="button" class="btn btn-warning btn-devalider" data-id="${id}">
+        <button type="button" class="btn btn-danger btn-devalider" data-id="${id}">
           Dévalider
         </button>
         <button type="button" class="btn btn-primary btn-generer" data-id="${id}">

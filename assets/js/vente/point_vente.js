@@ -79,36 +79,54 @@ window.addEventListener("DOMContentLoaded", () => {
   };
 
   const renderCart = () => {
-    cartContainer.innerHTML = "";
-    let subtotal = 0;
+  let subtotal = 0;
 
-    cart.forEach((item) => {
-      const stock = PRODUCTS.find((p) => p.id === item.id)?.quantity ?? 0;
-      subtotal += item.price * item.quantity;
+  const cartHTML = cart.map((item) => {
+    const product = PRODUCTS.find((p) => p.id === item.id);
+    const stock = product?.quantity ?? 0;
+    subtotal += item.price * item.quantity;
 
-      cartContainer.innerHTML += `
-        <div class="d-flex justify-content-between align-items-center cart-item" data-id="${item.id}">
-          <span class="text-uppercase fw-semibold cart-item-name">${item.name}</span>
-          <span class="text-danger fw-bold cart-item-price">${item.price.toFixed(2)} DH</span>
-          <div class="d-flex align-items-center bg-light rounded-pill px-2 py-1 mx-2 qty-control">
+    return `
+      <div class="d-flex align-items-center border-bottom py-1 cart-item" data-id="${item.id}" style="width: 100%; font-size: 0.85rem">
+        
+        <!-- Product Name -->
+        <div style="width: 50%" class="text-uppercase fw-semibold text-truncate">
+          ${item.name}
+        </div>
+
+        <!-- Price -->
+        <div style="width: 20%; margin-left: 15px;" class="text-danger fw-bold text-end">
+          ${item.price.toFixed(2)} DH
+        </div>
+
+        <!-- Quantity Controls -->
+        <div style="width: 20%" class="d-flex justify-content-end">
+          <div class="d-flex align-items-center bg-light rounded-pill px-2 py-1 qty-control" style="font-size: 0.8rem">
             <button class="btn btn-sm p-0 border-0 bg-transparent text-dark btn-decrease" style="width: 22px">
               <i class="fa-solid fa-minus"></i>
             </button>
-            <input type="text" class="form-control form-control-sm text-center border-0 bg-transparent qty-input" value="${item.quantity}" readonly />
+            <input type="text" class="form-control form-control-sm text-center border-0 bg-transparent qty-input" value="${item.quantity}" readonly style="width: 28px" />
             <button class="btn btn-sm p-0 border-0 bg-transparent text-dark btn-increase" style="width: 22px">
               <i class="fa-solid fa-plus"></i>
             </button>
           </div>
+        </div>
+
+        <!-- Delete Icon -->
+        <div class="text-end" style="width: 10%">
           <button class="btn btn-sm btn-remove text-danger p-1 bg-transparent border-0" title="Supprimer">
             <i class="fa-solid fa-trash"></i>
           </button>
         </div>
-      `;
-    });
+      </div>
+    `;
+  }).join("");
 
-    subtotalElement.innerText = `${subtotal.toFixed(2)} DH`;
-  };
+  cartContainer.innerHTML = cartHTML;
+  subtotalElement.innerText = `${subtotal.toFixed(2)} DH`;
+};
 
+  // Validate form fields
   const validateFormFields = (fields) => {
     for (let field of fields) {
       const el = document.getElementById(field.id);
@@ -187,12 +205,13 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     const requiredFields = [
-      { id: "demandeur_id", label: "Demandeur" },
-      { id: "recepteur_id", label: "Récepteur" },
-      { id: "description", label: "description" },
+      { id: "demandeur_id", label: "Magasin Demandeur" },
+      { id: "recepteur_id", label: "Magasin de Traitement" },
       { id: "ipp", label: "IPP" },
       { id: "nom_patient", label: "Nom du patient" },
-      { id: "dossier_patient", label: "Dossier du patient" }
+      { id: "dossier_patient", label: "Dossier du patient" },
+      { id: "description", label: "description" }
+      
     ];
 
     if (!validateFormFields(requiredFields)) return;
