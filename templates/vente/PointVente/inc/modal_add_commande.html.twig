@@ -24,7 +24,7 @@
             <div class="form-row">
                 <!-- Demandeur -->
                 <div class="form-group col-md-6">
-                  <label for="demandeur_id">Demandeur</label>
+                  <label for="demandeur_id">Magasin Demandeur</label>
                   <select id="demandeur_id" class="form-control required">
                     <option value="">-- Sélectionner un magasin Demandeur --</option>
                     {% for magasin in magasins %}
@@ -37,10 +37,10 @@
                 </div>
                 <!-- Récepteur -->
                 <div class="form-group col-md-6">
-                  <label for="recepteur_id">Récepteur</label>
+                  <label for="recepteur_id">Magasin de Traitement</label>
                   <select id="recepteur_id" class="form-control required">
                     <option value="">
-                      -- Sélectionner un magasin Récepteur--
+                      -- Sélectionner un magasin de Traitement--
                     </option>
                     {% for magasin in magasins %}
                       <option value="{{ magasin.id }}"

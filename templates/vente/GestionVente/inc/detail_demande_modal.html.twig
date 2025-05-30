@@ -19,9 +19,9 @@
       <div class="modal-body">
         <div class="form-row">
           <div class="form-group col-md-6">
-            <label>Demandeur</label>
+            <label>Magasin Demandeur</label>
             <select class="form-control" disabled>
-              <option value="">-- Sélectionner un magasin Demandeur --</option>
+              {# <option value="">-- Sélectionner un magasin Demandeur --</option> #}
               {% for magasin in magasins %}
                 <option value="{{ magasin.id }}"
                   {% if demande.demandeurId.id == magasin.id %}selected{% endif %}>
@@ -31,9 +31,9 @@
             </select>
           </div>
           <div class="form-group col-md-6">
-            <label>Récepteur</label>
+            <label>Magasin de Traitement</label>
             <select class="form-control" disabled>
-              <option value="">-- Sélectionner un magasin Récepteur --</option>
+              {# <option value="">-- Sélectionner un magasin Récepteur --</option> #}
               {% for magasin in magasins %}
                 <option value="{{ magasin.id }}"
                   {% if demande.recepteurId.id == magasin.id %}selected{% endif %}>
@@ -79,43 +79,43 @@
           </div>
         </div>
 
-     <div class="mt-4">
-        <h5>Produits dans la Demande</h5>
+        <div class="mt-3">
+          <h5>Produits dans la Demande</h5>
 
-        <div style="max-height: 250px; overflow-y: auto;">
-          <table class="table table-bordered mb-0">
-            <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 1;">
-              <tr>
-                <th>#</th>
-                <th style="width: max-content;">Produit</th>
-                <th style="width: 10%;">Quantité</th>
-                <th style="width: 10%;">Prix</th>
-                <th style="width: 10%;">TOTAL</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% set grand_total = 0 %}
-              {% for ligne in demande.tMsDemandelgs %}
-                {% set ligne_total = ligne.montantTtc %}
-                {% set grand_total = grand_total + ligne_total %}
+          <div style="max-height: 319px; overflow-y: auto;">
+            <table class="table table-bordered mb-0">
+              <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 1;">
                 <tr>
-                  <td style="vertical-align: top !important;">{{ loop.index }}</td>
-                  <td style="vertical-align: top !important; text-align: left !important;">{{ ligne.pProduit.titre ?? '—' }}</td>
-                  <td style="vertical-align: top !important; text-align: right !important;">{{ ligne.quantite }}</td>
-                  <td style="vertical-align: top !important; text-align: right !important;">{{ ligne.prixUnitaire|number_format(2, ',', ' ') }}</td>
-                  <td style="vertical-align: top !important; text-align: right !important;">{{ ligne_total|number_format(2, ',', ' ') }}</td>
+                  <th>#</th>
+                  <th style="width: max-content;">Produit</th>
+                  <th style="width: 10%;">Quantité</th>
+                  <th style="width: 10%;">Prix</th>
+                  <th style="width: 10%;">TOTAL</th>
                 </tr>
-              {% else %}
-                <tr><td colspan="5">Aucune ligne de demande trouvée</td></tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {% set grand_total = 0 %}
+                {% for ligne in demande.tMsDemandelgs %}
+                  {% set ligne_total = ligne.montantTtc %}
+                  {% set grand_total = grand_total + ligne_total %}
+                  <tr>
+                    <td style="vertical-align: top !important;">{{ loop.index }}</td>
+                    <td style="vertical-align: top !important; text-align: left !important;">{{ ligne.pProduit.titre ?? '—' }}</td>
+                    <td style="vertical-align: top !important; text-align: right !important;">{{ ligne.quantite }}</td>
+                    <td style="vertical-align: top !important; text-align: right !important;">{{ ligne.prixUnitaire|number_format(2, ',', ' ') }}</td>
+                    <td style="vertical-align: top !important; text-align: right !important;">{{ ligne_total|number_format(2, ',', ' ') }}</td>
+                  </tr>
+                {% else %}
+                  <tr><td colspan="5">Aucune ligne de demande trouvée</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
 
-        <div style="text-align: right !important;" class="mt-2">
-          <h5><strong>Total général: {{ grand_total|number_format(2, ',', ' ') }} DH</strong></h5>
+          <div style="text-align: right !important;" class="mt-2">
+            <h5><strong>Total général: {{ grand_total|number_format(2, ',', ' ') }} DH</strong></h5>
+          </div>
         </div>
-      </div>
 
       </div>
 
@@ -125,7 +125,7 @@
               Valider
             </button>
           {% elseif demande.positionActuel == 'valider' %}
-            <button type="button" class="btn btn-warning btn-devalider" data-id="{{ demande.id }}">
+            <button type="button" class="btn btn-danger btn-devalider" data-id="{{ demande.id }}">
               Dévalider
             </button>
             <button type="button" class="btn btn-primary btn-generer" data-id="{{ demande.id }}">
