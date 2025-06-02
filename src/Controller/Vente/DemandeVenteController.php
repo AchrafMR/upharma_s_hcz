@@ -58,7 +58,6 @@ class DemandeVenteController extends AbstractController
         
         $demandes = $TMsDemandeRepository->findAllActifWithActiveLg();
         $products = $produitsRepository->findProductsWithTarificationAndSolde();
-        // dd($demandes);
 
         return $this->render('vente/GestionVente/index.html.twig', [
             'professions' => $professions,
