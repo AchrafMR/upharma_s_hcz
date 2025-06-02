@@ -1,6 +1,6 @@
 
-.custom-header {
-  padding-right: 33.2%;
+.search_section {
+  padding-right: 28.8%;
 }
 
 @media (max-width: 990px) {
@@ -91,7 +91,7 @@
 }
 
 .cart-item {
-  padding-bottom: 0.75rem;
+  // padding-bottom: 0.75rem;
   margin-bottom: 0.75rem;
   border-bottom: 1px solid #eee;
 }
@@ -135,10 +135,10 @@ body {
   width: 60px;
 }
 
-.qty-control {
-  gap: 8px;
-  min-width: 90px;
-}
+// .qty-control {
+//   gap: 2px;
+//   min-width: 90px;
+// }
 
 .qty-input {
   width: 28px;

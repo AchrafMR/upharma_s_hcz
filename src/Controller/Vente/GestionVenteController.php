@@ -83,7 +83,7 @@ class GestionVenteController extends AbstractController
         $orderColumnIndex = (int) $request->query->all('order')[0]['column'] ?? 0;
         $orderDir = strtoupper($request->query->all('order')[0]['dir'] ?? 'DESC');
 
-        // Column mapping (raw SQL expressions)
+        // Column mapping
         $columns = [
             'd.id',
             'd.code',
@@ -125,6 +125,7 @@ class GestionVenteController extends AbstractController
             SELECT 
                 d.id AS id,
                 d.code AS demande_code,
+                d.description,
                 demandeur.designation AS demandeur,
                 recepteur.designation AS recepteur,
                 d.ipp AS ipp_patient,
@@ -140,10 +141,10 @@ class GestionVenteController extends AbstractController
             LEFT JOIN t_ms_demandelg lg ON lg.t_ms_demande_id = d.id AND lg.actif = 1
             LEFT JOIN pmagasins demandeur ON demandeur.id = d.demandeur_id
             LEFT JOIN pmagasins recepteur ON recepteur.id = d.recepteur_id
-            WHERE d.actif = 1
+            WHERE d.actif = 1 AND d.type_demande_id=2
             $where
             GROUP BY 
-                d.id, d.code, d.ipp, d.nom_patient, d.created, 
+                d.id, d.code,d.description, d.ipp, d.nom_patient, d.created, 
                 d.position_actuel, d.urgent, 
                 demandeur.designation, recepteur.designation
             ORDER BY $orderColumn $orderDir

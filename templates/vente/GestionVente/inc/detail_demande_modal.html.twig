@@ -120,11 +120,12 @@
       </div>
 
       <div class="modal-footer">
-          {% if demande.positionActuel == 'Créer' %}
+        
+          {% if demande.positionActuel == 'Crée' %}
             <button type="button" class="btn btn-primary btn-valider" data-id="{{ demande.id }}">
               Valider
             </button>
-          {% elseif demande.positionActuel == 'valider' %}
+          {% elseif demande.positionActuel == 'validée' %}
             <button type="button" class="btn btn-danger btn-devalider" data-id="{{ demande.id }}">
               Dévalider
             </button>
@@ -132,9 +133,9 @@
               Générer
             </button>
           {% else %}
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            {# <button type="button" class="btn btn-secondary" data-dismiss="modal">
               Fermer
-            </button>
+            </button> #}
           {% endif %}
       </div>
 
