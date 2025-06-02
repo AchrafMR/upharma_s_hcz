@@ -1,10 +1,7 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Gestion des Ventes{% endblock %}
-
+{% extends 'base.html.twig' %} {% block title %}Gestion des Ventes{% endblock %}
 {% block stylesheets %}
 
-  <style>
+<style>
   .force-right-align {
     text-align: right !important;
     padding-right: 12px !important;
@@ -26,15 +23,14 @@
   .form-row {
     margin-bottom: -10px !important;
   }
+</style>
 
-  </style>
-  
-
-  {{ parent() }}
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
-{% endblock %}
-
-{% block body %}
+{{ parent() }}
+<link
+  rel="stylesheet"
+  href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"
+/>
+{% endblock %} {% block body %}
 <div class="main">
   <div class="container">
     <div class="row">
@@ -50,13 +46,14 @@
             <tr>
               <th>ID</th>
               <th>CODE</th>
-              <th>Magasin Demandeur</th>
-              <th>Magasin de Traitement</th>
+              <th>DESCRIPTION</th>
+              <th>MAGASIN DEMANDEUR</th>
+              <th>MAGASIN DE TRAITEMENT</th>
               <th>IPP</th>
               <th>NOM PATIENT</th>
               <th>TOTAL (MAD)</th>
               <th>URGENCE</th>
-              <th>DATE </th>
+              <th>DATE</th>
               <th>POSITION</th>
               <th>ACT</th>
             </tr>
@@ -67,20 +64,15 @@
     </div>
   </div>
 
-
-
-      {% include 'vente/GestionVente/inc/edit_demande_modal.html.twig' %}
-      {% include 'vente/GestionVente/inc/detail_demande_modal.html.twig' %}
-
+  {% include 'vente/GestionVente/inc/edit_demande_modal.html.twig' %} {% include
+  'vente/GestionVente/inc/detail_demande_modal.html.twig' %}
 </div>
-{% endblock %}
-
-{% block javascripts %}
-  {{ parent() }}
-  {{ encore_entry_script_tags('gestion_vente') }}
-  <script>
-    window.PRODUITS = {{ produits|json_encode(constant('JSON_UNESCAPED_UNICODE'))|raw }};
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %} {% block javascripts %}
+{{ parent() }}
+{{ encore_entry_script_tags("gestion_vente") }}
+<script>
+  window.PRODUITS = {{ produits|json_encode(constant('JSON_UNESCAPED_UNICODE'))|raw }};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 {% endblock %}

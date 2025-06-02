@@ -6,8 +6,8 @@ $(document).ready(function () {
         '<i style="color:#508884; margin-top:100px !important; font-size:25px !important;" class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only"></span> ',
     },
     lengthMenu: [
-      [16, 50, 100, 200],
-      [16, 50, 100, 200],
+      [21, 50, 100, 200],
+      [21, 50, 100, 200],
     ],
     processing: true,
     serverSide: true,
@@ -34,8 +34,8 @@ $(document).ready(function () {
         render: function (data, type, row) {
           return `
               <button 
-                class="btn btn-sm "
-                style="font-size: 0.6rem; font-weight: bold;" 
+                class="btn btn-sm"
+                style="font-size: 0.6rem; color: #007bff; padding: 0;"
                 data-toggle="modal" 
                 data-target="#detailsDemande${row.id}">
                 ${data}
@@ -43,6 +43,7 @@ $(document).ready(function () {
             `;
         },
       },
+      { name: "d.description", data: "description" },
       { name: "demandeur.designation", data: "demandeur" },
       { name: "recepteur.designation", data: "recepteur" },
       { name: "d.ipp", data: "ipp_patient" },
@@ -352,13 +353,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (data.success) {
         let actionMessage = '';
         switch (position) {
-          case 'valider':
+          case 'validée':
             actionMessage = ' La demande a été validée avec succès.';
             break;
-          case 'Créer':
+          case 'Crée':
             actionMessage = ' La demande a été dévalidée avec succès.';
             break;
-          case 'Générer':
+          case 'Générée':
             actionMessage = ' La demande a été générée avec succès.';
             break;
           default:
@@ -383,7 +384,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let buttonsHTML = '';
 
-    if (newPosition === 'valider') {
+    if (newPosition === 'validée') {
       buttonsHTML = `
         <button type="button" class="btn btn-danger btn-devalider" data-id="${id}">
           Dévalider
@@ -392,31 +393,24 @@ document.addEventListener("DOMContentLoaded", () => {
           Générer
         </button>
       `;
-    } else if (newPosition === 'Créer') {
+    } else if (newPosition === 'Crée') {
       buttonsHTML = `
         <button type="button" class="btn btn-success btn-valider" data-id="${id}">
           Valider
         </button>
       `;
-    } else if (newPosition === 'Générer') {
-      buttonsHTML = `
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-          Fermer
-        </button>
-      `;
-    }
-
+    } 
     footer.innerHTML = buttonsHTML;
   };
 
   document.body.addEventListener("click", (e) => {
     const btn = e.target;
     if (btn.classList.contains("btn-valider")) {
-      updatePosition(btn.dataset.id, 'valider');
+      updatePosition(btn.dataset.id, 'validée');
     } else if (btn.classList.contains("btn-devalider")) {
-      updatePosition(btn.dataset.id, 'Créer');
+      updatePosition(btn.dataset.id, 'Crée');
     } else if (btn.classList.contains("btn-generer")) {
-      updatePosition(btn.dataset.id, 'Générer');
+      updatePosition(btn.dataset.id, 'Générée');
     }
   });
 });

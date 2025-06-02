@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="d333c816-286a-43c5-ae3f-b7753ac94c76" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/js/vente/gestion_vente.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/vente/gestion_vente.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/js/vente/point_vente.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/vente/point_vente.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/styles/vente/pointVente.scss" beforeDir="false" afterPath="$PROJECT_DIR$/assets/styles/vente/pointVente.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/build/135.c6865bc6.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/public/build/432.53aa553b.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/public/build/432.53aa553b.js.LICENSE.txt" beforeDir="false" />
@@ -20,12 +20,12 @@
       <change beforePath="$PROJECT_DIR$/public/build/app.6b800696.css" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/public/build/choix_site.34485e1a.css" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/public/build/entrypoints.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/build/entrypoints.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/gestion_vente.e3a40df5.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/gestion_vente.e3a40df5.js.LICENSE.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/gestion_vente.5fd91462.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/gestion_vente.5fd91462.js.LICENSE.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/public/build/listModulesStyle.66891549.css" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/public/build/login.a5ebd152.css" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/public/build/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/build/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/point_vente.780a4c3f.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/point_vente.d37d92bc.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/public/build/runtime.6c30001d.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/public/build/setting_action.e7c07699.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/public/build/setting_module.1d4fe727.js" beforeDir="false" />
@@ -39,9 +39,7 @@
       <change beforePath="$PROJECT_DIR$/public/build/sidebar.7a9e6690.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/public/build/siteStyle.08fbcd9b.css" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/vente/GestionVente/inc/detail_demande_modal.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/vente/GestionVente/inc/detail_demande_modal.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/vente/GestionVente/inc/edit_demande_modal.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/vente/GestionVente/inc/edit_demande_modal.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/vente/GestionVente/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/vente/GestionVente/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/vente/PointVente/inc/modal_add_commande.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/vente/PointVente/inc/modal_add_commande.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/vente/PointVente/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/vente/PointVente/index.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -280,6 +278,7 @@
       <workItem from="1747910205191" duration="3000" />
       <workItem from="1747913228820" duration="1000" />
       <workItem from="1748599015056" duration="1312000" />
+      <workItem from="1748617649595" duration="2217000" />
     </task>
     <servers />
   </component>

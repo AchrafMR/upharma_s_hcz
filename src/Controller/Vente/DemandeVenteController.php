@@ -88,48 +88,67 @@ class DemandeVenteController extends AbstractController
             return $this->json(['status' => 'error', 'message' => 'Aucune donnée reçue.'], 400);
         }
 
+        $recepteurId = $data['recepteur_id'] ?? null;
+        $demandeurId = $data['demandeur_id'] ?? null;
+        // Create one or two demandes based on condition
+        if ($recepteurId === $demandeurId) {
+            $demande1 = $this->createDemande($data, 2, $request);
+            $demande2 = $this->createDemande($data, 1, $request);
+            return $this->json([
+                'status' => 'success',
+                'message' => 'Deux demandes créées (alimentation & consommation)',
+                'demande_1_id' => $demande1->getId(),
+                'demande_2_id' => $demande2->getId()
+            ]);
+        }
+
+        // Default case create demande consommation
+        $demande = $this->createDemande($data, 2, $request);
+
+        return $this->json([
+            'status' => 'success',
+            'message' => 'Demande enregistrée avec succès.',
+            'demande_id' => $demande->getId()
+        ]);
+    }
+
+    private function createDemande(array $data, int $typeOprtId,Request $request): TMsDemande
+    {
         $demande = new TMsDemande();
 
-        // Set Demande properties
-        $demande->setCode(null); // code is handled by trigger
+        $demande->setCode(null);
         $demande->setDescription($data['description'] ?? null);
         $demande->setNomPatient($data['nom_patient'] ?? null);
         $demande->setDossierPatient($data['dossier_patient'] ?? null);
         $demande->setIpp((int)($data['ipp'] ?? 0));
-
-       
-        $demande->setPositionActuel('Créer');
+        $demande->setPositionActuel('Crée');
         $demande->setHistorique(null);
         $demande->setUrgent(!empty($data['urgent']));
         $demande->setCreated(new DateTime());
         $demande->setActif(true);
-
         $dossierId = $request->getSession()->get('dossier');
         $dossier = $this->em->getRepository(PEntite::class)->find($dossierId);
         $demande->setPEntite($dossier);
-    
-        $user = $this->getUser();
-        $demande->setUserCreated($user);
+        $demande->setUserCreated($this->getUser());
 
         $demandeur = $this->em->getRepository(PMagasins::class)->find($data['demandeur_id'] ?? null);
         $recepteur = $this->em->getRepository(PMagasins::class)->find($data['recepteur_id'] ?? null);
 
         $demande->setDemandeurId($demandeur);
         $demande->setRecepteurId($recepteur);
-        $typeDemande = $this->em->getRepository(PTypeOprt::class)->find(2);
-        $demande->setTypeDemande($typeDemande);
-        $this->em->persist($demande);
-        $this->em->flush(); 
 
-        // Save lines
+        $typeDemande = $this->em->getRepository(PTypeOprt::class)->find($typeOprtId);
+        $demande->setTypeDemande($typeDemande);
+
+        $this->em->persist($demande);
+        $this->em->flush();
+
+        // Add lignes
         foreach ($data['lignes'] as $ligne) {
             $produit = $this->em->getRepository(PProduits::class)->find($ligne['id']);
-            if (!$produit) {
-                continue; 
-            }
+            if (!$produit) continue;
 
             $unite = $produit->getPPrUnite();
-
             $remise = $ligne['remise'] ?? 0;
             $tva = $ligne['tva'] ?? 0;
             $quantite = (float) $ligne['quantity'];
@@ -151,20 +170,100 @@ class DemandeVenteController extends AbstractController
             $demandelg->setCodeComptable(null);
             $demandelg->setActif(true);
 
-            // $demandelg->setFlagSynchronisationLocale(null);
-
             $this->em->persist($demandelg);
         }
 
-
         $this->em->flush();
 
-        return $this->json([
-            'status' => 'success',
-            'message' => 'Demande enregistrée avec succès.',
-            'demande_id' => $demande->getId(),
-        ]);
+        return $demande;
     }
+
+
+    // #[Route('/save-demande', name: 'vente_save_demande', methods: ['POST'])]
+    // public function saveDemande(Request $request): Response
+    // {
+    //     $data = json_decode($request->getContent(), true);
+
+    //     if (!$data || empty($data['lignes'])) {
+    //         return $this->json(['status' => 'error', 'message' => 'Aucune donnée reçue.'], 400);
+    //     }
+
+    //     $demande = new TMsDemande();
+
+    //     // Set Demande properties
+    //     $demande->setCode(null); // code is handled by trigger
+    //     $demande->setDescription($data['description'] ?? null);
+    //     $demande->setNomPatient($data['nom_patient'] ?? null);
+    //     $demande->setDossierPatient($data['dossier_patient'] ?? null);
+    //     $demande->setIpp((int)($data['ipp'] ?? 0));
+
+       
+    //     $demande->setPositionActuel('Crée');
+    //     $demande->setHistorique(null);
+    //     $demande->setUrgent(!empty($data['urgent']));
+    //     $demande->setCreated(new DateTime());
+    //     $demande->setActif(true);
+
+    //     $dossierId = $request->getSession()->get('dossier');
+    //     $dossier = $this->em->getRepository(PEntite::class)->find($dossierId);
+    //     $demande->setPEntite($dossier);
+    
+    //     $user = $this->getUser();
+    //     $demande->setUserCreated($user);
+
+    //     $demandeur = $this->em->getRepository(PMagasins::class)->find($data['demandeur_id'] ?? null);
+    //     $recepteur = $this->em->getRepository(PMagasins::class)->find($data['recepteur_id'] ?? null);
+
+    //     $demande->setDemandeurId($demandeur);
+    //     $demande->setRecepteurId($recepteur);
+    //     $typeDemande = $this->em->getRepository(PTypeOprt::class)->find(2);
+    //     $demande->setTypeDemande($typeDemande);
+    //     $this->em->persist($demande);
+    //     $this->em->flush(); 
+
+    //     // Save lines
+    //     foreach ($data['lignes'] as $ligne) {
+    //         $produit = $this->em->getRepository(PProduits::class)->find($ligne['id']);
+    //         if (!$produit) {
+    //             continue; 
+    //         }
+
+    //         $unite = $produit->getPPrUnite();
+
+    //         $remise = $ligne['remise'] ?? 0;
+    //         $tva = $ligne['tva'] ?? 0;
+    //         $quantite = (float) $ligne['quantity'];
+    //         $prixUnitaire = (float) $ligne['price'];
+    //         $montantHt = ($prixUnitaire * $quantite) - $remise;
+    //         $montantTtc = $montantHt + ($montantHt * $tva / 100);
+
+    //         $demandelg = new TMsDemandelg();
+    //         $demandelg->setTmsDemande($demande);
+    //         $demandelg->setPProduit($produit);
+    //         $demandelg->setPPrUnite($unite);
+    //         $demandelg->setQuantite($quantite);
+    //         $demandelg->setPrixUnitaire($prixUnitaire);
+    //         $demandelg->setRemise((float) $remise);
+    //         $demandelg->setTva((float) $tva);
+    //         $demandelg->setMontantHt($montantHt);
+    //         $demandelg->setMontantTtc($montantTtc);
+    //         $demandelg->setObservation(null);
+    //         $demandelg->setCodeComptable(null);
+    //         $demandelg->setActif(true);
+
+    //         // $demandelg->setFlagSynchronisationLocale(null);
+
+    //         $this->em->persist($demandelg);
+    //     }
+
+    //     $this->em->flush();
+
+    //     return $this->json([
+    //         'status' => 'success',
+    //         'message' => 'Demande enregistrée avec succès.',
+    //         'demande_id' => $demande->getId(),
+    //     ]);
+    // }
     #[Route('/edit-demande', name: 'vente_edit_demande', methods: ['POST'])]
     public function editDemande(Request $request): JsonResponse
     {
@@ -266,6 +365,7 @@ class DemandeVenteController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $id = $data['id'] ?? null;
         $position = $data['position'] ?? null;
+        // dd($data);
 
         if (!$id || !$position) {
             return new JsonResponse(['success' => false, 'message' => 'Données invalides'], 400);
@@ -283,13 +383,13 @@ class DemandeVenteController extends AbstractController
 
         $demande->setPositionActuel($position);
         switch ($position) {
-            case 'valider':
+            case 'validée':
                 $demande->setUserValider($user);
                 break;
-            case 'Générer':
+            case 'Générée':
                 $demande->setUserGenerer($user);
                 break;
-            case 'Créer': // dévalider
+            case 'Crée': // dévalider
                 $demande->setUserAnnuler($user);
                 break;
         }
@@ -298,6 +398,4 @@ class DemandeVenteController extends AbstractController
 
         return new JsonResponse(['success' => true]);
     }
-
-
 }
