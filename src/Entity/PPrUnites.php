@@ -40,12 +40,16 @@ class PPrUnites
     #[ORM\OneToMany(mappedBy: 'pPrUnite', targetEntity: TStStockstatic::class)]
     private Collection $tStStockstatics;
 
+    #[ORM\OneToMany(mappedBy: 'pPrUnite', targetEntity: TMsCommandelg::class)]
+    private Collection $tMsCommandelgs;
+
     public function __construct()
     {
         $this->pProduits = new ArrayCollection();
         $this->tMsDemandelgs = new ArrayCollection();
         $this->tStStockdynas = new ArrayCollection();
         $this->tStStockstatics = new ArrayCollection();
+        $this->tMsCommandelgs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -215,6 +219,36 @@ class PPrUnites
             // set the owning side to null (unless already changed)
             if ($tStStockstatic->getPPrUnite() === $this) {
                 $tStStockstatic->setPPrUnite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsCommandelg>
+     */
+    public function getTMsCommandelgs(): Collection
+    {
+        return $this->tMsCommandelgs;
+    }
+
+    public function addTMsCommandelg(TMsCommandelg $tMsCommandelg): static
+    {
+        if (!$this->tMsCommandelgs->contains($tMsCommandelg)) {
+            $this->tMsCommandelgs->add($tMsCommandelg);
+            $tMsCommandelg->setPPrUnite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsCommandelg(TMsCommandelg $tMsCommandelg): static
+    {
+        if ($this->tMsCommandelgs->removeElement($tMsCommandelg)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsCommandelg->getPPrUnite() === $this) {
+                $tMsCommandelg->setPPrUnite(null);
             }
         }
 

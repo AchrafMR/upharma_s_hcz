@@ -70,6 +70,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'userupdate', targetEntity: TStStockstatic::class)]
     private Collection $tStStockstatics;
 
+    #[ORM\OneToMany(mappedBy: 'userCreated', targetEntity: TMsCommande::class)]
+    private Collection $tMsCommandes;
+
+    #[ORM\OneToMany(mappedBy: 'userr', targetEntity: PAffectationMagasin::class)]
+    private Collection $pAffectationMagasins;
+
 
     public function __construct()
     {
@@ -78,6 +84,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->pDepots = new ArrayCollection();
         $this->tStStockdynas = new ArrayCollection();
         $this->tStStockstatics = new ArrayCollection();
+        $this->tMsCommandes = new ArrayCollection();
+        $this->pAffectationMagasins = new ArrayCollection();
 
     }
 
@@ -382,6 +390,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($tStStockstatic->getUserupdate() === $this) {
                 $tStStockstatic->setUserupdate(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsCommande>
+     */
+    public function getTMsCommandes(): Collection
+    {
+        return $this->tMsCommandes;
+    }
+
+    public function addTMsCommande(TMsCommande $tMsCommande): static
+    {
+        if (!$this->tMsCommandes->contains($tMsCommande)) {
+            $this->tMsCommandes->add($tMsCommande);
+            $tMsCommande->setUserCreated($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsCommande(TMsCommande $tMsCommande): static
+    {
+        if ($this->tMsCommandes->removeElement($tMsCommande)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsCommande->getUserCreated() === $this) {
+                $tMsCommande->setUserCreated(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PAffectationMagasin>
+     */
+    public function getPAffectationMagasins(): Collection
+    {
+        return $this->pAffectationMagasins;
+    }
+
+    public function addPAffectationMagasin(PAffectationMagasin $pAffectationMagasin): static
+    {
+        if (!$this->pAffectationMagasins->contains($pAffectationMagasin)) {
+            $this->pAffectationMagasins->add($pAffectationMagasin);
+            $pAffectationMagasin->setUserr($this);
+        }
+
+        return $this;
+    }
+
+    public function removePAffectationMagasin(PAffectationMagasin $pAffectationMagasin): static
+    {
+        if ($this->pAffectationMagasins->removeElement($pAffectationMagasin)) {
+            // set the owning side to null (unless already changed)
+            if ($pAffectationMagasin->getUserr() === $this) {
+                $pAffectationMagasin->setUserr(null);
             }
         }
 

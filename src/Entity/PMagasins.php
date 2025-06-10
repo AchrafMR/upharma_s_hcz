@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PMagasinsRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -37,6 +39,18 @@ class PMagasins
 
     #[ORM\ManyToOne]
     private ?User $userUpdated = null;
+
+    #[ORM\OneToMany(mappedBy: 'demandeurId', targetEntity: TMsCommande::class)]
+    private Collection $tMsCommandes;
+
+    #[ORM\OneToMany(mappedBy: 'magasin', targetEntity: PAffectationMagasin::class)]
+    private Collection $pAffectationMagasins;
+
+    public function __construct()
+    {
+        $this->tMsCommandes = new ArrayCollection();
+        $this->pAffectationMagasins = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -135,6 +149,66 @@ class PMagasins
     public function setUserUpdated(?User $userUpdated): static
     {
         $this->userUpdated = $userUpdated;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsCommande>
+     */
+    public function getTMsCommandes(): Collection
+    {
+        return $this->tMsCommandes;
+    }
+
+    public function addTMsCommande(TMsCommande $tMsCommande): static
+    {
+        if (!$this->tMsCommandes->contains($tMsCommande)) {
+            $this->tMsCommandes->add($tMsCommande);
+            $tMsCommande->setDemandeurId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsCommande(TMsCommande $tMsCommande): static
+    {
+        if ($this->tMsCommandes->removeElement($tMsCommande)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsCommande->getDemandeurId() === $this) {
+                $tMsCommande->setDemandeurId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PAffectationMagasin>
+     */
+    public function getPAffectationMagasins(): Collection
+    {
+        return $this->pAffectationMagasins;
+    }
+
+    public function addPAffectationMagasin(PAffectationMagasin $pAffectationMagasin): static
+    {
+        if (!$this->pAffectationMagasins->contains($pAffectationMagasin)) {
+            $this->pAffectationMagasins->add($pAffectationMagasin);
+            $pAffectationMagasin->setMagasin($this);
+        }
+
+        return $this;
+    }
+
+    public function removePAffectationMagasin(PAffectationMagasin $pAffectationMagasin): static
+    {
+        if ($this->pAffectationMagasins->removeElement($pAffectationMagasin)) {
+            // set the owning side to null (unless already changed)
+            if ($pAffectationMagasin->getMagasin() === $this) {
+                $pAffectationMagasin->setMagasin(null);
+            }
+        }
 
         return $this;
     }

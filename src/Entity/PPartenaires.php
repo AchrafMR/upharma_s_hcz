@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PPartenairesRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -112,6 +114,14 @@ class PPartenaires
 
     #[ORM\ManyToOne(inversedBy: 'pPartenaires')]
     private ?User $userCreated = null;
+
+    #[ORM\OneToMany(mappedBy: 'pPartenairesId', targetEntity: TMsCommande::class)]
+    private Collection $tMsCommandes;
+
+    public function __construct()
+    {
+        $this->tMsCommandes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -510,6 +520,36 @@ class PPartenaires
     public function setUserCreated(?User $userCreated): static
     {
         $this->userCreated = $userCreated;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsCommande>
+     */
+    public function getTMsCommandes(): Collection
+    {
+        return $this->tMsCommandes;
+    }
+
+    public function addTMsCommande(TMsCommande $tMsCommande): static
+    {
+        if (!$this->tMsCommandes->contains($tMsCommande)) {
+            $this->tMsCommandes->add($tMsCommande);
+            $tMsCommande->setPPartenairesId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsCommande(TMsCommande $tMsCommande): static
+    {
+        if ($this->tMsCommandes->removeElement($tMsCommande)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsCommande->getPPartenairesId() === $this) {
+                $tMsCommande->setPPartenairesId(null);
+            }
+        }
 
         return $this;
     }

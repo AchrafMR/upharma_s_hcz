@@ -1,3 +1,18 @@
+.urgent-check-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.urgent-check-wrapper input {
+  margin: 0 0 0 45px !important;
+}
+.urgent-check-wrapper label {
+  margin: 0 !important;
+  font-weight: normal !important;
+}
 
 .search_section {
   padding-right: 28.8%;
@@ -9,6 +24,7 @@
   }
   .search_input {
     width: 80%;
+    margin: 0 !important;
   }
 }
 
