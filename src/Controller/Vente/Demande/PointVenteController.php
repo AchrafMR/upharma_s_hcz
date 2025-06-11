@@ -51,6 +51,13 @@ class PointVenteController extends AbstractController
         $magasinsTraitement = $magasinsRepository->findTraitementMagasins($this->getUser());
         $magasinSelected = $magasinsRepository->findSelectedMagasin($this->getUser());
 
+        $infosPatient = [
+            ['ipp' => '1', 'nom' => 'achraf admin', 'dossier' => 'D00001'],
+            ['ipp' => '10001', 'nom' => 'Ahmed El Mansouri', 'dossier' => 'D10001'],
+            ['ipp' => '10002', 'nom' => 'Sara Ben Ali', 'dossier' => 'D10002'],
+            ['ipp' => '10003', 'nom' => 'Youssef Karim', 'dossier' => 'D10003'],
+        ];
+
         return $this->render('vente/PointVente/index.html.twig', [
             'professions' => $professions,
             'allModules' => $allModules,
@@ -61,8 +68,8 @@ class PointVenteController extends AbstractController
             'magasinsDemandeur' => $magasinsDemandeur,
             'magasinsTraitement' => $magasinsTraitement,
             'defaultMagasin' => $magasinSelected,
-            // 'magasins' => $magasins,
-            // 'defaultMagasin' => $defaultMagasin,
+            'infosPatient' => $infosPatient,
+
         ]);
     }
 

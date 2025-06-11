@@ -129,6 +129,11 @@ block stylesheets %}
   </div>
 </div>
 <script>
+  window.DEFAULT_TRAITEMENT_IDS = [
+    {% for magasin in magasinsDemandeur %}
+      {{ magasin.id }}{{ not loop.last ? ',' }}
+    {% endfor %}
+  ];
   document.addEventListener("DOMContentLoaded", () => {
     const categoryButtons = document.querySelectorAll('.category-nav-btn');
 
@@ -146,6 +151,7 @@ block stylesheets %}
     });
   });
   window.PRODUCTS = {{ products|json_encode|raw }};
+  window.infos_patient = {{ infosPatient|json_encode|raw }};
 </script>
 {% block javascripts %}
 {{ parent() }}

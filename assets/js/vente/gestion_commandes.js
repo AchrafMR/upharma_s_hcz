@@ -140,6 +140,7 @@ $(document).on("click", ".details-commande", function () {
 });
 
 
+
 //edit commande modal
 window.addEventListener('load', () => {
   const produits = window.PRODUITS || [];
@@ -269,7 +270,6 @@ window.addEventListener('load', () => {
       const dossierPatient = modal.querySelector('[name="dossier_patient"]')?.value; 
       const ipp = modal.querySelector('[name="ipp"]')?.value;
       const urgent = modal.querySelector('[name="urgent"]')?.checked;
-
       const editedProduits = [];
       const newProduits = [];
 
@@ -429,5 +429,48 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// $(document).on("keydown", ".ipp", function (e) {
+//   if (e.key === "Enter") {
+//     e.preventDefault();
 
+//     const $ipp = $(this);
+//     const ippValue = $ipp.val().trim();
+//     const $modal = $ipp.closest('.modal'); // get parent modal
+//     const $nom = $modal.find('.nom_patient');
+//     const $dossier = $modal.find('.dossier_patient');
 
+//     const patient = (window.infos_patient || []).find(p => p.ipp === ippValue);
+
+//     if (patient) {
+//       $nom.val(patient.nom);
+//       $dossier.val(patient.dossier);
+//     } else {
+//       $nom.val('');
+//       $dossier.val('');
+//       toastr.error("Aucun patient trouvé avec cet IPP");
+//     }
+//   }
+// });
+
+$(document).on("keydown", ".ipp", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+
+    const $ipp = $(this);
+    const ippValue = $ipp.val().trim();
+    const $modal = $ipp.closest('.modal');
+    const $nom = $modal.find('[name="nom_patient"]');
+    const $dossier = $modal.find('[name="dossier_patient"]');
+
+    const patient = (window.infos_patient || []).find(p => p.ipp === ippValue);
+
+    if (patient) {
+      $nom.val(patient.nom);
+      $dossier.val(patient.dossier);
+    } else {
+      $nom.val('');
+      $dossier.val('');
+      toastr.error("Aucun patient trouvé avec cet IPP");
+    }
+  }
+});

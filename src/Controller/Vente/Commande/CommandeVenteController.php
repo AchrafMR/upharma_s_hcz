@@ -51,12 +51,18 @@ class CommandeVenteController extends AbstractController
         $dossiers = $pEntiteRepository->findBy(['active' => true]);
         $allModules = $moduleRepository->findBy(['active' => true]);
 
-
         $magasinsDemandeur = $magasinsRepository->findDemandeurMagasins($this->getUser());
         $magasinsTraitement = $magasinsRepository->findTraitementMagasins($this->getUser());
 
         $commandes = $TMsCommandeRepository->findAllActifWithActiveLg();
         $products = $produitsRepository->findProductsWithTarificationAndSolde();
+
+        $infosPatient = [
+            ['ipp' => '1', 'nom' => 'achraf admin', 'dossier' => 'D00001'],
+            ['ipp' => '10001', 'nom' => 'Ahmed El Mansouri', 'dossier' => 'D10001'],
+            ['ipp' => '10002', 'nom' => 'Sara Ben Ali', 'dossier' => 'D10002'],
+            ['ipp' => '10003', 'nom' => 'Youssef Karim', 'dossier' => 'D10003'],
+        ];
         return $this->render('vente/GestionCommande/index.html.twig', [
             'professions' => $professions,
             'dossiers' => $dossiers,
@@ -66,6 +72,7 @@ class CommandeVenteController extends AbstractController
             'magasinsTraitement' => $magasinsTraitement,
             'commandes' => $commandes,
             'produits' => $products,
+            'infosPatient' => $infosPatient,
         ]);
     }
 
@@ -99,7 +106,6 @@ class CommandeVenteController extends AbstractController
         // Search setup
         $where = '';
         $params = [];
-        // CASE WHEN d.urgent = 1 THEN 'Urgent' ELSE 'Normal' END LIKE ? OR
         if (!empty($search)) {
             $where = " AND (
             d.code LIKE ? OR

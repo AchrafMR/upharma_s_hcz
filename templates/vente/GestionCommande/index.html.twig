@@ -86,7 +86,9 @@
 {{ parent() }}
 {{ encore_entry_script_tags("gestion_commandes") }}
 <script>
+  window.infos_patient = {{ infosPatient|json_encode|raw }};
   window.PRODUITS = {{ produits|json_encode(constant('JSON_UNESCAPED_UNICODE'))|raw }};
+  
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

@@ -45,24 +45,23 @@
             <div class="form-row">
               <!-- IPP -->
               <div class="form-group col-md-6">
-                <label for="ipp">IPP (ID Patient)</label>
-                <input type="text" id="ipp" name="ipp" class="form-control" value="{{ commande.ipp }}" placeholder="Identifiant du patient" />
+                <label for="">IPP (ID Patient)</label>
+                <input type="text" name="ipp" class="form-control ipp" value="{{ commande.ipp }}" placeholder="Identifiant du patient" />
               </div>
 
               <!-- Nom du Patient -->
               <div class="form-group col-md-6">
-                <label for="nom_patient">Nom du Patient</label>
-                <input type="text" id="nom_patient" name="nom_patient" class="form-control" value="{{ commande.nomPatient }}" placeholder="Nom complet du patient" />
+                <label for="">Nom du Patient</label>
+                <input type="text" name="nom_patient" class="form-control nom_patient" value="{{ commande.nomPatient }}" placeholder="Nom complet du patient" readonly />
               </div>
             </div>
 
             <div class="form-row">
               <!-- Dossier Patient -->
               <div class="form-group col-md-6">
-                <label for="dossier_patient">Dossier Patient</label>
-                <input type="text" id="dossier_patient" name="dossier_patient" class="form-control" value="{{ commande.dossierPatient }}" placeholder="Code dossier patient" />
+                <label for="">Dossier Patient</label>
+                <input type="text" name="dossier_patient" class="form-control dossier_patient" value="{{ commande.dossierPatient }}" placeholder="Code dossier patient" readonly />
               </div>
-
               <!-- Description -->
               <div class="form-group col-md-6">
                 <label for="description">Description</label>

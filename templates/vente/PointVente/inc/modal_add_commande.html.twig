@@ -25,7 +25,7 @@
               <!-- Magasin Demandeur -->
               <div class="form-group col-md-6">
                 <label for="demandeur_id">Magasin Demandeur</label>
-                <select id="demandeur_id" class="form-control required">
+                <select id="demandeur_id" class="form-control select2" data-live-search="true">
                   <option value="">-- Sélectionner un magasin Demandeur --</option>
                   {% for magasin in magasinsDemandeur %}
                     <option value="{{ magasin.id }}"
@@ -39,49 +39,18 @@
               <!-- Magasin de Traitement -->
               <div class="form-group col-md-6">
                 <label for="recepteur_id">Magasin de Traitement</label>
-                <select id="recepteur_id" class="form-control required">
-                  <option value="">-- Sélectionner un magasin de Traitement --</option>
-                  {% for magasin in magasinsTraitement %}
-                    <option value="{{ magasin.id }}"
-                      {% if defaultMagasin and magasin.id == defaultMagasin.id %}selected{% endif %}>
-                      {{ magasin.designation }}
-                    </option>
-                  {% endfor %}
-                </select>
-              </div>
-            </div>
-
-            {# <div class="form-row">
-                <!-- Demandeur -->
-                <div class="form-group col-md-6">
-                  <label for="demandeur_id">Magasin Demandeur</label>
-                  <select id="demandeur_id" class="form-control required">
-                    <option value="">-- Sélectionner un magasin Demandeur --</option>
-                    {% for magasin in magasins %}
+                <select id="recepteur_id" class="form-control select2" data-live-search="true">
+                    <option value="">-- Sélectionner un magasin de Traitement --</option>
+                    {% for magasin in magasinsTraitement %}
                       <option value="{{ magasin.id }}"
                         {% if defaultMagasin and magasin.id == defaultMagasin.id %}selected{% endif %}>
                         {{ magasin.designation }}
                       </option>
                     {% endfor %}
-                  </select>
-                </div>
-                <!-- Récepteur -->
-                <div class="form-group col-md-6">
-                  <label for="recepteur_id">Magasin de Traitement</label>
-                  <select id="recepteur_id" class="form-control required">
-                    <option value="">
-                      -- Sélectionner un magasin de Traitement--
-                    </option>
-                    {% for magasin in magasins %}
-                      <option value="{{ magasin.id }}"
+                </select>
+              </div>
+            </div>
 
-                      >
-                        {{ magasin.designation }}
-                      </option>
-                    {% endfor %}
-                  </select>
-                </div>
-            </div> #}
             <!-- IPP -->
             <div class="form-row">
                 <div class="form-group col-md-6">

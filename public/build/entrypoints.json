@@ -76,8 +76,8 @@
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
         "/build/67.a7b35c41.js",
-        "/build/135.c6865bc6.js",
-        "/build/point_vente.7dcf0c4d.js"
+        "/build/742.c7fd02b6.js",
+        "/build/point_vente.d341e149.js"
       ]
     },
     "gestion_demandes": {
@@ -93,7 +93,7 @@
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
         "/build/67.a7b35c41.js",
-        "/build/gestion_commandes.24cc1b9f.js"
+        "/build/gestion_commandes.0295c67d.js"
       ]
     },
     "login": {
