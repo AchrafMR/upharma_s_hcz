@@ -204,6 +204,7 @@ class CommandeVenteController extends AbstractController
         if (!$commande) {
             return $this->json(['status' => 'error', 'message' => 'commande introuvable.'], 404);
         }
+        // dd($commande);
 
         // Update general info
         $commande->setDescription($data['description'] ?? null);
@@ -218,9 +219,7 @@ class CommandeVenteController extends AbstractController
         $commande->setRecepteurId($recepteur);
         $user = $this->getUser();
         $commande->setUserUpdated($user);
-
-
-        // EDITED lignes
+        // edited lignes
         foreach ($data['edited'] ?? [] as $row) {
             $ligne = $this->em->getRepository(TMsCommandelg::class)->find($row['commandelg_id']);
             $produit = $this->em->getRepository(PProduits::class)->find($row['produit_id']);
@@ -246,7 +245,7 @@ class CommandeVenteController extends AbstractController
             $ligne->setMontantTtc($montantTtc);
         }
 
-        //  NEW lignes
+        //  new lignes
         foreach ($data['added'] ?? [] as $row) {
             $produit = $this->em->getRepository(PProduits::class)->find($row['produit_id']);
             if (!$produit) continue;
@@ -274,7 +273,7 @@ class CommandeVenteController extends AbstractController
             $this->em->persist($ligne);
         }
 
-        //  DELETED lignes
+        //  deleted lignes
         foreach ($data['deleted'] ?? [] as $row) {
             $ligne = $this->em->getRepository(TMsCommandelg::class)->find($row['commandelg_id']);
             if ($ligne) {
