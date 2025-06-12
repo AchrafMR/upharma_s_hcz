@@ -5,9 +5,8 @@ namespace App\Entity;
 use App\Repository\TMsDemandeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Mpdf\Tag\Tr;
+
 
 #[ORM\Entity(repositoryClass: TMsDemandeRepository::class)]
 #[ORM\Table(name: 't_ms_demande')]
@@ -108,8 +107,8 @@ class TMsDemande
     private Collection $tMsCommandes;
 
     #[ORM\ManyToOne(targetEntity: TMsCommande::class)]
-    #[ORM\JoinColumn(name: "commande_consommation_id", referencedColumnName: "id", nullable: true)]
-    private ?TMsCommande $commandeConsommation = null;
+    #[ORM\JoinColumn(name: "parent_id", referencedColumnName: "id", nullable: true)]
+    private ?TMsCommande $parent = null;
 
     public function __construct()
     {
@@ -490,14 +489,14 @@ class TMsDemande
         return $this;
     }
 
-    public function getCommandeConsommation(): ?TMsCommande
+    public function getParent(): ?TMsCommande
     {
-        return $this->commandeConsommation;
+        return $this->parent;
     }
 
-    public function setCommandeConsommation(?TMsCommande $commandeConsommation): static
+    public function setParent(?TMsCommande $parent): static
     {
-        $this->commandeConsommation = $commandeConsommation;
+        $this->parent = $parent;
 
         return $this;
     }  

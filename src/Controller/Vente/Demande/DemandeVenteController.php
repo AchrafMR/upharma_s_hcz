@@ -224,76 +224,6 @@ class DemandeVenteController extends AbstractController
     }
 
 
-    // private function createDemande(array $data, int $typeOprtId,Request $request): TMsDemande
-    // {
-    //     $demande = new TMsDemande();
-
-    //     $demande->setCode(null);
-    //     $demande->setDescription($data['description'] ?? null);
-    //     $demande->setNomPatient($data['nom_patient'] ?? null);
-    //     $demande->setDossierPatient($data['dossier_patient'] ?? null);
-    //     $demande->setIpp((int)($data['ipp'] ?? 0));
-    //     $demande->setPositionActuel('Générée');
-    //     $demande->setHistorique(null);
-    //     $demande->setUrgent(!empty($data['urgent']));
-    //     $demande->setCreated(new DateTime());
-    //     $demande->setActif(true);
-    //     $dossierId = $request->getSession()->get('dossier');
-    //     $dossier = $this->em->getRepository(PEntite::class)->find($dossierId);
-    //     $demande->setPEntite($dossier);
-    //     $demande->setUserCreated($this->getUser());
-
-    //     $demandeur = $this->em->getRepository(PMagasins::class)->find($data['demandeur_id'] ?? null);
-    //     $recepteur = $this->em->getRepository(PMagasins::class)->find($data['recepteur_id'] ?? null);
-
-    //     $demande->setDemandeurId($demandeur);
-    //     $demande->setRecepteurId($recepteur);
-
-    //     $typeDemande = $this->em->getRepository(PTypeOprt::class)->find($typeOprtId);
-    //     $demande->setTypeDemande($typeDemande);
-
-    //     $this->em->persist($demande);
-    //     $this->em->flush();
-
-    //     // Add lignes
-    //     foreach ($data['lignes'] as $ligne) {
-    //         $produit = $this->em->getRepository(PProduits::class)->find($ligne['id']);
-    //         if (!$produit) continue;
-
-    //         $unite = $produit->getPPrUnite();
-    //         $remise = $ligne['remise'] ?? 0;
-    //         $tva = $ligne['tva'] ?? 0;
-    //         $quantite = (float) $ligne['quantity'];
-    //         $prixUnitaire = (float) $ligne['price'];
-    //         $montantHt = ($prixUnitaire * $quantite) - $remise;
-    //         $montantTtc = $montantHt + ($montantHt * $tva / 100);
-
-    //         $demandelg = new TMsDemandelg();
-    //         $demandelg->setTmsDemande($demande);
-    //         $demandelg->setPProduit($produit);
-    //         $demandelg->setPPrUnite($unite);
-    //         $demandelg->setQuantite($quantite);
-    //         $demandelg->setPrixUnitaire($prixUnitaire);
-    //         $demandelg->setRemise((float) $remise);
-    //         $demandelg->setTva((float) $tva);
-    //         $demandelg->setMontantHt($montantHt);
-    //         $demandelg->setMontantTtc($montantTtc);
-    //         $demandelg->setObservation(null);
-    //         $demandelg->setCodeComptable(null);
-    //         $demandelg->setActif(true);
-
-    //         $this->em->persist($demandelg);
-    //     }
-
-    //     $this->em->flush();
-
-    //     // Automatically create Commande
-    //     if ($demande->getPositionActuel() === 'Générée') {
-    //         $this->commandeService->createFromDemande($demande);
-    //     }
-    //     return $demande;
-    // }
-
     #[Route('/edit-demande', name: 'vente_edit_demande', methods: ['POST'])]
     public function editDemande(Request $request): JsonResponse
     {
@@ -429,16 +359,3 @@ class DemandeVenteController extends AbstractController
     }
 
 }
-
-
-
-        // $recepteurId = $data['recepteur_id'] ?? null;
-        // $demandeurId = $data['demandeur_id'] ?? null;
-        // if ($recepteurId !== $demandeurId) {
-        //     $demande2 = $this->createDemande($data, 1, $request);
-        //     return $this->json([
-        //         'status' => 'success',
-        //         'message' => 'create demande alimentaion',
-        //         'demande_2_id' => $demande2->getId()
-        //     ]);
-        // }

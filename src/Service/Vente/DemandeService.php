@@ -117,7 +117,7 @@ class DemandeService
         $demande->setRecepteurId($recepteur);
         $demande->setPEntite($commande->getPEntite());
         $demande->setUserCreated($this->security->getUser());
-        $demande->setCommandeConsommation($commande);
+        $demande->setParent($commande);
 
         $typeDemande = $this->em->getRepository(PTypeOprt::class)->find(1); // Type = 1 = Alimentation
         $demande->setTypeDemande($typeDemande);

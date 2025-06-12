@@ -107,7 +107,7 @@ class TMsCommande
     private ?TMsDemande $tMsDemande = null;
 
     #[ORM\ManyToOne(targetEntity: self::class)]
-    private ?self $commandeConsommation = null;
+    private ?self $parent = null;
 
     public function __construct()
     {
@@ -473,14 +473,14 @@ class TMsCommande
         return $this;
     }
 
-    public function getCommandeConsommation(): ?self
+    public function getParent(): ?self
     {
-        return $this->commandeConsommation;
+        return $this->parent;
     }
 
-    public function setCommandeConsommation(?self $commandeConsommation): static
+    public function setParent(?self $parent): static
     {
-        $this->commandeConsommation = $commandeConsommation;
+        $this->parent = $parent;
 
         return $this;
     }
