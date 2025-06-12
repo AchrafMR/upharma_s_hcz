@@ -2,6 +2,7 @@
 
 namespace App\Controller\Vente\Commande;
 
+use App\Entity\PEntite;
 use App\Entity\PMagasins;
 use App\Entity\PProduits;
 use App\Entity\TMsCommande;
@@ -76,10 +77,143 @@ class CommandeVenteController extends AbstractController
         ]);
     }
 
+    // #[Route('/fetch-commandes', name: 'app_fetch_commandes', options: ['expose' => true], methods: 'GET')]
+    // public function fetchCommandes(Request $request, EntityManagerInterface $em): JsonResponse
+    // {
+    //     $connection = $em->getConnection();
+    //     $draw = $request->query->get('draw');
+    //     $start = (int) $request->query->get('start', 0);
+    //     $length = (int) $request->query->get('length', 10);
+    //     $search = $request->query->all('search')['value'] ?? '';
+    //     $orderColumnIndex = (int) $request->query->all('order')[0]['column'] ?? 0;
+    //     $orderDir = strtoupper($request->query->all('order')[0]['dir'] ?? 'DESC');
+
+    //     // Column mapping
+    //     $columns = [
+    //         'd.id',
+    //         'd.code',
+    //         'demandeur.designation',
+    //         'recepteur.designation',
+    //         'd.ipp',
+    //         'd.nom_patient',
+    //         'SUM(lg.montant_ttc)',
+    //         "CASE WHEN d.urgent = 1 THEN 'Urgent' ELSE 'Normal' END",
+    //         'd.created',
+    //         'd.position_actuel',
+    //     ];
+
+    //     $orderColumn = $columns[$orderColumnIndex] ?? 'd.id';
+
+    //     // Search setup
+    //     $where = '';
+    //     $params = [];
+    //     if (!empty($search)) {
+    //         $where = " AND (
+    //         d.code LIKE ? OR
+    //         d.ipp LIKE ? OR
+    //         d.position_actuel LIKE ? OR
+    //         d.created LIKE ? OR
+    //         d.nom_patient LIKE ? OR
+    //         demandeur.designation LIKE ? OR
+    //         recepteur.designation LIKE ?
+    //       )";
+
+    //         // Positional parameters
+    //         for ($i = 0; $i <7; $i++) {
+    //             $params[] = '%' . $search . '%';
+    //         }
+    //     }
+
+    //     // Main query
+    //     $sql = "
+    //         SELECT 
+    //             d.id AS id,
+    //             d.code AS commande_code,
+    //             d.description,
+    //             demandeur.designation AS demandeur,
+    //             recepteur.designation AS recepteur,
+    //             d.ipp AS ipp_patient,
+    //             d.nom_patient,
+    //             SUM(lg.montant_ttc) AS total_montant_ttc,
+    //             CASE 
+    //                 WHEN d.urgent = 1 THEN 'Urgent'
+    //                 ELSE 'Normal'
+    //             END AS niveau_urgence,
+    //             d.created AS date_demmande,
+    //             d.position_actuel
+    //         FROM t_ms_commande d
+    //         LEFT JOIN t_ms_commandelg lg ON lg.t_ms_commande_id = d.id AND lg.actif = 1
+    //         LEFT JOIN pmagasins demandeur ON demandeur.id = d.demandeur_id
+    //         LEFT JOIN pmagasins recepteur ON recepteur.id = d.recepteur_id
+    //         WHERE d.actif = 1 AND d.type_commande_id=2
+    //         $where
+    //         GROUP BY 
+    //             d.id, d.code,d.description, d.ipp, d.nom_patient, d.created, 
+    //             d.position_actuel, d.urgent, 
+    //             demandeur.designation, recepteur.designation
+    //         ORDER BY $orderColumn $orderDir
+    //         OFFSET $start ROWS FETCH NEXT $length ROWS ONLY
+    //     ";
+
+    //     $stmt = $connection->prepare($sql);
+    //     $results = $stmt->executeQuery($params)->fetchAllAssociative();
+
+    //     $countSql = "
+    //         SELECT COUNT(DISTINCT d.id) as total
+    //         FROM t_ms_Demande d
+    //         LEFT JOIN pmagasins demandeur ON demandeur.id = d.demandeur_id
+    //         LEFT JOIN pmagasins recepteur ON recepteur.id = d.recepteur_id
+    //         $where
+    //     ";
+    //     $countStmt = $connection->prepare($countSql);
+    //     $totalRecords = $countStmt->executeQuery($params)->fetchOne();
+
+    //     $actions = $this->userOperation->getOperations($this->getUser(), 'vente_gestion_commandes_index', $request);
+    //     $filteredActions = array_filter($actions, function($action) {
+    //         return (!$action->isHorizontal());
+    //     });
+    //     $allActions = array_map(function($action) {
+    //         return [
+    //             'sousModuleId'=> $action->getPSousModule()->getId(),
+    //             'idOp'=> $action->getId(),
+    //             'idName' => $action->getIdName(),
+    //             'nom' => $action->getNom(),
+    //             'className' => $action->getClassName(),
+    //             'icon' => $action->getIcon(),
+    //         ];
+    //     }, $filteredActions);
+
+    //     return new JsonResponse([
+    //         'draw' => $draw,
+    //         'recordsTotal' => $totalRecords,
+    //         'recordsFiltered' => $totalRecords,
+    //         'data' => $results,
+    //         'actions' => $allActions
+    //     ]);
+    // }
+
     #[Route('/fetch-commandes', name: 'app_fetch_commandes', options: ['expose' => true], methods: 'GET')]
     public function fetchCommandes(Request $request, EntityManagerInterface $em): JsonResponse
     {
         $connection = $em->getConnection();
+
+        
+        $dossier = $request->getSession()->get('dossier');
+
+        if (!$dossier || !method_exists($dossier, 'getId')) {
+            return new JsonResponse([
+                'draw' => $request->query->get('draw'),
+                'recordsTotal' => 0,
+                'recordsFiltered' => 0,
+                'data' => [],
+                'actions' => [],
+                'error' => 'Dossier invalide'
+            ]);
+        }
+
+        $dossierId = $dossier->getId();
+        // dd($dossierId);
+
         $draw = $request->query->get('draw');
         $start = (int) $request->query->get('start', 0);
         $length = (int) $request->query->get('length', 10);
@@ -87,7 +221,6 @@ class CommandeVenteController extends AbstractController
         $orderColumnIndex = (int) $request->query->all('order')[0]['column'] ?? 0;
         $orderDir = strtoupper($request->query->all('order')[0]['dir'] ?? 'DESC');
 
-        // Column mapping
         $columns = [
             'd.id',
             'd.code',
@@ -100,30 +233,27 @@ class CommandeVenteController extends AbstractController
             'd.created',
             'd.position_actuel',
         ];
-
         $orderColumn = $columns[$orderColumnIndex] ?? 'd.id';
 
-        // Search setup
-        $where = '';
-        $params = [];
-        if (!empty($search)) {
-            $where = " AND (
-            d.code LIKE ? OR
-            d.ipp LIKE ? OR
-            d.position_actuel LIKE ? OR
-            d.created LIKE ? OR
-            d.nom_patient LIKE ? OR
-            demandeur.designation LIKE ? OR
-            recepteur.designation LIKE ?
-          )";
+        $where = " AND d.p_entite_id = ?";
+        $params = [$dossierId];
 
-            // Positional parameters
-            for ($i = 0; $i <7; $i++) {
+        if (!empty($search)) {
+            $where .= " AND (
+                d.code LIKE ? OR
+                d.ipp LIKE ? OR
+                d.position_actuel LIKE ? OR
+                d.created LIKE ? OR
+                d.nom_patient LIKE ? OR
+                demandeur.designation LIKE ? OR
+                recepteur.designation LIKE ?
+            )";
+            for ($i = 0; $i < 7; $i++) {
                 $params[] = '%' . $search . '%';
             }
         }
 
-        // Main query
+        // Main data query
         $sql = "
             SELECT 
                 d.id AS id,
@@ -144,10 +274,10 @@ class CommandeVenteController extends AbstractController
             LEFT JOIN t_ms_commandelg lg ON lg.t_ms_commande_id = d.id AND lg.actif = 1
             LEFT JOIN pmagasins demandeur ON demandeur.id = d.demandeur_id
             LEFT JOIN pmagasins recepteur ON recepteur.id = d.recepteur_id
-            WHERE d.actif = 1 AND d.type_commande_id=2
+            WHERE d.actif = 1 AND d.type_commande_id = 2
             $where
             GROUP BY 
-                d.id, d.code,d.description, d.ipp, d.nom_patient, d.created, 
+                d.id, d.code, d.description, d.ipp, d.nom_patient, d.created, 
                 d.position_actuel, d.urgent, 
                 demandeur.designation, recepteur.designation
             ORDER BY $orderColumn $orderDir
@@ -157,20 +287,22 @@ class CommandeVenteController extends AbstractController
         $stmt = $connection->prepare($sql);
         $results = $stmt->executeQuery($params)->fetchAllAssociative();
 
+        // Count query (filtered)
         $countSql = "
             SELECT COUNT(DISTINCT d.id) as total
-            FROM t_ms_Demande d
+            FROM t_ms_commande d
             LEFT JOIN pmagasins demandeur ON demandeur.id = d.demandeur_id
             LEFT JOIN pmagasins recepteur ON recepteur.id = d.recepteur_id
-            $where
-        ";
+            WHERE d.actif = 1 AND d.type_commande_id = 2 AND d.p_entite_id = ?
+            " . (!empty($search) ? substr($where, strpos($where, 'AND (')) : '')
+        ;
+
         $countStmt = $connection->prepare($countSql);
         $totalRecords = $countStmt->executeQuery($params)->fetchOne();
 
+        // Get user action permissions
         $actions = $this->userOperation->getOperations($this->getUser(), 'vente_gestion_commandes_index', $request);
-        $filteredActions = array_filter($actions, function($action) {
-            return (!$action->isHorizontal());
-        });
+        $filteredActions = array_filter($actions, fn($action) => !$action->isHorizontal());
         $allActions = array_map(function($action) {
             return [
                 'sousModuleId'=> $action->getPSousModule()->getId(),
@@ -310,9 +442,6 @@ class CommandeVenteController extends AbstractController
         switch ($position) {
             case 'validée':
                 $commande->setUserValider($user);
-                break;
-            case 'Générée':
-                $commande->setUserGenerer($user);
                 // create demande alimentation if recepteur ≠ demandeur
                 $newDemande = $this->demandeService->createDemandeAlimentationFromCommande($commande);
                 if ($newDemande) {
@@ -323,10 +452,13 @@ class CommandeVenteController extends AbstractController
                     ]);
                 }
                 break;
-
-            case 'Crée': // dévalider
-                $commande->setUserAnnuler($user);
+            case 'Générée':
+                $commande->setUserGenerer($user);
                 break;
+
+            // case 'Crée': // dévalider
+            //     $commande->setUserAnnuler($user);
+            //     break;
         }
 
         $em->flush();

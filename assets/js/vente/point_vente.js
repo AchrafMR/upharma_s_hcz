@@ -89,35 +89,27 @@ window.addEventListener("DOMContentLoaded", () => {
     return `
       <div class="d-flex align-items-center border-bottom py-1 cart-item" data-id="${item.id}" style="width: 100%; font-size: 0.85rem">
         
-        <!-- Product Name -->
-        <div style="width: 60%" class="text-uppercase fw-semibold text-truncate">
-          ${item.name}
-        </div>
+      <div style="width: 75%" class="d-flex justify-content-between align-items-center text-uppercase fw-semibold text-truncate">
+        <span class="text-truncate" style="max-width: 80%">${item.name}</span>
+        <span class="text-danger fw-bold">${item.price.toFixed(2)}</span>
+      </div>
 
-        <!-- Price -->
-        <div style="width: 15%; margin-left: 15px;" class="text-danger fw-bold text-end">
-          ${item.price.toFixed(2)}
-        </div>
-
-        <!-- Quantity Controls -->
-        <div style="width: 20%" class="d-flex justify-content-end">
-          <div class="d-flex align-items-center bg-light rounded-pill qty-control" style="font-size: 0.8rem">
-            <button class="btn btn-sm p-0 border-0 bg-transparent text-dark btn-decrease" style="width: 22px">
-              <i class="fa-solid fa-minus"></i>
-            </button>
-            <input type="text" class="form-control form-control-sm text-center border-0 bg-transparent qty-input" value="${item.quantity}" readonly style="width: 28px" />
-            <button class="btn btn-sm p-0 border-0 bg-transparent text-dark btn-increase" style="width: 22px">
-              <i class="fa-solid fa-plus"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- Delete Icon -->
-        <div class="text-end" style="width: 10%">
-          <button class="btn btn-sm btn-remove text-danger bg-transparent border-0" title="Supprimer">
-            <i class="fa-solid fa-trash"></i>
+      <div style="width: 30%" class="d-flex justify-content-end align-items-center gap-2 text-end ps-2">
+        <div class="d-flex align-items-center bg-light rounded-pill qty-control" style="font-size: 0.8rem">
+          <button class="btn btn-sm p-0 border-0 bg-transparent text-dark btn-decrease" style="width: 18px">
+            <i class="fa-solid fa-minus"></i>
+          </button>
+          <input type="text" class="form-control form-control-sm text-center border-0 bg-transparent qty-input" value="${item.quantity}" readonly style="width: 24px" />
+          <button class="btn btn-sm p-0 border-0 bg-transparent text-dark btn-increase" style="width: 18px">
+            <i class="fa-solid fa-plus"></i>
           </button>
         </div>
+
+        <button class="btn btn-sm btn-remove text-danger bg-transparent border-0" title="Supprimer">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
+    </div>
       </div>
     `;
   }).join("");

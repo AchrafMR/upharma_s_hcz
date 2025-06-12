@@ -126,13 +126,9 @@
               Valider
             </button>
           {% elseif commande.positionActuel == 'validée' %}
-            <button type="button" class="btn btn-danger btn-devalider" data-id="{{ commande.id }}">
-              Dévalider
-            </button>
             <button type="button" class="btn btn-primary btn-generer" data-id="{{ commande.id }}">
               Générer
             </button>
-          {% else %}
             {# <button type="button" class="btn btn-secondary" data-dismiss="modal">
               Fermer
             </button> #}

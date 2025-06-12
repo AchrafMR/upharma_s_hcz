@@ -364,9 +364,9 @@ document.addEventListener("DOMContentLoaded", () => {
           case 'validée':
             actionMessage = 'La commande a été validée avec succès.';
             break;
-          case 'Crée':
-            actionMessage = 'La commande a été dévalidée avec succès.';
-            break;
+          // case 'Crée':
+          //   actionMessage = 'La commande a été dévalidée avec succès.';
+          //   break;
           case 'Générée':
             actionMessage = 'La commande a été générée avec succès.';
             break;
@@ -394,9 +394,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (newPosition === 'validée') {
       buttonsHTML = `
-        <button type="button" class="btn btn-danger btn-devalider" data-id="${id}">
-          Dévalider
-        </button>
         <button type="button" class="btn btn-primary btn-generer" data-id="${id}">
           Générer
         </button>
@@ -415,8 +412,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const btn = e.target;
     if (btn.classList.contains("btn-valider")) {
       updatePosition(btn.dataset.id, 'validée');
-    } else if (btn.classList.contains("btn-devalider")) {
-      updatePosition(btn.dataset.id, 'Crée');
     } else if (btn.classList.contains("btn-generer")) {
       updatePosition(btn.dataset.id, 'Générée');
     }
@@ -429,29 +424,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// $(document).on("keydown", ".ipp", function (e) {
-//   if (e.key === "Enter") {
-//     e.preventDefault();
-
-//     const $ipp = $(this);
-//     const ippValue = $ipp.val().trim();
-//     const $modal = $ipp.closest('.modal'); // get parent modal
-//     const $nom = $modal.find('.nom_patient');
-//     const $dossier = $modal.find('.dossier_patient');
-
-//     const patient = (window.infos_patient || []).find(p => p.ipp === ippValue);
-
-//     if (patient) {
-//       $nom.val(patient.nom);
-//       $dossier.val(patient.dossier);
-//     } else {
-//       $nom.val('');
-//       $dossier.val('');
-//       toastr.error("Aucun patient trouvé avec cet IPP");
-//     }
-//   }
-// });
-
+// Handle IPP input in modals
 $(document).on("keydown", ".ipp", function (e) {
   if (e.key === "Enter") {
     e.preventDefault();
