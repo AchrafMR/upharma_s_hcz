@@ -157,7 +157,6 @@ class CommandeVenteController extends AbstractController
         $stmt = $connection->prepare($sql);
         $results = $stmt->executeQuery($params)->fetchAllAssociative();
 
-        // Count query
         $countSql = "
             SELECT COUNT(DISTINCT d.id) as total
             FROM t_ms_Demande d
@@ -204,7 +203,6 @@ class CommandeVenteController extends AbstractController
         if (!$commande) {
             return $this->json(['status' => 'error', 'message' => 'commande introuvable.'], 404);
         }
-        // dd($commande);
 
         // Update general info
         $commande->setDescription($data['description'] ?? null);

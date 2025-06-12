@@ -342,7 +342,7 @@ $("body").on("click",".menu-item", function(){
   // var conventionTable = $('#convention_table').DataTable({
   //     language: {
   //         url: window.frenchJsonUrl,
-  //         processing: '<i style="color:#508884; margin-top:100px !important; font-size:25px !important;" class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only"></span> ',
+  //         processing: '<i style="color:#7593ae; margin-top:100px !important; font-size:25px !important;" class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only"></span> ',
   //     },
   //     lengthMenu: [
   //       [10, 50, 100, 200],
