@@ -32,9 +32,13 @@ class PTypeOprt
     #[ORM\OneToMany(mappedBy: 'typeDemande', targetEntity: TMsDemande::class)]
     private Collection $tMsDemandes;
 
+    #[ORM\OneToMany(mappedBy: 'typeDemande', targetEntity: TMsCommande::class)]
+    private Collection $tMsCommandes;
+
     public function __construct()
     {
         $this->tMsDemandes = new ArrayCollection();
+        $this->tMsCommandes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -114,6 +118,36 @@ class PTypeOprt
             // set the owning side to null (unless already changed)
             if ($tMsDemande->getTypeDemande() === $this) {
                 $tMsDemande->setTypeDemande(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsCommande>
+     */
+    public function getTMsCommandes(): Collection
+    {
+        return $this->tMsCommandes;
+    }
+
+    public function addTMsCommande(TMsCommande $tMsCommande): static
+    {
+        if (!$this->tMsCommandes->contains($tMsCommande)) {
+            $this->tMsCommandes->add($tMsCommande);
+            $tMsCommande->setTypeDemande($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsCommande(TMsCommande $tMsCommande): static
+    {
+        if ($this->tMsCommandes->removeElement($tMsCommande)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsCommande->getTypeDemande() === $this) {
+                $tMsCommande->setTypeDemande(null);
             }
         }
 

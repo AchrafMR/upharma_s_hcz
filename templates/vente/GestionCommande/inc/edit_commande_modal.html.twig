@@ -1,0 +1,136 @@
+{% for commande in commandes %}
+<div class="modal right fade" data-position-actuel="{{ commande.positionActuel }}" id="editCommande{{ commande.id }}" role="dialog" data-id="{{ commande.id }}" aria-hidden="true">
+
+  <div class="modal-dialog" style="width: 50%" role="document">
+    <div class="modal-content" style="height: 100% !important; max-height: none !important; overflow: hidden !important;">
+
+        <div class="modal-header">
+          <h5 class="modal-title">MODIFIER LA COMMANDE</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span>&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+        <!-- Infos générales -->
+            <div class="form-row">
+              <!-- Magasin Demandeur -->
+              <div class="form-group col-md-6">
+                <label for="demandeur_id">Magasin Demandeur</label>
+                <select id="demandeur_id" name="demandeur_id" class="form-control" disabled>
+                  {% for magasin in magasinsDemandeur %}
+                    <option value="{{ magasin.id }}" 
+                      {% if commande.demandeurId and commande.demandeurId.id == magasin.id %}selected{% endif %}>
+                      {{ magasin.designation }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Magasin de Traitement -->
+              <div class="form-group col-md-6">
+                <label for="recepteur_id">Magasin de Traitement</label>
+                <select id="recepteur_id" name="recepteur_id" class="form-control" disabled>
+                  {% for magasin in magasinsTraitement %}
+                    <option value="{{ magasin.id }}" 
+                      {% if commande.recepteurId and commande.recepteurId.id == magasin.id %}selected{% endif %}>
+                      {{ magasin.designation }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+
+            <div class="form-row">
+              <!-- IPP -->
+              <div class="form-group col-md-6">
+                <label for="">IPP (ID Patient)</label>
+                <input type="text" name="ipp" class="form-control ipp" value="{{ commande.ipp }}" placeholder="Identifiant du patient" />
+              </div>
+
+              <!-- Nom du Patient -->
+              <div class="form-group col-md-6">
+                <label for="">Nom du Patient</label>
+                <input type="text" name="nom_patient" class="form-control nom_patient" value="{{ commande.nomPatient }}" placeholder="Nom complet du patient" readonly />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <!-- Dossier Patient -->
+              <div class="form-group col-md-6">
+                <label for="">Dossier Patient</label>
+                <input type="text" name="dossier_patient" class="form-control dossier_patient" value="{{ commande.dossierPatient }}" placeholder="Code dossier patient" readonly />
+              </div>
+              <!-- Description -->
+              <div class="form-group col-md-6">
+                <label for="description">Description</label>
+                <input type="text" id="description" name="description" class="form-control" value="{{ commande.description }}" placeholder="Description..." />
+              </div>
+            </div>
+
+            <!-- Urgent -->
+            <div class="urgent-check-wrapper-edit">
+              <label class="form-check-label" for="urgent">URGENT</label>
+              <input class="form-check-input" type="checkbox" id="urgent" name="urgent" {% if commande.urgent %}checked{% endif %} />    
+            </div>
+
+            <!-- Produits -->
+            <div class="mt-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <h5>Produits</h5>
+                <button type="button" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i></button>
+              </div>
+              <div style="max-height: 386px; overflow-y: auto;">
+                <table class="table table-bordered my-2">
+                  <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 1;">
+                    <tr>   
+                        <th style="width: max-content;">Produit</th>
+                        <th style="width: 7%;">Quantité</th>
+                        <th style="width: 10%;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for ligne in commande.tMsCommandelgs %}
+                      <tr data-id="{{ ligne.pProduit.id }}" data-commandelg-id="{{ ligne.id }}">
+                        <td style="vertical-align: top !important; text-align: left !important;">
+                          <select class="form-control form-control-sm product-select" disabled>
+                            {% for produit in produits %}
+                              <option value="{{ produit.id }}" data-prix="{{ produit.price }}"
+                                {% if produit.id == ligne.pProduit.id %}selected{% endif %}>
+                                {{ produit.name }}
+                              </option>
+                            {% endfor %}
+                          </select>
+                        </td>
+                        <td>
+                          <input type="number" class="form-control form-control-sm quantity-input" value="{{ ligne.quantitecommandee }}" min="1" disabled>
+                        </td>
+                        <td class="text-center">
+                          <button type="button" class="btn btn-sm btn-edit-line" title="Modifier">
+                            <i class="fa fa-edit text-primary"></i>
+                          </button>
+                          <button type="button" class="btn btn-sm btn-delete-line" title="Supprimer">
+                            <i class="fa fa-trash text-danger"></i>
+                          </button>
+                          <button type="button" class="btn btn-sm btn-save-line d-none" title="Enregistrer">
+                            <i class="fa fa-save text-success"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary btn-save-edit" data-id="{{ commande.id }}">
+            <i class="fa fa-save"></i> Sauvegarder
+          </button>
+        </div>
+    </div>
+  </div>
+</div>
+{% endfor %}

@@ -14,11 +14,6 @@ $(document).ready( function () {
 
   });
 
-
-
-
-
-
   $("body").on("click", ".saveAddAction" , function(){
     var actionName = $("#actionName").val();
     var icon = $("#icon").val();

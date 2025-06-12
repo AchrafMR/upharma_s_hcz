@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Mpdf\Tag\Tr;
 
 #[ORM\Entity(repositoryClass: TMsDemandeRepository::class)]
-#[ORM\Table(name: 't_ms_Demande')]
+#[ORM\Table(name: 't_ms_demande')]
 
 class TMsDemande
 {
@@ -104,9 +104,17 @@ class TMsDemande
     #[ORM\ManyToOne(inversedBy: 'tMsDemandes')]
     private ?PEntite $pEntite = null;
 
+    #[ORM\OneToMany(mappedBy: 'tMsDemande', targetEntity: TMsCommande::class)]
+    private Collection $tMsCommandes;
+
+    #[ORM\ManyToOne(targetEntity: TMsCommande::class)]
+    #[ORM\JoinColumn(name: "commande_consommation_id", referencedColumnName: "id", nullable: true)]
+    private ?TMsCommande $commandeConsommation = null;
+
     public function __construct()
     {
         $this->tMsDemandelgs = new ArrayCollection();
+        $this->tMsCommandes = new ArrayCollection();
     }
 
 
@@ -184,7 +192,7 @@ class TMsDemande
         return $this;
     }
 
-    public function isUrgent(): ?bool
+    public function getUrgent(): ?bool
     {
         return $this->urgent;
     }
@@ -407,13 +415,12 @@ class TMsDemande
     public function setPPartenairesId(?PPartenaires $p_partenaires_id): static
     {
         $this->p_partenaires_id = $p_partenaires_id;
-
         return $this;
     }
 
     /**
      * @return Collection<int, TMsDemandelg>
-     */
+     */ 
     public function getTMsDemandelgs(): Collection
     {
         return $this->tMsDemandelgs;
@@ -453,5 +460,45 @@ class TMsDemande
         return $this;
     }
 
-    
+    /**
+     * @return Collection<int, TMsCommande>
+     */
+    public function getTMsCommandes(): Collection
+    {
+        return $this->tMsCommandes;
+    }
+
+    public function addTMsCommande(TMsCommande $tMsCommande): static
+    {
+        if (!$this->tMsCommandes->contains($tMsCommande)) {
+            $this->tMsCommandes->add($tMsCommande);
+            $tMsCommande->setTMsDemande($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsCommande(TMsCommande $tMsCommande): static
+    {
+        if ($this->tMsCommandes->removeElement($tMsCommande)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsCommande->getTMsDemande() === $this) {
+                $tMsCommande->setTMsDemande(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCommandeConsommation(): ?TMsCommande
+    {
+        return $this->commandeConsommation;
+    }
+
+    public function setCommandeConsommation(?TMsCommande $commandeConsommation): static
+    {
+        $this->commandeConsommation = $commandeConsommation;
+
+        return $this;
+    }  
 }

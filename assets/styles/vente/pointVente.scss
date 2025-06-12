@@ -1,3 +1,18 @@
+.urgent-check-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.urgent-check-wrapper input {
+  margin: 0 0 0 45px !important;
+}
+.urgent-check-wrapper label {
+  margin: 0 !important;
+  font-weight: normal !important;
+}
 
 .search_section {
   padding-right: 28.8%;
@@ -9,6 +24,7 @@
   }
   .search_input {
     width: 80%;
+    margin: 0 !important;
   }
 }
 
@@ -47,7 +63,7 @@
 }
 
 .category-nav-btn.active {
-  background-color: rgb(80, 136, 132); /* Bootstrap primary */
+  background-color: #7593ae  ; /* Bootstrap primary */
   color: #fff;
 }
 
@@ -59,7 +75,7 @@
 }
 
 .product-card:hover {
-  border: 1px solid rgb(80, 136, 132) !important;
+  border: 1px solid #7593ae   !important;
   transform: scale(1.015);
 }
 .product-img-wrapper img {

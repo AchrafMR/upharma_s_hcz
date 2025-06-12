@@ -184,7 +184,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
   renderFilteredProducts();
 
-  // Handle Submit
+
+  // Handle Submit coomander
   const commanderButton = document.querySelector('[data-target="#addCommande"]');
   commanderButton?.addEventListener("click", (e) => {
     e.preventDefault();
@@ -198,6 +199,75 @@ window.addEventListener("DOMContentLoaded", () => {
     $("#addCommande").modal("show");
   });
 
+  // Handle Demandeur and Traitement options
+  const defaultTraitementMagasins = window.DEFAULT_TRAITEMENT_IDS || [];
+  const handleTraitementOptions = () => {
+    const selectedDemandeurId = document.getElementById("demandeur_id").value;
+    const $traitementSelect = $('#recepteur_id');
+    const $demandeurSelect = $('#demandeur_id');
+    const currentTraitementId = $traitementSelect.val();
+    let stillValid = false;
+
+    $traitementSelect.find('option').each(function () {
+      const option = $(this);
+      const value = option.attr('value');
+      if (!value) return;
+
+      const isDefault = defaultTraitementMagasins.includes(Number(value));
+      const isSame = value === selectedDemandeurId;
+      const shouldDisable = isDefault && !isSame;
+
+      option.prop('disabled', shouldDisable);
+
+      if (!shouldDisable && value === currentTraitementId) {
+        stillValid = true;
+      }
+    });
+
+    if (!stillValid) {
+      $traitementSelect.val('');
+    }
+
+    //  Refresh Select2 dropdowns
+    $traitementSelect.trigger('change.select2');
+    $demandeurSelect.trigger('change.select2');
+  };
+
+  // Bind change event for Demandeur
+  $('#demandeur_id').on('change', () => {
+    setTimeout(handleTraitementOptions, 0);
+  });
+
+  handleTraitementOptions(); // Run on load
+
+
+  // IPP autofill on Enter for set patient name and dossier
+  const ippInput = document.getElementById("ipp");
+  const nomInput = document.getElementById("nom_patient");
+  const dossierInput = document.getElementById("dossier_patient");
+
+  nomInput.disabled = true;
+  dossierInput.disabled = true;
+  ippInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      const ipp = ippInput.value.trim();
+      const patient = (window.infos_patient || []).find(p => p.ipp === ipp);
+
+      if (patient) {
+        nomInput.value = patient.nom;
+        dossierInput.value = patient.dossier;
+      } else {
+        nomInput.value = "";
+        dossierInput.value = "";
+        toastr.error("Aucun patient trouvé avec cet IPP");
+      }
+    }
+  });
+
+
+  // Handle form submission
   document.getElementById("submit-demande").addEventListener("click", () => {
     if (!pendingDemande || pendingDemande.length === 0) {
       toastr.error("Aucune donnée de panier à envoyer.");
@@ -258,6 +328,10 @@ window.addEventListener("DOMContentLoaded", () => {
         toastr.error("Erreur lors de l'enregistrement de la demande.");
       });
   });
+
+
+
+
 });
 
 
