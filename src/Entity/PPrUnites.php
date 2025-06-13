@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PPrUnitesRepository::class)]
+#[ORM\Table(name: 'p_pr_unites')]
 class PPrUnites
 {
     #[ORM\Id]
@@ -43,6 +44,9 @@ class PPrUnites
     #[ORM\OneToMany(mappedBy: 'pPrUnite', targetEntity: TMsCommandelg::class)]
     private Collection $tMsCommandelgs;
 
+    #[ORM\OneToMany(mappedBy: 'pPrUnite', targetEntity: TMsLivraisonlg::class)]
+    private Collection $tMsLivraisonlgs;
+
     public function __construct()
     {
         $this->pProduits = new ArrayCollection();
@@ -50,6 +54,7 @@ class PPrUnites
         $this->tStStockdynas = new ArrayCollection();
         $this->tStStockstatics = new ArrayCollection();
         $this->tMsCommandelgs = new ArrayCollection();
+        $this->tMsLivraisonlgs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -249,6 +254,36 @@ class PPrUnites
             // set the owning side to null (unless already changed)
             if ($tMsCommandelg->getPPrUnite() === $this) {
                 $tMsCommandelg->setPPrUnite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsLivraisonlg>
+     */
+    public function getTMsLivraisonlgs(): Collection
+    {
+        return $this->tMsLivraisonlgs;
+    }
+
+    public function addTMsLivraisonlg(TMsLivraisonlg $tMsLivraisonlg): static
+    {
+        if (!$this->tMsLivraisonlgs->contains($tMsLivraisonlg)) {
+            $this->tMsLivraisonlgs->add($tMsLivraisonlg);
+            $tMsLivraisonlg->setPPrUnite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsLivraisonlg(TMsLivraisonlg $tMsLivraisonlg): static
+    {
+        if ($this->tMsLivraisonlgs->removeElement($tMsLivraisonlg)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsLivraisonlg->getPPrUnite() === $this) {
+                $tMsLivraisonlg->setPPrUnite(null);
             }
         }
 

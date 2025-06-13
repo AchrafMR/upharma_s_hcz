@@ -272,8 +272,8 @@ class CommandeVenteController extends AbstractController
                 d.position_actuel
             FROM t_ms_commande d
             LEFT JOIN t_ms_commandelg lg ON lg.t_ms_commande_id = d.id AND lg.actif = 1
-            LEFT JOIN pmagasins demandeur ON demandeur.id = d.demandeur_id
-            LEFT JOIN pmagasins recepteur ON recepteur.id = d.recepteur_id
+            LEFT JOIN p_magasins demandeur ON demandeur.id = d.demandeur_id
+            LEFT JOIN p_magasins recepteur ON recepteur.id = d.recepteur_id
             WHERE d.actif = 1 AND d.type_commande_id = 2
             $where
             GROUP BY 
@@ -291,8 +291,8 @@ class CommandeVenteController extends AbstractController
         $countSql = "
             SELECT COUNT(DISTINCT d.id) as total
             FROM t_ms_commande d
-            LEFT JOIN pmagasins demandeur ON demandeur.id = d.demandeur_id
-            LEFT JOIN pmagasins recepteur ON recepteur.id = d.recepteur_id
+            LEFT JOIN p_magasins demandeur ON demandeur.id = d.demandeur_id
+            LEFT JOIN p_magasins recepteur ON recepteur.id = d.recepteur_id
             WHERE d.actif = 1 AND d.type_commande_id = 2 AND d.p_entite_id = ?
             " . (!empty($search) ? substr($where, strpos($where, 'AND (')) : '')
         ;

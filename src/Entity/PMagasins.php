@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PMagasinsRepository::class)]
+#[ORM\Table(name: 'p_magasins')]
 class PMagasins
 {
     #[ORM\Id]
@@ -46,10 +47,14 @@ class PMagasins
     #[ORM\OneToMany(mappedBy: 'magasin', targetEntity: PAffectationMagasin::class)]
     private Collection $pAffectationMagasins;
 
+    #[ORM\OneToMany(mappedBy: 'recepteur', targetEntity: TMsLivraison::class)]
+    private Collection $tMsLivraisons;
+
     public function __construct()
     {
         $this->tMsCommandes = new ArrayCollection();
         $this->pAffectationMagasins = new ArrayCollection();
+        $this->tMsLivraisons = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -207,6 +212,36 @@ class PMagasins
             // set the owning side to null (unless already changed)
             if ($pAffectationMagasin->getMagasin() === $this) {
                 $pAffectationMagasin->setMagasin(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsLivraison>
+     */
+    public function getTMsLivraisons(): Collection
+    {
+        return $this->tMsLivraisons;
+    }
+
+    public function addTMsLivraison(TMsLivraison $tMsLivraison): static
+    {
+        if (!$this->tMsLivraisons->contains($tMsLivraison)) {
+            $this->tMsLivraisons->add($tMsLivraison);
+            $tMsLivraison->setRecepteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsLivraison(TMsLivraison $tMsLivraison): static
+    {
+        if ($this->tMsLivraisons->removeElement($tMsLivraison)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsLivraison->getRecepteur() === $this) {
+                $tMsLivraison->setRecepteur(null);
             }
         }
 

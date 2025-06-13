@@ -413,9 +413,22 @@ document.addEventListener("DOMContentLoaded", () => {
     if (btn.classList.contains("btn-valider")) {
       updatePosition(btn.dataset.id, 'validée');
     } else if (btn.classList.contains("btn-generer")) {
-      updatePosition(btn.dataset.id, 'Générée');
+      //Open reception modal instead of pushing to backend
+      const id = btn.dataset.id;
+      const modal = document.getElementById(`preparerLivraison${id}`);
+      if (modal) {
+        $(modal).modal('show');
+      }
     }
   });
+  // document.body.addEventListener("click", (e) => {
+  //   const btn = e.target;
+  //   if (btn.classList.contains("btn-valider")) {
+  //     updatePosition(btn.dataset.id, 'validée');
+  //   } else if (btn.classList.contains("btn-generer")) {
+  //     updatePosition(btn.dataset.id, 'Générée');
+  //   }
+  // });
 
   $('.modal').on('hidden.bs.modal', function () {
     if (positionChanged) {

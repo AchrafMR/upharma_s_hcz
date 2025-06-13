@@ -1,0 +1,69 @@
+{% for commande in commandes %}
+<div
+  class="modal right fade"
+  id="preparerLivraison{{ commande.id }}"
+  role="dialog"
+  aria-labelledby="preparerLivraison"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" style="width: 55%" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Préparer la Livraison</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form class="livraison-form" data-id="{{ commande.id }}">
+          <input type="hidden" name="commande_id" value="{{ commande.id }}"/>
+
+          <div style="max-height: 319px; overflow-y: auto;">
+            <table class="table table-bordered mb-0">
+              <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 1;">
+                <tr>
+                  <th>Produit</th>
+                  <th>Commandée</th>
+                  <th>Déjà Livrée</th>
+                  <th>Reste</th>
+                  <th>À Livrer</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for ligne in commande.tMsCommandelgs %}
+                  <tr>
+                    <td>{{ ligne.pProduit.titre }}</td>
+                    <td>{{ ligne.quantiteCommandee }}</td>
+                    <td>{{ ligne.quantiteServie }}</td>
+                    <td>{{ ligne.quantiteReste }}</td>
+                    <td>
+                      <input type="number"
+                             step="0.01"
+                             min="0"
+                             max="{{ ligne.quantiteReste }}"
+                             name="quantites[{{ ligne.id }}]"
+                             class="form-control form-control-sm"
+                             placeholder="0" />
+                    </td>
+                  </tr>
+                {% else %}
+                  <tr><td colspan="5">Aucune ligne de commande trouvée</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button"
+                class="btn btn-success btn-confirmer-livraison"
+                data-id="{{ commande.id }}">
+          Confirmer la Livraison
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}

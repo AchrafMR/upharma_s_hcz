@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PDepotsRepository::class)]
+#[ORM\Table(name: 'p_depots')]
 class PDepots
 {
     #[ORM\Id]
@@ -57,6 +58,9 @@ class PDepots
 
     #[ORM\OneToMany(mappedBy: 'depot', targetEntity: PMagasins::class)]
     private Collection $pMagasins;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $defaut = null;
 
     public function __construct()
     {
@@ -250,6 +254,18 @@ class PDepots
                 $pMagasin->setDepot(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isDefaut(): ?bool
+    {
+        return $this->defaut;
+    }
+
+    public function setDefaut(?bool $defaut): static
+    {
+        $this->defaut = $defaut;
 
         return $this;
     }
