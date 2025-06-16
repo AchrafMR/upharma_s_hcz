@@ -104,6 +104,9 @@ class PEntite
     #[ORM\OneToMany(mappedBy: 'pEntite', targetEntity: TMsCommande::class)]
     private Collection $tMsCommandes;
 
+    #[ORM\OneToMany(mappedBy: 'pEntite', targetEntity: TMsLivraison::class)]
+    private Collection $tMsLivraisons;
+
     public function __construct()
     {
         $this->pUserDossierActions = new ArrayCollection();
@@ -113,6 +116,7 @@ class PEntite
         $this->pDepots = new ArrayCollection();
         $this->tMsDemandes = new ArrayCollection();
         $this->tMsCommandes = new ArrayCollection();
+        $this->tMsLivraisons = new ArrayCollection();
 
     }
 
@@ -582,6 +586,36 @@ class PEntite
             // set the owning side to null (unless already changed)
             if ($tMsCommande->getPEntite() === $this) {
                 $tMsCommande->setPEntite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsLivraison>
+     */
+    public function getTMsLivraisons(): Collection
+    {
+        return $this->tMsLivraisons;
+    }
+
+    public function addTMsLivraison(TMsLivraison $tMsLivraison): static
+    {
+        if (!$this->tMsLivraisons->contains($tMsLivraison)) {
+            $this->tMsLivraisons->add($tMsLivraison);
+            $tMsLivraison->setPEntite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsLivraison(TMsLivraison $tMsLivraison): static
+    {
+        if ($this->tMsLivraisons->removeElement($tMsLivraison)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsLivraison->getPEntite() === $this) {
+                $tMsLivraison->setPEntite(null);
             }
         }
 

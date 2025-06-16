@@ -29,10 +29,14 @@ class PEmplacement
     #[ORM\OneToMany(mappedBy: 'pEmplacements', targetEntity: TStStockstatic::class)]
     private Collection $tStStockstatics;
 
+    #[ORM\OneToMany(mappedBy: 'adresse', targetEntity: TAcReceptionObj::class)]
+    private Collection $tAcReceptionObjs;
+
     public function __construct()
     {
         $this->tStStockdynas = new ArrayCollection();
         $this->tStStockstatics = new ArrayCollection();
+        $this->tAcReceptionObjs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -117,6 +121,36 @@ class PEmplacement
             // set the owning side to null (unless already changed)
             if ($tStStockstatic->getPEmplacements() === $this) {
                 $tStStockstatic->setPEmplacements(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TAcReceptionObj>
+     */
+    public function getTAcReceptionObjs(): Collection
+    {
+        return $this->tAcReceptionObjs;
+    }
+
+    public function addTAcReceptionObj(TAcReceptionObj $tAcReceptionObj): static
+    {
+        if (!$this->tAcReceptionObjs->contains($tAcReceptionObj)) {
+            $this->tAcReceptionObjs->add($tAcReceptionObj);
+            $tAcReceptionObj->setAdresse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcReceptionObj(TAcReceptionObj $tAcReceptionObj): static
+    {
+        if ($this->tAcReceptionObjs->removeElement($tAcReceptionObj)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcReceptionObj->getAdresse() === $this) {
+                $tAcReceptionObj->setAdresse(null);
             }
         }
 

@@ -71,6 +71,10 @@ class TMsLivraison
     #[ORM\OneToMany(mappedBy: 'tMsLivraison', targetEntity: TMsLivraisonlg::class)]
     private Collection $tMsLivraisonlgs;
 
+    #[ORM\ManyToOne(inversedBy: 'tMsLivraisons')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?pEntite $pEntite = null;
+
     public function __construct()
     {
         $this->tMsLivraisonlgs = new ArrayCollection();
@@ -298,6 +302,18 @@ class TMsLivraison
                 $tMsLivraisonlg->setTMsLivraison(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPEntite(): ?pEntite
+    {
+        return $this->pEntite;
+    }
+
+    public function setPEntite(?pEntite $pEntite): static
+    {
+        $this->pEntite = $pEntite;
 
         return $this;
     }

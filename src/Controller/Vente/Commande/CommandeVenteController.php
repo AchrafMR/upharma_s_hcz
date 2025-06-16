@@ -7,6 +7,9 @@ use App\Entity\PMagasins;
 use App\Entity\PProduits;
 use App\Entity\TMsCommande;
 use App\Entity\TMsCommandelg;
+use App\Entity\TMsLivraison;
+use App\Entity\TMsLivraisonlg;
+use App\Entity\TMsLivraisonobj;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -77,127 +80,11 @@ class CommandeVenteController extends AbstractController
         ]);
     }
 
-    // #[Route('/fetch-commandes', name: 'app_fetch_commandes', options: ['expose' => true], methods: 'GET')]
-    // public function fetchCommandes(Request $request, EntityManagerInterface $em): JsonResponse
-    // {
-    //     $connection = $em->getConnection();
-    //     $draw = $request->query->get('draw');
-    //     $start = (int) $request->query->get('start', 0);
-    //     $length = (int) $request->query->get('length', 10);
-    //     $search = $request->query->all('search')['value'] ?? '';
-    //     $orderColumnIndex = (int) $request->query->all('order')[0]['column'] ?? 0;
-    //     $orderDir = strtoupper($request->query->all('order')[0]['dir'] ?? 'DESC');
-
-    //     // Column mapping
-    //     $columns = [
-    //         'd.id',
-    //         'd.code',
-    //         'demandeur.designation',
-    //         'recepteur.designation',
-    //         'd.ipp',
-    //         'd.nom_patient',
-    //         'SUM(lg.montant_ttc)',
-    //         "CASE WHEN d.urgent = 1 THEN 'Urgent' ELSE 'Normal' END",
-    //         'd.created',
-    //         'd.position_actuel',
-    //     ];
-
-    //     $orderColumn = $columns[$orderColumnIndex] ?? 'd.id';
-
-    //     // Search setup
-    //     $where = '';
-    //     $params = [];
-    //     if (!empty($search)) {
-    //         $where = " AND (
-    //         d.code LIKE ? OR
-    //         d.ipp LIKE ? OR
-    //         d.position_actuel LIKE ? OR
-    //         d.created LIKE ? OR
-    //         d.nom_patient LIKE ? OR
-    //         demandeur.designation LIKE ? OR
-    //         recepteur.designation LIKE ?
-    //       )";
-
-    //         // Positional parameters
-    //         for ($i = 0; $i <7; $i++) {
-    //             $params[] = '%' . $search . '%';
-    //         }
-    //     }
-
-    //     // Main query
-    //     $sql = "
-    //         SELECT 
-    //             d.id AS id,
-    //             d.code AS commande_code,
-    //             d.description,
-    //             demandeur.designation AS demandeur,
-    //             recepteur.designation AS recepteur,
-    //             d.ipp AS ipp_patient,
-    //             d.nom_patient,
-    //             SUM(lg.montant_ttc) AS total_montant_ttc,
-    //             CASE 
-    //                 WHEN d.urgent = 1 THEN 'Urgent'
-    //                 ELSE 'Normal'
-    //             END AS niveau_urgence,
-    //             d.created AS date_demmande,
-    //             d.position_actuel
-    //         FROM t_ms_commande d
-    //         LEFT JOIN t_ms_commandelg lg ON lg.t_ms_commande_id = d.id AND lg.actif = 1
-    //         LEFT JOIN pmagasins demandeur ON demandeur.id = d.demandeur_id
-    //         LEFT JOIN pmagasins recepteur ON recepteur.id = d.recepteur_id
-    //         WHERE d.actif = 1 AND d.type_commande_id=2
-    //         $where
-    //         GROUP BY 
-    //             d.id, d.code,d.description, d.ipp, d.nom_patient, d.created, 
-    //             d.position_actuel, d.urgent, 
-    //             demandeur.designation, recepteur.designation
-    //         ORDER BY $orderColumn $orderDir
-    //         OFFSET $start ROWS FETCH NEXT $length ROWS ONLY
-    //     ";
-
-    //     $stmt = $connection->prepare($sql);
-    //     $results = $stmt->executeQuery($params)->fetchAllAssociative();
-
-    //     $countSql = "
-    //         SELECT COUNT(DISTINCT d.id) as total
-    //         FROM t_ms_Demande d
-    //         LEFT JOIN pmagasins demandeur ON demandeur.id = d.demandeur_id
-    //         LEFT JOIN pmagasins recepteur ON recepteur.id = d.recepteur_id
-    //         $where
-    //     ";
-    //     $countStmt = $connection->prepare($countSql);
-    //     $totalRecords = $countStmt->executeQuery($params)->fetchOne();
-
-    //     $actions = $this->userOperation->getOperations($this->getUser(), 'vente_gestion_commandes_index', $request);
-    //     $filteredActions = array_filter($actions, function($action) {
-    //         return (!$action->isHorizontal());
-    //     });
-    //     $allActions = array_map(function($action) {
-    //         return [
-    //             'sousModuleId'=> $action->getPSousModule()->getId(),
-    //             'idOp'=> $action->getId(),
-    //             'idName' => $action->getIdName(),
-    //             'nom' => $action->getNom(),
-    //             'className' => $action->getClassName(),
-    //             'icon' => $action->getIcon(),
-    //         ];
-    //     }, $filteredActions);
-
-    //     return new JsonResponse([
-    //         'draw' => $draw,
-    //         'recordsTotal' => $totalRecords,
-    //         'recordsFiltered' => $totalRecords,
-    //         'data' => $results,
-    //         'actions' => $allActions
-    //     ]);
-    // }
-
     #[Route('/fetch-commandes', name: 'app_fetch_commandes', options: ['expose' => true], methods: 'GET')]
     public function fetchCommandes(Request $request, EntityManagerInterface $em): JsonResponse
     {
         $connection = $em->getConnection();
-
-        
+  
         $dossier = $request->getSession()->get('dossier');
 
         if (!$dossier || !method_exists($dossier, 'getId')) {
@@ -465,5 +352,96 @@ class CommandeVenteController extends AbstractController
 
         return new JsonResponse(['success' => true]);
     }
+
+    #[Route('/save-livraison', name: 'vente_save_livraison', methods: ['POST'])]
+    public function saveLivraison(Request $request): JsonResponse
+    {
+        $commandeId = $request->request->get('commande_id');
+        $quantites = $request->request->all('quantites'); // [ligneId => quantiteLivree]
+
+        if (!$commandeId || empty($quantites)) {
+            return new JsonResponse(['status' => 'error', 'message' => 'Données incomplètes.']);
+        }
+
+        $commande = $this->em->getRepository(TMsCommande::class)->find($commandeId);
+        if (!$commande) {
+            return new JsonResponse(['status' => 'error', 'message' => 'Commande introuvable.']);
+        }
+
+
+        //  Create Livraison (header)
+        $livraison = new TMsLivraison();
+        $livraison->setTMsCommande($commande);
+        $livraison->setDemandeurId($commande->getDemandeurId());
+        $livraison->setRecepteurId($commande->getRecepteurId());
+        $livraison->setIpp($commande->getIpp());
+        $livraison->setNomPatient($commande->getNomPatient());
+        $livraison->setDossierPatient($commande->getDossierPatient());
+        $livraison->setPEntite($commande->getPEntite());
+        $livraison->setCreated(new \DateTime());
+        $livraison->setUrgent($commande->isUrgent());
+        $livraison->setActif(true);
+
+        $allDelivered = true;
+
+        foreach ($quantites as $ligneId => $qtyLivree) {
+            $ligne = $this->em->getRepository(TMsCommandelg::class)->find($ligneId);
+
+            if (!$ligne || $qtyLivree <= 0) {
+                continue;
+            }
+
+            $qtyLivree = min($qtyLivree, $ligne->getQuantiteReste());
+            $newServie = $ligne->getQuantiteServie() + $qtyLivree;
+            $newReste = max(0, $ligne->getQuantiteCommandee() - $newServie);
+
+            //  1. LIVRAISONLG
+            $livraisonLg = new TMsLivraisonlg();
+            $livraisonLg->setTMsLivraison($livraison);
+            $livraisonLg->setPProduit($ligne->getPProduit());
+            $livraisonLg->setPPrUnite($ligne->getPPrUnite());
+            $livraisonLg->setQuantiteLivree($qtyLivree);
+            $livraisonLg->setPrixunitaire($ligne->getPrixUnitaire());
+            $livraisonLg->setMontantTotal($qtyLivree * $ligne->getPrixUnitaire());
+            $livraisonLg->setObservation($ligne->getObservation());
+            $livraisonLg->setFlagSynchronisationLocale(false);
+            $this->em->persist($livraisonLg);
+
+            //  2. LIVRAISONOBJ (default one per LG)
+            $livraisonObj = new TMsLivraisonobj();
+            $livraisonObj->setTMsLivraisonLg($livraisonLg);
+            $livraisonObj->setLot('DEFAULT'); // Change if needed
+            $livraisonObj->setDatePeremption(null); // Optional: replace if provided
+            $livraisonObj->setQuantitieLivree($qtyLivree);
+            $livraisonObj->setPrixTtc($ligne->getPrixUnitaire());
+            $livraisonObj->setTotalTtc($qtyLivree * $ligne->getPrixUnitaire());
+            $livraisonObj->setCreated(new \DateTime());
+            $livraisonObj->setFlagSynchronisationLocale(false);
+            $this->em->persist($livraisonObj);
+
+            //  Update ligne in commande
+            $ligne->setQuantiteServie($newServie);
+            $ligne->setQuantiteReste($newReste);
+
+            if ($newReste > 0) {
+                $allDelivered = false;
+            }
+        }
+
+        //  Finalize livraison
+        $livraison->setMultiRecp(!$allDelivered);
+        $livraison->setPositionActuel($allDelivered ? 'complète' : 'partielle');
+
+        if ($allDelivered) {
+            $commande->setPositionActuel('Générée');
+            $commande->setUserGenerer($this->getUser());
+        }
+
+        $this->em->persist($livraison);
+        $this->em->flush();
+
+        return new JsonResponse(['status' => 'success', 'message' => 'Livraison enregistrée avec succès.']);
+    }
+
 
 }
