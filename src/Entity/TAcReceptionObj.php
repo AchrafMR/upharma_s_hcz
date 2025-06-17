@@ -87,7 +87,7 @@ class TAcReceptionObj
     private ?PNaturePrix $naturePrix = null;
 
     #[ORM\ManyToOne(inversedBy: 'tAcReceptionObjs')]
-    private ?PEmplacement $adresse = null;
+    private ?PEmplacements $adresse = null;
 
     #[ORM\Column(nullable: true)]
     private ?bool $etiqueter = null;
@@ -402,12 +402,12 @@ class TAcReceptionObj
         return $this;
     }
 
-    public function getAdresse(): ?PEmplacement
+    public function getAdresse(): ?PEmplacements
     {
         return $this->adresse;
     }
 
-    public function setAdresse(?PEmplacement $adresse): static
+    public function setAdresse(?PEmplacements $adresse): static
     {
         $this->adresse = $adresse;
 

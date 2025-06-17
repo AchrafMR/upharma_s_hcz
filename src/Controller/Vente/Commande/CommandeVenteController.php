@@ -146,8 +146,8 @@ class CommandeVenteController extends AbstractController
                 d.id AS id,
                 d.code AS commande_code,
                 d.description,
-                demandeur.designation AS demandeur,
-                recepteur.designation AS recepteur,
+                demandeur.designation_access AS demandeur,
+                recepteur.designation_access AS recepteur,
                 d.ipp AS ipp_patient,
                 d.nom_patient,
                 SUM(lg.montant_ttc) AS total_montant_ttc,
@@ -166,7 +166,7 @@ class CommandeVenteController extends AbstractController
             GROUP BY 
                 d.id, d.code, d.description, d.ipp, d.nom_patient, d.created, 
                 d.position_actuel, d.urgent, 
-                demandeur.designation, recepteur.designation
+                demandeur.designation_access, recepteur.designation_access
             ORDER BY $orderColumn $orderDir
             OFFSET $start ROWS FETCH NEXT $length ROWS ONLY
         ";
@@ -357,7 +357,7 @@ class CommandeVenteController extends AbstractController
     public function saveLivraison(Request $request): JsonResponse
     {
         $commandeId = $request->request->get('commande_id');
-        $quantites = $request->request->all('quantites'); // [ligneId => quantiteLivree]
+        $quantites = $request->request->all('quantites'); 
 
         if (!$commandeId || empty($quantites)) {
             return new JsonResponse(['status' => 'error', 'message' => 'Données incomplètes.']);
@@ -368,8 +368,7 @@ class CommandeVenteController extends AbstractController
             return new JsonResponse(['status' => 'error', 'message' => 'Commande introuvable.']);
         }
 
-
-        //  Create Livraison (header)
+        // Create Livraison 
         $livraison = new TMsLivraison();
         $livraison->setTMsCommande($commande);
         $livraison->setDemandeurId($commande->getDemandeurId());
@@ -395,7 +394,7 @@ class CommandeVenteController extends AbstractController
             $newServie = $ligne->getQuantiteServie() + $qtyLivree;
             $newReste = max(0, $ligne->getQuantiteCommandee() - $newServie);
 
-            //  1. LIVRAISONLG
+            // create TMsLivraisonlg
             $livraisonLg = new TMsLivraisonlg();
             $livraisonLg->setTMsLivraison($livraison);
             $livraisonLg->setPProduit($ligne->getPProduit());
@@ -407,11 +406,11 @@ class CommandeVenteController extends AbstractController
             $livraisonLg->setFlagSynchronisationLocale(false);
             $this->em->persist($livraisonLg);
 
-            //  2. LIVRAISONOBJ (default one per LG)
+            // create TMsLivraisonobj
             $livraisonObj = new TMsLivraisonobj();
             $livraisonObj->setTMsLivraisonLg($livraisonLg);
-            $livraisonObj->setLot('DEFAULT'); // Change if needed
-            $livraisonObj->setDatePeremption(null); // Optional: replace if provided
+            $livraisonObj->setLot('DEFAULT'); 
+            $livraisonObj->setDatePeremption(null); 
             $livraisonObj->setQuantitieLivree($qtyLivree);
             $livraisonObj->setPrixTtc($ligne->getPrixUnitaire());
             $livraisonObj->setTotalTtc($qtyLivree * $ligne->getPrixUnitaire());
@@ -427,8 +426,7 @@ class CommandeVenteController extends AbstractController
                 $allDelivered = false;
             }
         }
-
-        //  Finalize livraison
+        //  Update livraison status
         $livraison->setMultiRecp(!$allDelivered);
         $livraison->setPositionActuel($allDelivered ? 'complète' : 'partielle');
 

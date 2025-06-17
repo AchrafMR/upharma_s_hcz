@@ -1,0 +1,36 @@
+  .force-right-align {
+    text-align: right !important;
+    padding-right: 12px !important;
+  }
+  .urgent {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .urgent input {
+    margin: 5px 0 0 55px !important;
+  }
+  .urgent label {
+    margin: 5px 0 0 11px !important;
+    font-weight: normal !important;
+  }
+  .urgent-check-wrapper-edit {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .urgent-check-wrapper-edit input {
+    margin: 3px 0 0 45px !important;
+  }
+  .urgent-check-wrapper-edit label {
+    margin: 3px 0 0 0 !important;
+    font-weight: normal !important;
+  }
+  
+  .form-row {
+    margin-bottom: -10px !important;
+  }

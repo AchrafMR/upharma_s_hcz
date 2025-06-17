@@ -40,6 +40,18 @@ class PMagasins
 
     #[ORM\ManyToOne]
     private ?User $userUpdated = null;
+    
+    #[ORM\Column(nullable: true)]
+    private ?int $dossierUgouvId = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $designationAccess = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $accessCode = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $niveau = null;
 
     #[ORM\OneToMany(mappedBy: 'demandeurId', targetEntity: TMsCommande::class)]
     private Collection $tMsCommandes;
@@ -154,6 +166,53 @@ class PMagasins
     public function setUserUpdated(?User $userUpdated): static
     {
         $this->userUpdated = $userUpdated;
+
+        return $this;
+    }
+        public function getDossierUgouvId(): ?int
+    {
+        return $this->dossierUgouvId;
+    }
+
+    public function setDossierUgouvId(?int $dossierUgouvId): static
+    {
+        $this->dossierUgouvId = $dossierUgouvId;
+
+        return $this;
+    }
+
+    public function getDesignationAccess(): ?string
+    {
+        return $this->designationAccess;
+    }
+
+    public function setDesignationAccess(?string $designationAccess): static
+    {
+        $this->designationAccess = $designationAccess;
+
+        return $this;
+    }
+
+    public function getAccessCode(): ?string
+    {
+        return $this->accessCode;
+    }
+
+    public function setAccessCode(?string $accessCode): static
+    {
+        $this->accessCode = $accessCode;
+
+        return $this;
+    }
+
+    public function getNiveau(): ?int
+    {
+        return $this->niveau;
+    }
+
+    public function setNiveau(?int $niveau): static
+    {
+        $this->niveau = $niveau;
 
         return $this;
     }

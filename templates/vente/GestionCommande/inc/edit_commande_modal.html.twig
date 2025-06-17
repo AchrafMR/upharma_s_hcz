@@ -21,7 +21,7 @@
                   {% for magasin in magasinsDemandeur %}
                     <option value="{{ magasin.id }}" 
                       {% if commande.demandeurId and commande.demandeurId.id == magasin.id %}selected{% endif %}>
-                      {{ magasin.designation }}
+                      {{ magasin.designationAccess }}
                     </option>
                   {% endfor %}
                 </select>
@@ -34,7 +34,7 @@
                   {% for magasin in magasinsTraitement %}
                     <option value="{{ magasin.id }}" 
                       {% if commande.recepteurId and commande.recepteurId.id == magasin.id %}selected{% endif %}>
-                      {{ magasin.designation }}
+                      {{ magasin.designationAccess }}
                     </option>
                   {% endfor %}
                 </select>

@@ -389,10 +389,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const footer = modal.querySelector('.modal-footer');
 
     if (!footer) return;
+    const demandeurSelect = modal.querySelector('[name="demandeur_id"]');
+    const recepteurSelect = modal.querySelector('[name="recepteur_id"]');
+
+    const demandeurId = demandeurSelect?.value;
+    const recepteurId = recepteurSelect?.value;
+    console.log(`Demandeur ID: ${demandeurId}, Recepteur ID: ${recepteurId}`);
 
     let buttonsHTML = '';
 
-    if (newPosition === 'validée') {
+    if (newPosition === 'validée' && demandeurId && recepteurId && demandeurId === recepteurId) {
       buttonsHTML = `
         <button type="button" class="btn btn-primary btn-generer" data-id="${id}">
           Générer
@@ -439,31 +445,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = await response.json();
 
         if (result.status === 'success') {
-          alert(' Livraison enregistrée avec succès.');
+          toastr.success(' Livraison enregistrée avec succès.');
           location.reload();
         } else {
-          alert(' Erreur: ' + (result.message || 'Problème de traitement.'));
+          toastr.error(' Erreur: ' + (result.message || 'Problème de traitement.'));
         }
 
       } catch (error) {
         console.error('Erreur envoi livraison:', error);
-        alert('Erreur de communication avec le serveur.');
+         toastr.error('Erreur de communication avec le serveur.');
       }
     }
   });
-  // document.body.addEventListener("click", (e) => {
-  //   const btn = e.target;
-  //   if (btn.classList.contains("btn-valider")) {
-  //     updatePosition(btn.dataset.id, 'validée');
-  //   } else if (btn.classList.contains("btn-generer")) {
-  //     //Open reception modal instead of pushing to backend
-  //     const id = btn.dataset.id;
-  //     const modal = document.getElementById(`preparerLivraison${id}`);
-  //     if (modal) {
-  //       $(modal).modal('show');
-  //     }
-  //   }
-  // });
+
 
   $('.modal').on('hidden.bs.modal', function () {
     if (positionChanged) {

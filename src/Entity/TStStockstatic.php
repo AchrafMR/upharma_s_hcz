@@ -25,7 +25,7 @@ class TStStockstatic
     private ?PPrUnites $pPrUnite = null;
 
     #[ORM\ManyToOne(inversedBy: 'tStStockstatics')]
-    private ?PEmplacement $pEmplacements = null;
+    private ?PEmplacements $pEmplacements = null;
 
     #[ORM\ManyToOne(inversedBy: 'tStStockstatics')]
     private ?User $userupdate = null;
@@ -74,12 +74,12 @@ class TStStockstatic
         return $this;
     }
 
-    public function getPEmplacements(): ?PEmplacement
+    public function getPEmplacements(): ?PEmplacements
     {
         return $this->pEmplacements;
     }
 
-    public function setPEmplacements(?PEmplacement $pEmplacements): static
+    public function setPEmplacements(?PEmplacements $pEmplacements): static
     {
         $this->pEmplacements = $pEmplacements;
         return $this;

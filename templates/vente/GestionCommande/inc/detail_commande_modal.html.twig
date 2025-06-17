@@ -21,11 +21,11 @@
           <!-- Magasin Demandeur -->
           <div class="form-group col-md-6">
             <label>Magasin Demandeur</label>
-            <select class="form-control" disabled>
+            <select class="form-control" name="demandeur_id" disabled>
               {% for magasin in magasinsDemandeur %}
                 <option value="{{ magasin.id }}"
                   {% if commande.demandeurId and commande.demandeurId.id == magasin.id %}selected{% endif %}>
-                  {{ magasin.designation }}
+                  {{ magasin.designationAccess }}
                 </option>
               {% endfor %}
             </select>
@@ -34,11 +34,11 @@
           <!-- Magasin de Traitement -->
           <div class="form-group col-md-6">
             <label>Magasin de Traitement</label>
-            <select class="form-control" disabled>
+            <select class="form-control" name="recepteur_id" disabled>
               {% for magasin in magasinsTraitement %}
                 <option value="{{ magasin.id }}"
                   {% if commande.recepteurId and commande.recepteurId.id == magasin.id %}selected{% endif %}>
-                  {{ magasin.designation }}
+                  {{ magasin.designationAccess }}
                 </option>
               {% endfor %}
             </select>
@@ -125,13 +125,10 @@
             <button type="button" class="btn btn-primary btn-valider" data-id="{{ commande.id }}">
               Valider
             </button>
-          {% elseif commande.positionActuel == 'validée' %}
+          {% elseif commande.positionActuel == 'validée' and commande.recepteurId.id == commande.demandeurId.id %}
             <button type="button" class="btn btn-primary btn-generer" data-id="{{ commande.id }}">
               Générer
             </button>
-            {# <button type="button" class="btn btn-secondary" data-dismiss="modal">
-              Fermer
-            </button> #}
           {% endif %}
       </div>
 

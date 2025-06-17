@@ -24,6 +24,21 @@ class TMsLivraisonRepository extends ServiceEntityRepository
 //    /**
 //     * @return TMsLivraison[] Returns an array of TMsLivraison objects
 //     */
+
+        public function findAllActifWithActive(): array
+        {
+            return $this->createQueryBuilder('d')
+                ->where('d.actif = 1') 
+                ->leftJoin('d.tMsLivraisonlgs', 'lg') 
+                ->addSelect('lg')
+                ->leftJoin('d.demandeur_id', 'demandeur')
+                ->addSelect('demandeur')
+                ->leftJoin('d.recepteur_id', 'recepteur')
+                ->addSelect('recepteur')
+                ->orderBy('d.created', 'DESC')
+                ->getQuery()
+                ->getResult();
+        }
 //    public function findByExampleField($value): array
 //    {
 //        return $this->createQueryBuilder('t')

@@ -107,6 +107,60 @@ class PEntite
     #[ORM\OneToMany(mappedBy: 'pEntite', targetEntity: TMsLivraison::class)]
     private Collection $tMsLivraisons;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $nomDossier = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $adresse = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $ice = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $email = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $tel2 = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $fax = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $site = null;
+
+    #[ORM\ManyToOne(inversedBy: 'pEntites')]
+    private ?PEtTypeEntites $typeEntite = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $cpyO = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $cpy0Libelle = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $cceO = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $cce0Libelle = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $entreprise = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $immo = null;
+
+    #[ORM\OneToMany(mappedBy: 'entite', targetEntity: TAcReceptionObj::class)]
+    private Collection $tAcReceptionObjs;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $idAccess = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $idUgouv = null;
+
     public function __construct()
     {
         $this->pUserDossierActions = new ArrayCollection();
@@ -118,6 +172,198 @@ class PEntite
         $this->tMsCommandes = new ArrayCollection();
         $this->tMsLivraisons = new ArrayCollection();
 
+    }
+    
+
+    public function getSite(): ?string
+    {
+        return $this->site;
+    }
+
+    public function setSite(?string $site): static
+    {
+        $this->site = $site;
+
+        return $this;
+    }
+    
+    public function getTypeEntite(): ?PEtTypeEntites
+    {
+        return $this->typeEntite;
+    }
+
+    public function setTypeEntite(?PEtTypeEntites $typeEntite): static
+    {
+        $this->typeEntite = $typeEntite;
+
+        return $this;
+    }
+
+        public function getNomDossier(): ?string
+    {
+        return $this->nomDossier;
+    }
+
+    public function setNomDossier(?string $nomDossier): static
+    {
+        $this->nomDossier = $nomDossier;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+    
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(?string $adresse): static
+    {
+        $this->adresse = $adresse;
+
+        return $this;
+    }
+
+    public function getIce(): ?string
+    {
+        return $this->ice;
+    }
+
+    public function setIce(?string $ice): static
+    {
+        $this->ice = $ice;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getTel2(): ?string
+    {
+        return $this->tel2;
+    }
+
+    public function setTel2(?string $tel2): static
+    {
+        $this->tel2 = $tel2;
+
+        return $this;
+    }
+
+    public function getFax(): ?string
+    {
+        return $this->fax;
+    }
+
+    public function setFax(?string $fax): static
+    {
+        $this->fax = $fax;
+
+        return $this;
+    }
+    public function getCpyO(): ?string
+    {
+        return $this->cpyO;
+    }
+
+    public function setCpyO(?string $cpyO): static
+    {
+        $this->cpyO = $cpyO;
+
+        return $this;
+    }
+
+    public function getCpy0Libelle(): ?string
+    {
+        return $this->cpy0Libelle;
+    }
+
+    public function setCpy0Libelle(?string $cpy0Libelle): static
+    {
+        $this->cpy0Libelle = $cpy0Libelle;
+
+        return $this;
+    }
+
+    public function getCceO(): ?string
+    {
+        return $this->cceO;
+    }
+
+    public function setCceO(?string $cceO): static
+    {
+        $this->cceO = $cceO;
+
+        return $this;
+    }
+
+    public function isEntreprise(): ?bool
+    {
+        return $this->entreprise;
+    }
+
+    public function setEntreprise(?bool $entreprise): static
+    {
+        $this->entreprise = $entreprise;
+
+        return $this;
+    }
+
+    public function isImmo(): ?bool
+    {
+        return $this->immo;
+    }
+
+    public function setImmo(?bool $immo): static
+    {
+        $this->immo = $immo;
+
+        return $this;
+    }
+    
+    public function getIdAccess(): ?int
+    {
+        return $this->idAccess;
+    }
+
+    public function setIdAccess(?int $idAccess): static
+    {
+        $this->idAccess = $idAccess;
+
+        return $this;
+    }
+
+    public function getIdUgouv(): ?int
+    {
+        return $this->idUgouv;
+    }
+
+    public function setIdUgouv(?int $idUgouv): static
+    {
+        $this->idUgouv = $idUgouv;
+
+        return $this;
     }
 
     public function getId(): ?int

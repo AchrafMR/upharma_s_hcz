@@ -62,6 +62,9 @@ class PDepots
     #[ORM\Column(nullable: true)]
     private ?bool $defaut = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $etat = null;
+
     public function __construct()
     {
         $this->pMagasins = new ArrayCollection();
@@ -266,6 +269,18 @@ class PDepots
     public function setDefaut(?bool $defaut): static
     {
         $this->defaut = $defaut;
+
+        return $this;
+    }
+
+    public function isEtat(): ?bool
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(?bool $etat): static
+    {
+        $this->etat = $etat;
 
         return $this;
     }

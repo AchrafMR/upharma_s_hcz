@@ -16,6 +16,8 @@ $danger:#AB4459;
 @import "addPatient";
 @import "../plugins/toastr/build/toastr.css";
 @import "vente/pointVente";
+@import "vente/livraison.scss";
+@import "vente/commande.scss";
 
 
 * {
