@@ -30,7 +30,7 @@
                   {% for magasin in magasinsDemandeur %}
                     <option value="{{ magasin.id }}"
                       {% if defaultMagasin and magasin.id == defaultMagasin.id %}selected{% endif %}>
-                      {{ magasin.designation }}
+                      {{ magasin.designationAccess }}
                     </option>
                   {% endfor %}
                 </select>
@@ -44,7 +44,7 @@
                     {% for magasin in magasinsTraitement %}
                       <option value="{{ magasin.id }}"
                         {% if defaultMagasin and magasin.id == defaultMagasin.id %}selected{% endif %}>
-                        {{ magasin.designation }}
+                        {{ magasin.designationAccess }}
                       </option>
                     {% endfor %}
                 </select>

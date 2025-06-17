@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PPrTypeTarificationRepository::class)]
+#[ORM\Table(name: 'p_pr_type_tarification')]
 class PPrTypeTarification
 {
     #[ORM\Id]

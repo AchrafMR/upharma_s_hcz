@@ -389,10 +389,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const footer = modal.querySelector('.modal-footer');
 
     if (!footer) return;
+    const demandeurSelect = modal.querySelector('[name="demandeur_id"]');
+    const recepteurSelect = modal.querySelector('[name="recepteur_id"]');
+
+    const demandeurId = demandeurSelect?.value;
+    const recepteurId = recepteurSelect?.value;
+    console.log(`Demandeur ID: ${demandeurId}, Recepteur ID: ${recepteurId}`);
 
     let buttonsHTML = '';
 
-    if (newPosition === 'validée') {
+    if (newPosition === 'validée' && demandeurId && recepteurId && demandeurId === recepteurId) {
       buttonsHTML = `
         <button type="button" class="btn btn-primary btn-generer" data-id="${id}">
           Générer
@@ -408,14 +414,50 @@ document.addEventListener("DOMContentLoaded", () => {
     footer.innerHTML = buttonsHTML;
   };
 
-  document.body.addEventListener("click", (e) => {
+
+  document.body.addEventListener("click", async (e) => {
     const btn = e.target;
+
+    // Handle validation position
     if (btn.classList.contains("btn-valider")) {
       updatePosition(btn.dataset.id, 'validée');
+
     } else if (btn.classList.contains("btn-generer")) {
-      updatePosition(btn.dataset.id, 'Générée');
+      const id = btn.dataset.id;
+      const modal = document.getElementById(`preparerLivraison${id}`);
+      if (modal) {
+        $(modal).modal('show');
+      }
+
+    } else if (btn.classList.contains("btn-confirmer-livraison")) {
+      const commandeId = btn.dataset.id;
+      const form = document.querySelector(`.livraison-form[data-id="${commandeId}"]`);
+      if (!form) return;
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch('/vente/save-livraison', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          toastr.success(' Livraison enregistrée avec succès.');
+          location.reload();
+        } else {
+          toastr.error(' Erreur: ' + (result.message || 'Problème de traitement.'));
+        }
+
+      } catch (error) {
+        console.error('Erreur envoi livraison:', error);
+         toastr.error('Erreur de communication avec le serveur.');
+      }
     }
   });
+
 
   $('.modal').on('hidden.bs.modal', function () {
     if (positionChanged) {

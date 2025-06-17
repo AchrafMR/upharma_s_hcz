@@ -109,9 +109,13 @@ class TMsCommande
     #[ORM\ManyToOne(targetEntity: self::class)]
     private ?self $parent = null;
 
+    #[ORM\OneToMany(mappedBy: 'tMsCommande', targetEntity: TMsLivraison::class)]
+    private Collection $tMsLivraisons;
+
     public function __construct()
     {
         $this->tMsCommandelgs = new ArrayCollection();
+        $this->tMsLivraisons = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -481,6 +485,36 @@ class TMsCommande
     public function setParent(?self $parent): static
     {
         $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsLivraison>
+     */
+    public function getTMsLivraisons(): Collection
+    {
+        return $this->tMsLivraisons;
+    }
+
+    public function addTMsLivraison(TMsLivraison $tMsLivraison): static
+    {
+        if (!$this->tMsLivraisons->contains($tMsLivraison)) {
+            $this->tMsLivraisons->add($tMsLivraison);
+            $tMsLivraison->setTMsCommande($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsLivraison(TMsLivraison $tMsLivraison): static
+    {
+        if ($this->tMsLivraisons->removeElement($tMsLivraison)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsLivraison->getTMsCommande() === $this) {
+                $tMsLivraison->setTMsCommande(null);
+            }
+        }
 
         return $this;
     }

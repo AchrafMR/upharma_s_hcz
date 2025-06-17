@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PMagasinsRepository::class)]
+#[ORM\Table(name: 'p_magasins')]
 class PMagasins
 {
     #[ORM\Id]
@@ -39,6 +40,18 @@ class PMagasins
 
     #[ORM\ManyToOne]
     private ?User $userUpdated = null;
+    
+    #[ORM\Column(nullable: true)]
+    private ?int $dossierUgouvId = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $designationAccess = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $accessCode = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $niveau = null;
 
     #[ORM\OneToMany(mappedBy: 'demandeurId', targetEntity: TMsCommande::class)]
     private Collection $tMsCommandes;
@@ -46,10 +59,14 @@ class PMagasins
     #[ORM\OneToMany(mappedBy: 'magasin', targetEntity: PAffectationMagasin::class)]
     private Collection $pAffectationMagasins;
 
+    #[ORM\OneToMany(mappedBy: 'recepteur', targetEntity: TMsLivraison::class)]
+    private Collection $tMsLivraisons;
+
     public function __construct()
     {
         $this->tMsCommandes = new ArrayCollection();
         $this->pAffectationMagasins = new ArrayCollection();
+        $this->tMsLivraisons = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -152,6 +169,53 @@ class PMagasins
 
         return $this;
     }
+        public function getDossierUgouvId(): ?int
+    {
+        return $this->dossierUgouvId;
+    }
+
+    public function setDossierUgouvId(?int $dossierUgouvId): static
+    {
+        $this->dossierUgouvId = $dossierUgouvId;
+
+        return $this;
+    }
+
+    public function getDesignationAccess(): ?string
+    {
+        return $this->designationAccess;
+    }
+
+    public function setDesignationAccess(?string $designationAccess): static
+    {
+        $this->designationAccess = $designationAccess;
+
+        return $this;
+    }
+
+    public function getAccessCode(): ?string
+    {
+        return $this->accessCode;
+    }
+
+    public function setAccessCode(?string $accessCode): static
+    {
+        $this->accessCode = $accessCode;
+
+        return $this;
+    }
+
+    public function getNiveau(): ?int
+    {
+        return $this->niveau;
+    }
+
+    public function setNiveau(?int $niveau): static
+    {
+        $this->niveau = $niveau;
+
+        return $this;
+    }
 
     /**
      * @return Collection<int, TMsCommande>
@@ -207,6 +271,36 @@ class PMagasins
             // set the owning side to null (unless already changed)
             if ($pAffectationMagasin->getMagasin() === $this) {
                 $pAffectationMagasin->setMagasin(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsLivraison>
+     */
+    public function getTMsLivraisons(): Collection
+    {
+        return $this->tMsLivraisons;
+    }
+
+    public function addTMsLivraison(TMsLivraison $tMsLivraison): static
+    {
+        if (!$this->tMsLivraisons->contains($tMsLivraison)) {
+            $this->tMsLivraisons->add($tMsLivraison);
+            $tMsLivraison->setRecepteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsLivraison(TMsLivraison $tMsLivraison): static
+    {
+        if ($this->tMsLivraisons->removeElement($tMsLivraison)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsLivraison->getRecepteur() === $this) {
+                $tMsLivraison->setRecepteur(null);
             }
         }
 

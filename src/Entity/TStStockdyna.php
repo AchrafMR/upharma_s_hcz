@@ -25,7 +25,7 @@ class TStStockdyna
     private ?PPrUnites $pPrUnite = null;
 
     #[ORM\ManyToOne(inversedBy: 'userupdate')]
-    private ?PEmplacement $PEmplacements = null;
+    private ?PEmplacements $PEmplacements = null;
 
     #[ORM\ManyToOne(inversedBy: 'tStStockdynas')]
     #[ORM\JoinColumn(nullable: false)]
@@ -78,12 +78,12 @@ class TStStockdyna
         return $this;
     }
 
-    public function getPEmplacements(): ?PEmplacement
+    public function getPEmplacements(): ?PEmplacements
     {
         return $this->PEmplacements;
     }
 
-    public function setPEmplacements(?PEmplacement $PEmplacements): static
+    public function setPEmplacements(?PEmplacements $PEmplacements): static
     {
         $this->PEmplacements = $PEmplacements;
 
