@@ -75,132 +75,132 @@ class LivraisonController extends AbstractController
     }
 
 
-        #[Route('/fetch-livraisons', name: 'app_fetch_livraisons', options: ['expose' => true], methods: 'GET')]
-        public function fetchLivraison(Request $request, EntityManagerInterface $em): JsonResponse
-        {
-            $connection = $em->getConnection();
-    
-            $dossier = $request->getSession()->get('dossier');
+    #[Route('/fetch-livraisons', name: 'app_fetch_livraisons', options: ['expose' => true], methods: 'GET')]
+    public function fetchLivraison(Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $connection = $em->getConnection();
 
-            if (!$dossier || !method_exists($dossier, 'getId')) {
-                return new JsonResponse([
-                    'draw' => $request->query->get('draw'),
-                    'recordsTotal' => 0,
-                    'recordsFiltered' => 0,
-                    'data' => [],
-                    'actions' => [],
-                    'error' => 'Dossier invalide'
-                ]);
-            }
+        $dossier = $request->getSession()->get('dossier');
 
-            $dossierId = $dossier->getId();
-            // dd($dossierId);
-
-            $draw = $request->query->get('draw');
-            $start = (int) $request->query->get('start', 0);
-            $length = (int) $request->query->get('length', 10);
-            $search = $request->query->all('search')['value'] ?? '';
-            $orderColumnIndex = (int) $request->query->all('order')[0]['column'] ?? 0;
-            $orderDir = strtoupper($request->query->all('order')[0]['dir'] ?? 'DESC');
-
-            $columns = [
-                'd.id',
-                'd.code',
-                'demandeur.designation',
-                'recepteur.designation',
-                'd.ipp',
-                'd.nom_patient',
-                'SUM(lg.montant_total)',
-                "CASE WHEN d.urgent = 1 THEN 'Urgent' ELSE 'Normal' END",
-                'd.created',
-                'd.position_actuel',
-            ];
-            $orderColumn = $columns[$orderColumnIndex] ?? 'd.id';
-
-            $where = " AND d.p_entite_id = ?";
-            $params = [$dossierId];
-
-            if (!empty($search)) {
-                $where .= " AND (
-                    d.code LIKE ? OR
-                    d.ipp LIKE ? OR
-                    d.position_actuel LIKE ? OR
-                    d.created LIKE ? OR
-                    d.nom_patient LIKE ? OR
-                    demandeur.designation LIKE ? OR
-                    recepteur.designation LIKE ?
-                )";
-                for ($i = 0; $i < 7; $i++) {
-                    $params[] = '%' . $search . '%';
-                }
-            }
-
-            // Main data query
-            $sql = "
-                SELECT 
-                    d.id AS id,
-                    d.code AS livraison_code,
-                    demandeur.designation_access AS demandeur,
-                    recepteur.designation_access AS recepteur,
-                    d.ipp AS ipp_patient,
-                    d.nom_patient,
-                    SUM(lg.montant_total) AS total_montant_ttc,
-                    CASE 
-                        WHEN d.urgent = 1 THEN 'Urgent'
-                        ELSE 'Normal'
-                    END AS niveau_urgence,
-                    d.created AS date_livraison,
-                    d.position_actuel
-                FROM t_ms_livraison d
-                LEFT JOIN t_ms_livraisonlg lg ON lg.t_ms_livraison_id = d.id
-                LEFT JOIN p_magasins demandeur ON demandeur.id = d.demandeur_id
-                LEFT JOIN p_magasins recepteur ON recepteur.id = d.recepteur_id
-                WHERE d.actif = 1
-                $where
-                GROUP BY 
-                    d.id, d.code, d.ipp, d.nom_patient, d.created, 
-                    d.position_actuel, d.urgent, 
-                    demandeur.designation_access, recepteur.designation_access
-                ORDER BY $orderColumn $orderDir
-                OFFSET $start ROWS FETCH NEXT $length ROWS ONLY
-            ";
-
-            $stmt = $connection->prepare($sql);
-            $results = $stmt->executeQuery($params)->fetchAllAssociative();
-
-            // Count query (filtered)
-            $countSql = "
-                SELECT COUNT(DISTINCT d.id) as total
-                FROM t_ms_livraison d
-                LEFT JOIN p_magasins demandeur ON demandeur.id = d.demandeur_id
-                LEFT JOIN p_magasins recepteur ON recepteur.id = d.recepteur_id
-                WHERE d.actif = 1 AND d.p_entite_id = ?
-                " . (!empty($search) ? substr($where, strpos($where, 'AND (')) : '')
-            ;
-
-            $countStmt = $connection->prepare($countSql);
-            $totalRecords = $countStmt->executeQuery($params)->fetchOne();
-
-            // Get user action permissions
-            $actions = $this->userOperation->getOperations($this->getUser(), 'vente_gestion_livrasions_index', $request);
-            $filteredActions = array_filter($actions, fn($action) => !$action->isHorizontal());
-            $allActions = array_map(function($action) {
-                return [
-                    'sousModuleId'=> $action->getPSousModule()->getId(),
-                    'idOp'=> $action->getId(),
-                    'idName' => $action->getIdName(),
-                    'nom' => $action->getNom(),
-                    'className' => $action->getClassName(),
-                    'icon' => $action->getIcon(),
-                ];
-            }, $filteredActions);
-
+        if (!$dossier || !method_exists($dossier, 'getId')) {
             return new JsonResponse([
-                'draw' => $draw,
-                'recordsTotal' => $totalRecords,
-                'recordsFiltered' => $totalRecords,
-                'data' => $results,
-                'actions' => $allActions
+                'draw' => $request->query->get('draw'),
+                'recordsTotal' => 0,
+                'recordsFiltered' => 0,
+                'data' => [],
+                'actions' => [],
+                'error' => 'Dossier invalide'
             ]);
         }
+
+        $dossierId = $dossier->getId();
+        // dd($dossierId);
+
+        $draw = $request->query->get('draw');
+        $start = (int) $request->query->get('start', 0);
+        $length = (int) $request->query->get('length', 10);
+        $search = $request->query->all('search')['value'] ?? '';
+        $orderColumnIndex = (int) $request->query->all('order')[0]['column'] ?? 0;
+        $orderDir = strtoupper($request->query->all('order')[0]['dir'] ?? 'DESC');
+
+        $columns = [
+            'd.id',
+            'd.code',
+            'demandeur.designation',
+            'recepteur.designation',
+            'd.ipp',
+            'd.nom_patient',
+            'SUM(lg.montant_total)',
+            "CASE WHEN d.urgent = 1 THEN 'Urgent' ELSE 'Normal' END",
+            'd.created',
+            'd.position_actuel',
+        ];
+        $orderColumn = $columns[$orderColumnIndex] ?? 'd.id';
+
+        $where = " AND d.p_entite_id = ?";
+        $params = [$dossierId];
+
+        if (!empty($search)) {
+            $where .= " AND (
+                d.code LIKE ? OR
+                d.ipp LIKE ? OR
+                d.position_actuel LIKE ? OR
+                d.created LIKE ? OR
+                d.nom_patient LIKE ? OR
+                demandeur.designation LIKE ? OR
+                recepteur.designation LIKE ?
+            )";
+            for ($i = 0; $i < 7; $i++) {
+                $params[] = '%' . $search . '%';
+            }
+        }
+
+        // Main data query
+        $sql = "
+            SELECT 
+                d.id AS id,
+                d.code AS livraison_code,
+                demandeur.designation_access AS demandeur,
+                recepteur.designation_access AS recepteur,
+                d.ipp AS ipp_patient,
+                d.nom_patient,
+                SUM(lg.montant_total) AS total_montant_ttc,
+                CASE 
+                    WHEN d.urgent = 1 THEN 'Urgent'
+                    ELSE 'Normal'
+                END AS niveau_urgence,
+                d.created AS date_livraison,
+                d.position_actuel
+            FROM t_ms_livraison d
+            LEFT JOIN t_ms_livraisonlg lg ON lg.t_ms_livraison_id = d.id
+            LEFT JOIN p_magasins demandeur ON demandeur.id = d.demandeur_id
+            LEFT JOIN p_magasins recepteur ON recepteur.id = d.recepteur_id
+            WHERE d.actif = 1
+            $where
+            GROUP BY 
+                d.id, d.code, d.ipp, d.nom_patient, d.created, 
+                d.position_actuel, d.urgent, 
+                demandeur.designation_access, recepteur.designation_access
+            ORDER BY $orderColumn $orderDir
+            OFFSET $start ROWS FETCH NEXT $length ROWS ONLY
+        ";
+
+        $stmt = $connection->prepare($sql);
+        $results = $stmt->executeQuery($params)->fetchAllAssociative();
+
+        // Count query (filtered)
+        $countSql = "
+            SELECT COUNT(DISTINCT d.id) as total
+            FROM t_ms_livraison d
+            LEFT JOIN p_magasins demandeur ON demandeur.id = d.demandeur_id
+            LEFT JOIN p_magasins recepteur ON recepteur.id = d.recepteur_id
+            WHERE d.actif = 1 AND d.p_entite_id = ?
+            " . (!empty($search) ? substr($where, strpos($where, 'AND (')) : '')
+        ;
+
+        $countStmt = $connection->prepare($countSql);
+        $totalRecords = $countStmt->executeQuery($params)->fetchOne();
+
+        // Get user action permissions
+        $actions = $this->userOperation->getOperations($this->getUser(), 'vente_gestion_livrasions_index', $request);
+        $filteredActions = array_filter($actions, fn($action) => !$action->isHorizontal());
+        $allActions = array_map(function($action) {
+            return [
+                'sousModuleId'=> $action->getPSousModule()->getId(),
+                'idOp'=> $action->getId(),
+                'idName' => $action->getIdName(),
+                'nom' => $action->getNom(),
+                'className' => $action->getClassName(),
+                'icon' => $action->getIcon(),
+            ];
+        }, $filteredActions);
+
+        return new JsonResponse([
+            'draw' => $draw,
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $totalRecords,
+            'data' => $results,
+            'actions' => $allActions
+        ]);
+    }
 }

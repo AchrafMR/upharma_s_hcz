@@ -64,15 +64,15 @@
     </div>
   </div>
 
-  {% include 'vente/GestionDemande/inc/edit_demande_modal.html.twig' %} {%
-  include 'vente/GestionDemande/inc/detail_demande_modal.html.twig' %}
+  {% include 'vente/GestionDemande/inc/edit_demande_modal.html.twig' %} 
+  {% include 'vente/GestionDemande/inc/detail_demande_modal.html.twig' %}
 </div>
 {% endblock %} {% block javascripts %}
-{{ parent() }}
-{{ encore_entry_script_tags("gestion_demandes") }}
 <script>
   window.PRODUITS = {{ produits|json_encode(constant('JSON_UNESCAPED_UNICODE'))|raw }};
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+{{ parent() }}
+{{ encore_entry_script_tags("gestion_demandes") }}
 {% endblock %}
