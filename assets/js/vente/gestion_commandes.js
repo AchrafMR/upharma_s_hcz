@@ -1,5 +1,5 @@
 $(document).ready(function () {
-  const table = $("#salesTable").DataTable({
+  const table = $("#commandeTable").DataTable({
     language: {
       url: window.frenchJsonUrl,
       processing:
@@ -257,6 +257,43 @@ window.addEventListener('load', () => {
     if (target.classList.contains('btn-save-edit')) {
       const commandeId = modal.dataset.id;
       const tableBody = modal.querySelector('tbody');
+      
+      // Validate required fields
+      const requiredFields = ['description', 'nom_patient', 'dossier_patient', 'ipp'];
+      let hasError = false;
+
+      requiredFields.forEach(field => {
+        const input = modal.querySelector(`[name="${field}"]`);
+        if (!input || !input.value.trim()) {
+          toastr.error(`Le champ "${field.replace('_', ' ')}" est requis.`);
+          hasError = true;
+        }
+      });
+
+      // Validate presence of at least 1 product
+      const rows = tableBody.querySelectorAll('tr');
+      if (rows.length === 0) {
+        toastr.error("Veuillez ajouter au moins un produit.");
+        hasError = true;
+      }
+
+      // Check for duplicate products
+      const productIds = [];
+      rows.forEach(row => {
+        const select = row.querySelector('.product-select');
+        if (select) {
+          const val = select.value;
+          if (productIds.includes(val)) {
+            toastr.error("Un produit est sélectionné plusieurs fois.");
+            hasError = true;
+          }
+          productIds.push(val);
+        }
+      });
+
+      if (hasError) return;
+
+
 
       if (!tableBody) {
         toastr.error('Erreur interne : tableau introuvable.');
