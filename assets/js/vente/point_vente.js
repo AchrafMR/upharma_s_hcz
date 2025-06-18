@@ -16,7 +16,9 @@ window.addEventListener("DOMContentLoaded", () => {
   // Utilities
   const getProductImage = (product) => {
     const basePath = "/images/products/";
-    return product.image?.trim() ? `${basePath}${product.image}` : facke_img_product;
+    return product.image?.trim()
+      ? `${basePath}${product.image}`
+      : facke_img_product;
   };
 
   const addProductToCart = (productId) => {
@@ -38,24 +40,35 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const renderFilteredProducts = () => {
     const filtered = PRODUCTS.filter((product) => {
-      const matchCategory = selectedCategory === "all" || product.category === selectedCategory;
-      const matchSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchCategory =
+        selectedCategory === "all" || product.category === selectedCategory;
+      const matchSearch = product.name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
       return matchCategory && matchSearch;
     });
 
-    productGrid.innerHTML = filtered.map(product => `
+    productGrid.innerHTML = filtered
+      .map(
+        (product) => `
       <div class="col-6 p-1 col-sm-4 col-md-3 col-lg-2-4">
         <div class="card product-card shadow-sm border-0 rounded-4 px-2 pt-3 pb-2 h-100 position-relative d-flex flex-column justify-content-between">
-          <button class="btn btn-sm btn-primary position-absolute top-right-btn" data-id="${product.id}">
+          <button class="btn btn-sm btn-primary position-absolute top-right-btn" data-id="${
+            product.id
+          }">
             <i class="fa-solid fa-cart-plus"></i>
           </button>
 
           <div class="position-absolute top-left-badge">
-            <div class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center product-badge">${product.quantity}</div>
+            <div class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center product-badge">${
+              product.quantity
+            }</div>
           </div>
 
           <div class="d-flex justify-content-center align-items-center border rounded p-1 product-img-wrapper">
-            <button class="img-clickable border-0 bg-transparent p-0" data-id="${product.id}" style="cursor: pointer">
+            <button class="img-clickable border-0 bg-transparent p-0" data-id="${
+              product.id
+            }" style="cursor: pointer">
               <img
                 src="${getProductImage(product)}"
                 onerror="this.onerror=null;this.src='${facke_img_product}'"
@@ -69,25 +82,36 @@ window.addEventListener("DOMContentLoaded", () => {
           <div class="text-center mt-2">
             
             <h6 class="text-uppercase mb-1 product-title">
-              ${product.name.length > 18 ? product.name.substring(0, 18) + '...' : product.name}
+              ${
+                product.name.length > 18
+                  ? product.name.substring(0, 18) + "..."
+                  : product.name
+              }
             </h6>
-            <p class="text-danger fw-bold mb-0 product-price">${Number(product.price).toFixed(2)} DH</p>
+            <p class="text-danger fw-bold mb-0 product-price">${Number(
+              product.price
+            ).toFixed(2)} DH</p>
           </div>
         </div>
       </div>
-    `).join("");
+    `
+      )
+      .join("");
   };
 
   const renderCart = () => {
-  let subtotal = 0;
+    let subtotal = 0;
 
-  const cartHTML = cart.map((item) => {
-    const product = PRODUCTS.find((p) => p.id === item.id);
-    const stock = product?.quantity ?? 0;
-    subtotal += item.price * item.quantity;
+    const cartHTML = cart
+      .map((item) => {
+        const product = PRODUCTS.find((p) => p.id === item.id);
+        const stock = product?.quantity ?? 0;
+        subtotal += item.price * item.quantity;
 
-    return `
-      <div class="d-flex align-items-center border-bottom py-1 cart-item" data-id="${item.id}" style="width: 100%; font-size: 0.85rem">
+        return `
+      <div class="d-flex align-items-center border-bottom py-1 cart-item" data-id="${
+        item.id
+      }" style="width: 100%; font-size: 0.85rem">
         
       <div style="width: 75%" class="d-flex justify-content-between align-items-center text-uppercase fw-semibold text-truncate">
         <span class="text-truncate" style="max-width: 80%">${item.name}</span>
@@ -99,7 +123,9 @@ window.addEventListener("DOMContentLoaded", () => {
           <button class="btn btn-sm p-0 border-0 bg-transparent text-dark btn-decrease" style="width: 18px">
             <i class="fa-solid fa-minus"></i>
           </button>
-          <input type="text" class="form-control form-control-sm text-center border-0 bg-transparent qty-input" value="${item.quantity}" readonly style="width: 24px" />
+          <input type="text" class="form-control form-control-sm text-center border-0 bg-transparent qty-input" value="${
+            item.quantity
+          }" readonly style="width: 24px" />
           <button class="btn btn-sm p-0 border-0 bg-transparent text-dark btn-increase" style="width: 18px">
             <i class="fa-solid fa-plus"></i>
           </button>
@@ -112,11 +138,12 @@ window.addEventListener("DOMContentLoaded", () => {
     </div>
       </div>
     `;
-  }).join("");
+      })
+      .join("");
 
-  cartContainer.innerHTML = cartHTML;
-  subtotalElement.innerText = `${subtotal.toFixed(2)} DH`;
-};
+    cartContainer.innerHTML = cartHTML;
+    subtotalElement.innerText = `${subtotal.toFixed(2)} DH`;
+  };
 
   // Validate form fields
   const validateFormFields = (fields) => {
@@ -148,7 +175,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
   document.addEventListener("click", (e) => {
     const target = e.target.closest("[data-id]");
-    if (target?.classList.contains("top-right-btn") || target?.classList.contains("img-clickable")) {
+    if (
+      target?.classList.contains("top-right-btn") ||
+      target?.classList.contains("img-clickable")
+    ) {
       addProductToCart(target.dataset.id);
     }
 
@@ -176,14 +206,17 @@ window.addEventListener("DOMContentLoaded", () => {
 
   renderFilteredProducts();
 
-
   // Handle Submit coomander
-  const commanderButton = document.querySelector('[data-target="#addCommande"]');
+  const commanderButton = document.querySelector(
+    '[data-target="#addCommande"]'
+  );
   commanderButton?.addEventListener("click", (e) => {
     e.preventDefault();
 
     if (cart.length === 0) {
-      toastr.error("Votre panier est vide. Ajoutez des produits avant de commander.");
+      toastr.error(
+        "Votre panier est vide. Ajoutez des produits avant de commander."
+      );
       return;
     }
 
@@ -195,43 +228,50 @@ window.addEventListener("DOMContentLoaded", () => {
   const defaultTraitementMagasins = window.DEFAULT_TRAITEMENT_IDS || [];
   const handleTraitementOptions = () => {
     const selectedDemandeurId = document.getElementById("demandeur_id").value;
-    const $traitementSelect = $('#recepteur_id');
-    const $demandeurSelect = $('#demandeur_id');
+    const $traitementSelect = $("#recepteur_id");
+    const $demandeurSelect = $("#demandeur_id");
     const currentTraitementId = $traitementSelect.val();
     let stillValid = false;
+    let hasSameOption = false;
 
-    $traitementSelect.find('option').each(function () {
+    $traitementSelect.find("option").each(function () {
       const option = $(this);
-      const value = option.attr('value');
+      const value = option.attr("value");
       if (!value) return;
 
       const isDefault = defaultTraitementMagasins.includes(Number(value));
       const isSame = value === selectedDemandeurId;
       const shouldDisable = isDefault && !isSame;
 
-      option.prop('disabled', shouldDisable);
+      option.prop("disabled", shouldDisable);
 
       if (!shouldDisable && value === currentTraitementId) {
         stillValid = true;
       }
+
+      if (isSame && !shouldDisable) {
+        hasSameOption = true;
+      }
     });
 
     if (!stillValid) {
-      $traitementSelect.val('');
+      $traitementSelect.val("");
+    }
+    if (hasSameOption) {
+      $traitementSelect.val(selectedDemandeurId);
     }
 
     //  Refresh Select2 dropdowns
-    $traitementSelect.trigger('change.select2');
-    $demandeurSelect.trigger('change.select2');
+    $traitementSelect.trigger("change.select2");
+    $demandeurSelect.trigger("change.select2");
   };
 
   // Bind change event for Demandeur
-  $('#demandeur_id').on('change', () => {
+  $("#demandeur_id").on("change", () => {
     setTimeout(handleTraitementOptions, 0);
   });
 
   handleTraitementOptions(); // Run on load
-
 
   // IPP autofill on Enter for set patient name and dossier
   const ippInput = document.getElementById("ipp");
@@ -245,7 +285,7 @@ window.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
 
       const ipp = ippInput.value.trim();
-      const patient = (window.infos_patient || []).find(p => p.ipp === ipp);
+      const patient = (window.infos_patient || []).find((p) => p.ipp === ipp);
 
       if (patient) {
         nomInput.value = patient.nom;
@@ -257,7 +297,6 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
-
 
   // Handle form submission
   document.getElementById("submit-demande").addEventListener("click", () => {
@@ -272,8 +311,7 @@ window.addEventListener("DOMContentLoaded", () => {
       { id: "ipp", label: "IPP" },
       { id: "nom_patient", label: "Nom du patient" },
       { id: "dossier_patient", label: "Dossier du patient" },
-      { id: "description", label: "description" }
-      
+      { id: "description", label: "description" },
     ];
 
     if (!validateFormFields(requiredFields)) return;
@@ -309,7 +347,14 @@ window.addEventListener("DOMContentLoaded", () => {
         renderCart();
 
         // Clear form
-        ["demandeur_id", "recepteur_id", "description", "ipp", "nom_patient", "dossier_patient"].forEach(id => {
+        [
+          "demandeur_id",
+          "recepteur_id",
+          "description",
+          "ipp",
+          "nom_patient",
+          "dossier_patient",
+        ].forEach((id) => {
           const el = document.getElementById(id);
           if (el) el.value = "";
         });
@@ -320,11 +365,4 @@ window.addEventListener("DOMContentLoaded", () => {
         toastr.error("Erreur lors de l'enregistrement de la demande.");
       });
   });
-
-
-
-
 });
-
-
-

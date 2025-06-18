@@ -46,13 +46,13 @@
               <!-- IPP -->
               <div class="form-group col-md-6">
                 <label for="">IPP (ID Patient)</label>
-                <input type="text" name="ipp" class="form-control ipp" value="{{ commande.ipp }}" placeholder="Identifiant du patient" />
+                <input type="text" name="ipp" class="form-control ipp" value="{{ commande.ipp }}" placeholder="Identifiant du patient" required />
               </div>
 
               <!-- Nom du Patient -->
               <div class="form-group col-md-6">
                 <label for="">Nom du Patient</label>
-                <input type="text" name="nom_patient" class="form-control nom_patient" value="{{ commande.nomPatient }}" placeholder="Nom complet du patient" readonly />
+                <input type="text" name="nom_patient" class="form-control nom_patient" value="{{ commande.nomPatient }}" placeholder="Nom complet du patient" readonly required/>
               </div>
             </div>
 
@@ -60,12 +60,12 @@
               <!-- Dossier Patient -->
               <div class="form-group col-md-6">
                 <label for="">Dossier Patient</label>
-                <input type="text" name="dossier_patient" class="form-control dossier_patient" value="{{ commande.dossierPatient }}" placeholder="Code dossier patient" readonly />
+                <input type="text" name="dossier_patient" class="form-control dossier_patient" value="{{ commande.dossierPatient }}" placeholder="Code dossier patient" readonly required/>
               </div>
               <!-- Description -->
               <div class="form-group col-md-6">
                 <label for="description">Description</label>
-                <input type="text" id="description" name="description" class="form-control" value="{{ commande.description }}" placeholder="Description..." />
+                <input type="text" id="description" name="description" class="form-control" value="{{ commande.description }}" placeholder="Description..." required />
               </div>
             </div>
 
