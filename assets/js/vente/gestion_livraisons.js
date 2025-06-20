@@ -27,9 +27,9 @@ $(document).ready(function () {
     },
     order: [[0, "desc"]],
     columns: [
-      { name: "d.id", data: "id" },
+      { name: "l.id", data: "id" },
       {
-        name: "d.code",
+        name: "l.code",
         data: "livraison_code",
         render: function (data, type, row) {
           return `
@@ -45,8 +45,8 @@ $(document).ready(function () {
       },
       { name: "demandeur.designation", data: "demandeur" },
       { name: "recepteur.designation", data: "recepteur" },
-      { name: "d.ipp", data: "ipp_patient" },
-      { name: "d.nom_patient", data: "nom_patient" },
+      { name: "l.ipp", data: "ipp_patient" },
+      { name: "l.nom_patient", data: "nom_patient" },
       {
         name: "total_montant_ttc",
         data: "total_montant_ttc",
@@ -62,15 +62,16 @@ $(document).ready(function () {
           td.classList.add("force-right-align");
         },
       },
-      { name: "niveau_urgence", data: "niveau_urgence" },
+      { name: "l.urgent", data: "niveau_urgence" },
+      {name:"l.multi_recp", data: "type_reception"},
       {
-        name: "d.created",
+        name: "l.created",
         data: "date_livraison",
         render: function (data) {
           return moment(data).format("DD/MM/YYYY ");
         },
       },
-      { name: "d.position_actuel", data: "position_actuel" },
+      { name: "l.position_actuel", data: "position_actuel" },
       {
         name: "actions",
         data: null,

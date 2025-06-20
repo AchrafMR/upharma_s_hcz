@@ -111,8 +111,8 @@ class CommandeVenteController extends AbstractController
         $columns = [
             'd.id',
             'd.code',
-            'demandeur.designation',
-            'recepteur.designation',
+            'demandeur.designation_access',
+            'recepteur.designation_access',
             'd.ipp',
             'd.nom_patient',
             'SUM(lg.montant_ttc)',
@@ -132,8 +132,8 @@ class CommandeVenteController extends AbstractController
                 d.position_actuel LIKE ? OR
                 d.created LIKE ? OR
                 d.nom_patient LIKE ? OR
-                demandeur.designation LIKE ? OR
-                recepteur.designation LIKE ?
+                demandeur.designation_access LIKE ? OR
+                recepteur.designation_access LIKE ?
             )";
             for ($i = 0; $i < 7; $i++) {
                 $params[] = '%' . $search . '%';
@@ -280,6 +280,7 @@ class CommandeVenteController extends AbstractController
             $ligne->setPProduit($produit);
             $ligne->setPPrUnite($unite);
             $ligne->setQuantiteCommandee($quantite);
+            $ligne->setQuantiteReste($quantite);
             $ligne->setPrixUnitaire($prixUnitaire);
             $ligne->setRemise($remise);
             $ligne->setTva($tva);
@@ -304,6 +305,7 @@ class CommandeVenteController extends AbstractController
             'message' => 'Commande mise à jour avec succès.'
         ]);
     }
+
     #[Route('/update-position-commande', name: 'update_position_commande', methods: ['POST'])]
     public function updatePositionCommande(Request $request,EntityManagerInterface $em,TMsCommandeRepository $repo,Security $security): JsonResponse 
     {
@@ -357,7 +359,7 @@ class CommandeVenteController extends AbstractController
     public function saveLivraison(Request $request): JsonResponse
     {
         $commandeId = $request->request->get('commande_id');
-        $quantites = $request->request->all('quantites'); 
+        $quantites = $request->request->all('quantites');
 
         if (!$commandeId || empty($quantites)) {
             return new JsonResponse(['status' => 'error', 'message' => 'Données incomplètes.']);
@@ -368,7 +370,6 @@ class CommandeVenteController extends AbstractController
             return new JsonResponse(['status' => 'error', 'message' => 'Commande introuvable.']);
         }
 
-        // Create Livraison 
         $livraison = new TMsLivraison();
         $livraison->setTMsCommande($commande);
         $livraison->setDemandeurId($commande->getDemandeurId());
@@ -380,8 +381,10 @@ class CommandeVenteController extends AbstractController
         $livraison->setCreated(new \DateTime());
         $livraison->setUrgent($commande->isUrgent());
         $livraison->setActif(true);
+        $livraison->setPositionActuel('Crée');
 
         $allDelivered = true;
+        $ligneProcessed = 0;
 
         foreach ($quantites as $ligneId => $qtyLivree) {
             $ligne = $this->em->getRepository(TMsCommandelg::class)->find($ligneId);
@@ -390,11 +393,11 @@ class CommandeVenteController extends AbstractController
                 continue;
             }
 
+            $ligneProcessed++;
             $qtyLivree = min($qtyLivree, $ligne->getQuantiteReste());
             $newServie = $ligne->getQuantiteServie() + $qtyLivree;
             $newReste = max(0, $ligne->getQuantiteCommandee() - $newServie);
 
-            // create TMsLivraisonlg
             $livraisonLg = new TMsLivraisonlg();
             $livraisonLg->setTMsLivraison($livraison);
             $livraisonLg->setPProduit($ligne->getPProduit());
@@ -406,11 +409,10 @@ class CommandeVenteController extends AbstractController
             $livraisonLg->setFlagSynchronisationLocale(false);
             $this->em->persist($livraisonLg);
 
-            // create TMsLivraisonobj
             $livraisonObj = new TMsLivraisonobj();
             $livraisonObj->setTMsLivraisonLg($livraisonLg);
-            $livraisonObj->setLot('DEFAULT'); 
-            $livraisonObj->setDatePeremption(null); 
+            $livraisonObj->setLot('DEFAULT');
+            $livraisonObj->setDatePeremption(null);
             $livraisonObj->setQuantitieLivree($qtyLivree);
             $livraisonObj->setPrixTtc($ligne->getPrixUnitaire());
             $livraisonObj->setTotalTtc($qtyLivree * $ligne->getPrixUnitaire());
@@ -418,7 +420,6 @@ class CommandeVenteController extends AbstractController
             $livraisonObj->setFlagSynchronisationLocale(false);
             $this->em->persist($livraisonObj);
 
-            //  Update ligne in commande
             $ligne->setQuantiteServie($newServie);
             $ligne->setQuantiteReste($newReste);
 
@@ -426,11 +427,35 @@ class CommandeVenteController extends AbstractController
                 $allDelivered = false;
             }
         }
-        //  Update livraison status
-        $livraison->setMultiRecp(!$allDelivered);
-        $livraison->setPositionActuel($allDelivered ? 'complète' : 'partielle');
 
-        if ($allDelivered) {
+        // No valid lignes treated
+        if ($ligneProcessed === 0) {
+            return new JsonResponse([
+                'status' => 'error',
+                'message' => 'Aucune ligne valide n\'a été traitée.'
+            ]);
+        }
+
+        // Is this the first livraison for this commande?
+        $isFirstLivraison = $this->em->getRepository(TMsLivraison::class)
+            ->count(['tMsCommande' => $commande]) === 0;
+
+        // Set livraison status
+        $isCompletelyDeliveredFirstTime = $isFirstLivraison && $allDelivered;
+        $livraison->setMultiRecp($isCompletelyDeliveredFirstTime ? 0 : 1);
+        
+
+        // Check if ALL lignes in commande are fully delivered
+        $allLignesDelivered = true;
+        foreach ($commande->getTMsCommandelgs() as $ligne) {
+            if ($ligne->getQuantiteReste() > 0) {
+                $allLignesDelivered = false;
+                break;
+            }
+        }
+
+        //  If all lignes served → push Générée
+        if ($allLignesDelivered) {
             $commande->setPositionActuel('Générée');
             $commande->setUserGenerer($this->getUser());
         }
@@ -440,6 +465,7 @@ class CommandeVenteController extends AbstractController
 
         return new JsonResponse(['status' => 'success', 'message' => 'Livraison enregistrée avec succès.']);
     }
+
 
 
 }

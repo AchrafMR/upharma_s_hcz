@@ -27,15 +27,15 @@ class TMsLivraisonRepository extends ServiceEntityRepository
 
         public function findAllActifWithActive(): array
         {
-            return $this->createQueryBuilder('d')
-                ->where('d.actif = 1') 
-                ->leftJoin('d.tMsLivraisonlgs', 'lg') 
+            return $this->createQueryBuilder('l')
+                ->where('l.actif = 1') 
+                ->leftJoin('l.tMsLivraisonlgs', 'lg') 
                 ->addSelect('lg')
-                ->leftJoin('d.demandeur_id', 'demandeur')
+                ->leftJoin('l.demandeur_id', 'demandeur')
                 ->addSelect('demandeur')
-                ->leftJoin('d.recepteur_id', 'recepteur')
+                ->leftJoin('l.recepteur_id', 'recepteur')
                 ->addSelect('recepteur')
-                ->orderBy('d.created', 'DESC')
+                ->orderBy('l.created', 'DESC')
                 ->getQuery()
                 ->getResult();
         }

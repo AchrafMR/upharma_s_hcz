@@ -299,70 +299,151 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   // Handle form submission
-  document.getElementById("submit-demande").addEventListener("click", () => {
-    if (!pendingDemande || pendingDemande.length === 0) {
-      toastr.error("Aucune donnée de panier à envoyer.");
-      return;
-    }
+  document.getElementById("submit-demande").addEventListener("click", async () => {
+  const btn = document.getElementById("submit-demande");
 
-    const requiredFields = [
-      { id: "demandeur_id", label: "Magasin Demandeur" },
-      { id: "recepteur_id", label: "Magasin de Traitement" },
-      { id: "ipp", label: "IPP" },
-      { id: "nom_patient", label: "Nom du patient" },
-      { id: "dossier_patient", label: "Dossier du patient" },
-      { id: "description", label: "description" },
-    ];
+  // Prevent multiple submissions
+  if (btn.disabled) return;
+  btn.disabled = true;
 
-    if (!validateFormFields(requiredFields)) return;
+  if (!pendingDemande || pendingDemande.length === 0) {
+    toastr.error("Aucune donnée de panier à envoyer.");
+    btn.disabled = false;
+    btn.innerHTML = 'Enregistrer'; // Reset text
+    return;
+  }
 
-    const data = {
-      demandeur_id: document.getElementById("demandeur_id").value,
-      recepteur_id: document.getElementById("recepteur_id").value,
-      urgent: document.getElementById("urgent").checked ? 1 : 0,
-      description: document.getElementById("description").value,
-      ipp: document.getElementById("ipp").value,
-      nom_patient: document.getElementById("nom_patient").value,
-      dossier_patient: document.getElementById("dossier_patient").value,
-      lignes: pendingDemande,
-    };
+  const requiredFields = [
+    { id: "demandeur_id", label: "Magasin Demandeur" },
+    { id: "recepteur_id", label: "Magasin de Traitement" },
+    { id: "ipp", label: "IPP" },
+    { id: "nom_patient", label: "Nom du patient" },
+    { id: "dossier_patient", label: "Dossier du patient" },
+    { id: "description", label: "description" },
+  ];
 
-    fetch("/vente/save-demande", {
+  if (!validateFormFields(requiredFields)) {
+    btn.disabled = false;
+    btn.innerHTML = 'Enregistrer';
+    return;
+  }
+
+  const data = {
+    demandeur_id: document.getElementById("demandeur_id").value,
+    recepteur_id: document.getElementById("recepteur_id").value,
+    urgent: document.getElementById("urgent").checked ? 1 : 0,
+    description: document.getElementById("description").value,
+    ipp: document.getElementById("ipp").value,
+    nom_patient: document.getElementById("nom_patient").value,
+    dossier_patient: document.getElementById("dossier_patient").value,
+    lignes: pendingDemande,
+  };
+
+  try {
+    const res = await fetch("/vente/save-demande", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "X-Requested-With": "XMLHttpRequest",
       },
       body: JSON.stringify(data),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Erreur serveur");
-        return res.json();
-      })
-      .then(() => {
-        toastr.success("Demande enregistrée avec succès!");
-        $("#addCommande").modal("hide");
+    });
 
-        cart = [];
-        renderCart();
+    if (!res.ok) throw new Error("Erreur serveur");
+    await res.json();
 
-        // Clear form
-        [
-          "demandeur_id",
-          "recepteur_id",
-          "description",
-          "ipp",
-          "nom_patient",
-          "dossier_patient",
-        ].forEach((id) => {
-          const el = document.getElementById(id);
-          if (el) el.value = "";
-        });
-        document.getElementById("urgent").checked = false;
-      })
-      .catch((err) => {
-        console.error(err);
-        toastr.error("Erreur lors de l'enregistrement de la demande.");
+    toastr.success("Demande enregistrée avec succès!");
+    $("#addCommande").modal("hide");
+
+    cart = [];
+    pendingDemande = [];
+    renderCart();
+
+    ["demandeur_id", "recepteur_id", "description", "ipp", "nom_patient", "dossier_patient"]
+      .forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
       });
-  });
+    document.getElementById("urgent").checked = false;
+
+  } catch (err) {
+    console.error(err);
+    toastr.error("Erreur lors de l'enregistrement de la demande.");
+  } finally {
+    // Always re-enable the button
+    btn.disabled = false;
+    btn.innerHTML = 'Enregistrer';
+  }
+});
+
+  // document.getElementById("submit-demande").addEventListener("click", () => {
+  //   if (btn.disabled) return;
+  //   btn.disabled = true;
+    
+  //   if (!pendingDemande || pendingDemande.length === 0) {
+  //     toastr.error("Aucune donnée de panier à envoyer.");
+  //     btn.disabled = false;
+  //     btn.innerHTML = 'Enregistrer';
+  //     return;
+  //   }
+  //   const requiredFields = [
+  //     { id: "demandeur_id", label: "Magasin Demandeur" },
+  //     { id: "recepteur_id", label: "Magasin de Traitement" },
+  //     { id: "ipp", label: "IPP" },
+  //     { id: "nom_patient", label: "Nom du patient" },
+  //     { id: "dossier_patient", label: "Dossier du patient" },
+  //     { id: "description", label: "description" },
+  //   ];
+
+  //   if (!validateFormFields(requiredFields)) return;
+
+  //   const data = {
+  //     demandeur_id: document.getElementById("demandeur_id").value,
+  //     recepteur_id: document.getElementById("recepteur_id").value,
+  //     urgent: document.getElementById("urgent").checked ? 1 : 0,
+  //     description: document.getElementById("description").value,
+  //     ipp: document.getElementById("ipp").value,
+  //     nom_patient: document.getElementById("nom_patient").value,
+  //     dossier_patient: document.getElementById("dossier_patient").value,
+  //     lignes: pendingDemande,
+  //   };
+
+  //   fetch("/vente/save-demande", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "X-Requested-With": "XMLHttpRequest",
+  //     },
+  //     body: JSON.stringify(data),
+  //   })
+  //     .then((res) => {
+  //       if (!res.ok) throw new Error("Erreur serveur");
+  //       return res.json();
+  //     })
+  //     .then(() => {
+  //       toastr.success("Demande enregistrée avec succès!");
+  //       $("#addCommande").modal("hide");
+
+  //       cart = [];
+  //       renderCart();
+
+  //       // Clear form
+  //       [
+  //         "demandeur_id",
+  //         "recepteur_id",
+  //         "description",
+  //         "ipp",
+  //         "nom_patient",
+  //         "dossier_patient",
+  //       ].forEach((id) => {
+  //         const el = document.getElementById(id);
+  //         if (el) el.value = "";
+  //       });
+  //       document.getElementById("urgent").checked = false;
+  //     })
+  //     .catch((err) => {
+  //       console.error(err);
+  //       toastr.error("Erreur lors de l'enregistrement de la demande.");
+  //     });
+  // });
 });

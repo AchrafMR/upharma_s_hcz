@@ -23,16 +23,16 @@
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
-        "/build/67.a7b35c41.js",
-        "/build/setting_module.77e13746.js"
+        "/build/959.a5d20ad0.js",
+        "/build/setting_module.66cdca75.js"
       ]
     },
     "setting_sub_module": {
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
-        "/build/67.a7b35c41.js",
-        "/build/setting_sub_module.8962857c.js"
+        "/build/959.a5d20ad0.js",
+        "/build/setting_sub_module.52c5d4a4.js"
       ]
     },
     "setting_action": {
@@ -75,32 +75,32 @@
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
-        "/build/67.a7b35c41.js",
+        "/build/959.a5d20ad0.js",
         "/build/742.c7fd02b6.js",
-        "/build/point_vente.4aba005b.js"
+        "/build/point_vente.000d6da0.js"
       ]
     },
     "gestion_demandes": {
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
-        "/build/67.a7b35c41.js",
-        "/build/gestion_demandes.6b701943.js"
+        "/build/959.a5d20ad0.js",
+        "/build/gestion_demandes.777f3d59.js"
       ]
     },
     "gestion_commandes": {
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
-        "/build/67.a7b35c41.js",
-        "/build/gestion_commandes.9ea9d028.js"
+        "/build/959.a5d20ad0.js",
+        "/build/gestion_commandes.85db41c9.js"
       ]
     },
     "gestion_livraisons": {
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
-        "/build/gestion_livraisons.4ded29d4.js"
+        "/build/gestion_livraisons.de46c843.js"
       ]
     },
     "login": {

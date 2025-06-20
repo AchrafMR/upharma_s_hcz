@@ -71,8 +71,9 @@ class PProduitsRepository extends ServiceEntityRepository
             p.id,
             p.titre AS name,
             p.image,
+            p.qte_stock AS quantity,
             t.prix_vente_ppv AS price,
-            COALESCE(s.solde, 0) AS quantity,
+            COALESCE(s.solde, 0) AS quantityy,
             n4.designation AS category
         FROM 
             p_produits p
