@@ -33,7 +33,7 @@
               <tbody>
                 {% for ligne in commande.tMsCommandelgs %}
                   <tr>
-                    <td>{{ ligne.pProduit.titre }}</td>
+                    <td style="vertical-align: top !important; text-align: left !important;">{{ ligne.pProduit.titre }}</td>
                     <td>{{ ligne.quantiteCommandee }}</td>
                     <td>{{ ligne.quantiteServie }}</td>
                     <td>{{ ligne.quantiteReste }}</td>
@@ -58,7 +58,7 @@
 
       <div class="modal-footer">
         <button type="button"
-                class="btn btn-success btn-confirmer-livraison"
+                class="btn btn-primary btn-confirmer-livraison"
                 data-id="{{ commande.id }}">
           Confirmer la Livraison
         </button>

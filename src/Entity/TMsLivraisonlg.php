@@ -27,8 +27,6 @@ class TMsLivraisonlg
     #[ORM\ManyToOne(inversedBy: 'tMsLivraisonlgs')]
     private ?PPrUnites $pPrUnite = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $num_lot = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $quantite_livree = null;
@@ -90,18 +88,6 @@ class TMsLivraisonlg
     public function setPPrUnite(?PPrUnites $pPrUnite): static
     {
         $this->pPrUnite = $pPrUnite;
-
-        return $this;
-    }
-
-    public function getNumLot(): ?string
-    {
-        return $this->num_lot;
-    }
-
-    public function setNumLot(?string $num_lot): static
-    {
-        $this->num_lot = $num_lot;
 
         return $this;
     }

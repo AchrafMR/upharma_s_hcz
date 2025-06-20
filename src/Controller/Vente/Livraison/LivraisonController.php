@@ -75,11 +75,9 @@ class LivraisonController extends AbstractController
     }
 
 
-    #[Route('/fetch-livraisons', name: 'app_fetch_livraisons', options: ['expose' => true], methods: 'GET')]
+    #[Route('/fetch-livraisons', name: 'app_fetch_livraisons', options: ['expose' => true], methods: ['GET'])]
     public function fetchLivraison(Request $request, EntityManagerInterface $em): JsonResponse
     {
-        $connection = $em->getConnection();
-
         $dossier = $request->getSession()->get('dossier');
 
         if (!$dossier || !method_exists($dossier, 'getId')) {
@@ -93,95 +91,88 @@ class LivraisonController extends AbstractController
             ]);
         }
 
-        $dossierId = $dossier->getId();
-        // dd($dossierId);
-
         $draw = $request->query->get('draw');
         $start = (int) $request->query->get('start', 0);
         $length = (int) $request->query->get('length', 10);
         $search = $request->query->all('search')['value'] ?? '';
-        $orderColumnIndex = (int) $request->query->all('order')[0]['column'] ?? 0;
+        $orderColumnIndex = $request->query->all('order')[0]['column'] ?? 0;
+        $orderColumn = $request->query->all("columns")[$orderColumnIndex]['name'] ?? 'l.id';
         $orderDir = strtoupper($request->query->all('order')[0]['dir'] ?? 'DESC');
-
-        $columns = [
-            'd.id',
-            'd.code',
-            'demandeur.designation',
-            'recepteur.designation',
-            'd.ipp',
-            'd.nom_patient',
-            'SUM(lg.montant_total)',
-            "CASE WHEN d.urgent = 1 THEN 'Urgent' ELSE 'Normal' END",
-            'd.created',
-            'd.position_actuel',
+        
+        $allowedOrderFields = [
+            'l.id', 'l.code', 'dem.designationAccess', 'rec.designationAccess',
+            'l.ipp', 'l.nom_patient', 'l.created', 'l.position_actuel'
         ];
-        $orderColumn = $columns[$orderColumnIndex] ?? 'd.id';
-
-        $where = " AND d.p_entite_id = ?";
-        $params = [$dossierId];
-
-        if (!empty($search)) {
-            $where .= " AND (
-                d.code LIKE ? OR
-                d.ipp LIKE ? OR
-                d.position_actuel LIKE ? OR
-                d.created LIKE ? OR
-                d.nom_patient LIKE ? OR
-                demandeur.designation LIKE ? OR
-                recepteur.designation LIKE ?
-            )";
-            for ($i = 0; $i < 7; $i++) {
-                $params[] = '%' . $search . '%';
-            }
+        if (!in_array($orderColumn, $allowedOrderFields)) {
+            $orderColumn = 'l.id';
         }
 
-        // Main data query
-        $sql = "
-            SELECT 
-                d.id AS id,
-                d.code AS livraison_code,
-                demandeur.designation_access AS demandeur,
-                recepteur.designation_access AS recepteur,
-                d.ipp AS ipp_patient,
-                d.nom_patient,
+        $qb = $em->createQueryBuilder();
+        $qb->select('
+                l.id AS id,
+                l.code AS livraison_code,
+                dem.designationAccess AS demandeur,
+                rec.designationAccess AS recepteur,
+                l.ipp AS ipp_patient,
+                l.nom_patient,
                 SUM(lg.montant_total) AS total_montant_ttc,
-                CASE 
-                    WHEN d.urgent = 1 THEN 'Urgent'
-                    ELSE 'Normal'
-                END AS niveau_urgence,
-                d.created AS date_livraison,
-                d.position_actuel
-            FROM t_ms_livraison d
-            LEFT JOIN t_ms_livraisonlg lg ON lg.t_ms_livraison_id = d.id
-            LEFT JOIN p_magasins demandeur ON demandeur.id = d.demandeur_id
-            LEFT JOIN p_magasins recepteur ON recepteur.id = d.recepteur_id
-            WHERE d.actif = 1
-            $where
-            GROUP BY 
-                d.id, d.code, d.ipp, d.nom_patient, d.created, 
-                d.position_actuel, d.urgent, 
-                demandeur.designation_access, recepteur.designation_access
-            ORDER BY $orderColumn $orderDir
-            OFFSET $start ROWS FETCH NEXT $length ROWS ONLY
-        ";
+                CASE WHEN l.urgent = true THEN \'Urgent\' ELSE \'Normal\' END AS niveau_urgence,
+                CASE WHEN l.multi_recp = true THEN \'multiréception\' ELSE \'monoréception\' END AS type_reception,
+                l.created AS date_livraison,
+                l.position_actuel
+            ')
+            ->from(TMsLivraison::class, 'l')
+            ->leftJoin('l.tMsLivraisonlgs', 'lg')
+            ->leftJoin('l.demandeur_id', 'dem')
+            ->leftJoin('l.recepteur_id', 'rec')
+            ->where('l.actif = 1')
+            ->andWhere('l.pEntite = :entite')
+            ->setParameter('entite', $dossier)
+            ->groupBy('l.id, l.code, l.ipp, l.nom_patient, l.created, l.position_actuel, l.urgent, l.multi_recp, dem.designationAccess, rec.designationAccess');
 
-        $stmt = $connection->prepare($sql);
-        $results = $stmt->executeQuery($params)->fetchAllAssociative();
+        if (!empty($search)) {
+            $searchLower = strtolower($search);
 
-        // Count query (filtered)
-        $countSql = "
-            SELECT COUNT(DISTINCT d.id) as total
-            FROM t_ms_livraison d
-            LEFT JOIN p_magasins demandeur ON demandeur.id = d.demandeur_id
-            LEFT JOIN p_magasins recepteur ON recepteur.id = d.recepteur_id
-            WHERE d.actif = 1 AND d.p_entite_id = ?
-            " . (!empty($search) ? substr($where, strpos($where, 'AND (')) : '')
-        ;
+            $qb->andWhere('
+                LOWER(l.code) LIKE :search OR
+                LOWER(l.ipp) LIKE :search OR
+                LOWER(l.created) LIKE :search OR
+                LOWER(l.nom_patient) LIKE :search OR
+                LOWER(l.position_actuel) LIKE :search OR
+                LOWER(dem.designationAccess) LIKE :search OR
+                LOWER(rec.designationAccess) LIKE :search OR
+                (:search LIKE \'%multiréception%\' AND l.multi_recp = true) OR
+                (:search LIKE \'%monoréception%\' AND l.multi_recp = false) OR
+                (:search LIKE \'%urgent%\' AND l.urgent = true) OR
+                (:search LIKE \'%normal%\' AND l.urgent = false)
+            ')
+            ->setParameter('search', "%$searchLower%");
+        }
 
-        $countStmt = $connection->prepare($countSql);
-        $totalRecords = $countStmt->executeQuery($params)->fetchOne();
+        
+        if ($orderColumn) {
+            $qb->orderBy($orderColumn, $orderDir);
+        }
 
-        // Get user action permissions
+       
+        $qb->setFirstResult($start)->setMaxResults($length);
+        $results = $qb->getQuery()->getResult();
+        $results = array_map(function ($row) {
+            if ($row['date_livraison'] instanceof \DateTimeInterface) {
+                $row['date_livraison'] = $row['date_livraison']->format('Y-m-d H:i:s');
+            }
+            return $row;
+        }, $results);
+
+
+        $clonedQB = clone $qb;
+        $clonedQB->resetDQLPart('select')
+                ->resetDQLPart('orderBy')
+                ->resetDQLPart('groupBy')
+                ->select('COUNT(DISTINCT l.id)');
+
+        $totalRecords = $clonedQB->getQuery()->getSingleScalarResult();
+
         $actions = $this->userOperation->getOperations($this->getUser(), 'vente_gestion_livrasions_index', $request);
         $filteredActions = array_filter($actions, fn($action) => !$action->isHorizontal());
         $allActions = array_map(function($action) {
@@ -200,7 +191,144 @@ class LivraisonController extends AbstractController
             'recordsTotal' => $totalRecords,
             'recordsFiltered' => $totalRecords,
             'data' => $results,
-            'actions' => $allActions
+            'actions' => $allActions,
         ]);
     }
+
+
 }
+    // #[Route('/fetch-livraisons', name: 'app_fetch_livraisons', options: ['expose' => true], methods: 'GET')]
+    // public function fetchLivraison(Request $request, EntityManagerInterface $em): JsonResponse
+    // {
+    //     $connection = $em->getConnection();
+
+    //     $dossier = $request->getSession()->get('dossier');
+
+    //     if (!$dossier || !method_exists($dossier, 'getId')) {
+    //         return new JsonResponse([
+    //             'draw' => $request->query->get('draw'),
+    //             'recordsTotal' => 0,
+    //             'recordsFiltered' => 0,
+    //             'data' => [],
+    //             'actions' => [],
+    //             'error' => 'Dossier invalide'
+    //         ]);
+    //     }
+
+    //     $dossierId = $dossier->getId();
+    //     // dd($dossierId);
+
+    //     $draw = $request->query->get('draw');
+    //     $start = (int) $request->query->get('start', 0);
+    //     $length = (int) $request->query->get('length', 10);
+    //     $search = $request->query->all('search')['value'] ?? '';
+    //     $orderColumnIndex = (int) $request->query->all('order')[0]['column'] ?? 0;
+    //     $orderDir = strtoupper($request->query->all('order')[0]['dir'] ?? 'DESC');
+
+    //     $columns = [
+    //         'd.id',
+    //         'd.code',
+    //         'demandeur.designation_access',
+    //         'recepteur.designation_access',
+    //         'd.ipp',
+    //         'd.nom_patient',
+    //         'SUM(lg.montant_total)',
+    //         "CASE WHEN d.urgent = 1 THEN 'Urgent' ELSE 'Normal' END",
+    //         "CASE WHEN d.multi_recp = 1 THEN 'multiréception' ELSE 'monoréception' END ",
+    //         'd.created',
+    //         'd.position_actuel',
+    //     ];
+    //     $orderColumn = $columns[$orderColumnIndex] ?? 'd.id';
+
+    //     $where = " AND d.p_entite_id = ?";
+    //     $params = [$dossierId];
+
+    //     if (!empty($search)) {
+    //         $where .= " AND (
+    //             d.code LIKE ? OR
+    //             d.ipp LIKE ? OR
+    //             d.multi_recp LIKE ? OR
+    //             d.position_actuel LIKE ? OR
+    //             d.created LIKE ? OR
+    //             d.nom_patient LIKE ? OR
+    //             demandeur.designation_access LIKE ? OR
+    //             recepteur.designation_access LIKE ? OR
+    //             (CASE WHEN d.multi_recp = 1 THEN 'multiréception' ELSE 'monoréception' END) LIKE ?
+    //         )";
+    //         for ($i = 0; $i < 9; $i++) {
+    //             $params[] = '%' . $search . '%';
+    //         }
+    //     }
+
+    //     // Main data query
+    //     $sql = "
+    //         SELECT 
+    //             d.id AS id,
+    //             d.code AS livraison_code,
+    //             demandeur.designation_access AS demandeur,
+    //             recepteur.designation_access AS recepteur,
+    //             d.ipp AS ipp_patient,
+    //             d.nom_patient,
+    //             SUM(lg.montant_total) AS total_montant_ttc,
+    //             CASE 
+    //                 WHEN d.urgent = 1 THEN 'Urgent'
+    //                 ELSE 'Normal'
+    //             END AS niveau_urgence,
+    //             CASE 
+    //                 WHEN d.multi_recp = 1 THEN 'multiréception'
+    //                 ELSE 'monoréception'
+    //             END AS type_reception,
+    //             d.created AS date_livraison,
+    //             d.position_actuel
+    //         FROM t_ms_livraison d
+    //         LEFT JOIN t_ms_livraisonlg lg ON lg.t_ms_livraison_id = d.id
+    //         LEFT JOIN p_magasins demandeur ON demandeur.id = d.demandeur_id
+    //         LEFT JOIN p_magasins recepteur ON recepteur.id = d.recepteur_id
+    //         WHERE d.actif = 1
+    //         $where
+    //         GROUP BY 
+    //             d.id, d.code, d.ipp, d.nom_patient, d.created, 
+    //             d.position_actuel, d.urgent,d.multi_recp, 
+    //             demandeur.designation_access, recepteur.designation_access
+    //         ORDER BY $orderColumn $orderDir
+    //         OFFSET $start ROWS FETCH NEXT $length ROWS ONLY
+    //     ";
+
+    //     $stmt = $connection->prepare($sql);
+    //     $results = $stmt->executeQuery($params)->fetchAllAssociative();
+    //     // dd($results);
+    //     // Count query (filtered)
+    //     $countSql = "
+    //         SELECT COUNT(DISTINCT d.id) as total
+    //         FROM t_ms_livraison d
+    //         LEFT JOIN p_magasins demandeur ON demandeur.id = d.demandeur_id
+    //         LEFT JOIN p_magasins recepteur ON recepteur.id = d.recepteur_id
+    //         WHERE d.actif = 1 AND d.p_entite_id = ?
+    //         " . (!empty($search) ? substr($where, strpos($where, 'AND (')) : '')
+    //     ;
+
+    //     $countStmt = $connection->prepare($countSql);
+    //     $totalRecords = $countStmt->executeQuery($params)->fetchOne();
+
+    //     // Get user action permissions
+    //     $actions = $this->userOperation->getOperations($this->getUser(), 'vente_gestion_livrasions_index', $request);
+    //     $filteredActions = array_filter($actions, fn($action) => !$action->isHorizontal());
+    //     $allActions = array_map(function($action) {
+    //         return [
+    //             'sousModuleId'=> $action->getPSousModule()->getId(),
+    //             'idOp'=> $action->getId(),
+    //             'idName' => $action->getIdName(),
+    //             'nom' => $action->getNom(),
+    //             'className' => $action->getClassName(),
+    //             'icon' => $action->getIcon(),
+    //         ];
+    //     }, $filteredActions);
+
+    //     return new JsonResponse([
+    //         'draw' => $draw,
+    //         'recordsTotal' => $totalRecords,
+    //         'recordsFiltered' => $totalRecords,
+    //         'data' => $results,
+    //         'actions' => $allActions
+    //     ]);
+    // }
