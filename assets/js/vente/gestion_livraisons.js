@@ -43,10 +43,34 @@ $(document).ready(function () {
             `;
         },
       },
-      { name: "demandeur.designation", data: "demandeur" },
-      { name: "recepteur.designation", data: "recepteur" },
+      {
+        name: "l.created",
+        data: "date_livraison",
+        render: function (data) {
+          return moment(data).format("DD/MM/YYYY ");
+        },
+      },
+      { name:"l.description", data: "description",
+        createdCell: function (td) {
+          td.classList.add("force-left-align");
+        },
+      },
+      { name: "demandeur.designation", data: "demandeur",
+        createdCell: function (td) {
+          td.classList.add("force-left-align");
+        },
+       },
+      { name: "recepteur.designation", data: "recepteur",
+        createdCell: function (td) {
+          td.classList.add("force-left-align");
+        },
+       },
       { name: "l.ipp", data: "ipp_patient" },
-      { name: "l.nom_patient", data: "nom_patient" },
+      { name: "l.nom_patient", data: "nom_patient" ,
+        createdCell: function (td) {
+          td.classList.add("force-left-align");
+        },
+      },
       {
         name: "total_montant_ttc",
         data: "total_montant_ttc",
@@ -63,14 +87,7 @@ $(document).ready(function () {
         },
       },
       { name: "l.urgent", data: "niveau_urgence" },
-      {name:"l.multi_recp", data: "type_reception"},
-      {
-        name: "l.created",
-        data: "date_livraison",
-        render: function (data) {
-          return moment(data).format("DD/MM/YYYY ");
-        },
-      },
+      
       { name: "l.position_actuel", data: "position_actuel" },
       {
         name: "actions",

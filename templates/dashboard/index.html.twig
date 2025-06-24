@@ -1,5 +1,5 @@
-{% extends 'base.html.twig' %} {% block title %}{% endblock
-%} {% block stylesheets %}
+{% extends 'base.html.twig' %} {% block title %}{% endblock %} {% block
+stylesheets %}
 <style>
   .dot {
     display: inline-block;
@@ -13,13 +13,9 @@
 <div class="container py-4">
   <!-- Top Metrics -->
   <div class="row row-cols-1 row-cols-md-5 g-3 justify-content-between">
-    {% include 'dashboard/inc/_metric-card.html.twig' with {
-      allOrders: allOrders,
-      validatedOrders: validatedOrders,
-      processedOrders: processedOrders,
-      ongoingOrders: ongoingOrders,
-      returnedOrders: returnedOrders
-    } %}
+    {% include 'dashboard/inc/_metric-card.html.twig' with { allOrders:
+    allOrders, ongoingOrders: ongoingOrders, validatedOrders: validatedOrders,
+    processedOrders: processedOrders, returnedOrders: returnedOrders } %}
   </div>
 
   <div class="row g-4 mt-4 align-items-stretch">
@@ -39,43 +35,45 @@
     <div class="col-md-6 col-lg-4">
       <div class="card shadow-sm pl-4 py-4 h-75">
         <h6 class="text-muted text-uppercase small mb-3">
-          Statistiques des Factures
+          Statistiques des Commandes
         </h6>
-        <div class="d-flex justify-content-center align-items-center flex-wrap gap-4">
-
+        <div
+          class="d-flex justify-content-center align-items-center flex-wrap gap-4"
+        >
           <div style="width: 160px; height: 160px; position: relative">
-            <canvas id="invoiceDonut" width="160" height="160"></canvas>
+            <canvas id="orderDonut" width="160" height="160"></canvas>
           </div>
+
           <div class="m-4">
-            <div
-              class="d-flex align-items-center mb-2"
-              style="font-size: 14px"
-          >
-            <h4 class="fw-bold mb-0">1.135</h4>
-            <small class="m-2 text-muted">Factures</small>
-          </div>
+            <div class="d-flex align-items-center mb-2" style="font-size: 14px">
+              <h4 class="fw-bold mb-0">1.093</h4>
+              <small class="m-2 text-muted">Commandes</small>
+            </div>
+
             <div class="d-flex align-items-center mb-2">
               <span class="dot m-2" style="background-color: #0f172a"></span>
               <div style="font-size: 14px">
-                <strong class="me-1">234</strong>
-                <span class="text-muted">Payées</span>
+                <strong class="me-1">456</strong>
+                <span class="text-muted">Validées</span>
               </div>
             </div>
+
             <div class="d-flex align-items-center mb-2">
               <span
                 class="dot m-2"
                 style="background-color: rgb(80, 136, 132)"
               ></span>
               <div style="font-size: 14px">
-                <strong class="me-1">514</strong>
-                <span class="text-muted">En Retard</span>
+                <strong class="me-1">389</strong>
+                <span class="text-muted">En cours</span>
               </div>
             </div>
+
             <div class="d-flex align-items-center">
               <span class="dot m-2" style="background-color: #ab4459"></span>
               <div style="font-size: 14px">
-                <strong class="me-1">345</strong>
-                <span class="text-muted">Impayées</span>
+                <strong class="me-1">248</strong>
+                <span class="text-muted">Retournées</span>
               </div>
             </div>
           </div>
@@ -83,8 +81,6 @@
       </div>
     </div>
   </div>
-
-
 </div>
 
 <!-- Chart.js & Datalabels -->
@@ -93,14 +89,13 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    // Donut Chart
-    new Chart(document.getElementById("invoiceDonut"), {
+    new Chart(document.getElementById("orderDonut"), {
       type: "doughnut",
       data: {
-        labels: ["Paid", "Overdue", "Unpaid"],
+        labels: ["Validées", "En cours", "Retournées"],
         datasets: [
           {
-            data: [234, 514, 345],
+            data: [456, 389, 248],
             backgroundColor: ["#0F172A", "rgb(80, 136, 132)", "#AB4459"],
             borderWidth: 0,
             hoverOffset: 10,
@@ -108,7 +103,7 @@
         ],
       },
       options: {
-        cutout: '50%',
+        cutout: "50%",
         plugins: {
           legend: { display: false },
           tooltip: {
@@ -122,7 +117,7 @@
             },
           },
           datalabels: {
-            color: "#fff", // white percent text
+            color: "#fff",
             font: { weight: "bold", size: 14 },
             formatter: (value, ctx) => {
               const total = ctx.chart.data.datasets[0].data.reduce(

@@ -75,6 +75,18 @@ class TMsLivraison
     #[ORM\JoinColumn(nullable: false)]
     private ?pEntite $pEntite = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\ManyToOne(inversedBy: 'tMsDemandes')]
+    private ?PStatut $status = null;
+
+    #[ORM\ManyToOne(inversedBy: 'tMsDemandes')]
+    private ?PStatut $StPositionActuel = null;
+
+    #[ORM\ManyToOne(inversedBy: 'tMsLivraisons')]
+    private ?PTypeOprt $typeLivraison = null;
+
     public function __construct()
     {
         $this->tMsLivraisonlgs = new ArrayCollection();
@@ -314,6 +326,53 @@ class TMsLivraison
     public function setPEntite(?pEntite $pEntite): static
     {
         $this->pEntite = $pEntite;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+        public function getStatus(): ?PStatut
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?PStatut $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getStPositionActuel(): ?PStatut
+    {
+        return $this->StPositionActuel;
+    }
+
+    public function setStPositionActuel(?PStatut $StPositionActuel): static
+    {
+        $this->StPositionActuel = $StPositionActuel;
+
+        return $this;
+    }
+
+    public function getTypeLivraison(): ?PTypeOprt
+    {
+        return $this->typeLivraison;
+    }
+
+    public function setTypeLivraison(?PTypeOprt $typeLivraison): static
+    {
+        $this->typeLivraison = $typeLivraison;
 
         return $this;
     }

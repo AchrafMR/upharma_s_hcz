@@ -83,14 +83,17 @@ window.addEventListener("DOMContentLoaded", () => {
             
             <h6 class="text-uppercase mb-1 product-title">
               ${
-                product.name.length > 18
-                  ? product.name.substring(0, 18) + "..."
+                product.name.length > 16
+                  ? product.name.substring(0, 16) + "..."
                   : product.name
               }
             </h6>
-            <p class="text-danger fw-bold mb-0 product-price">${Number(
-              product.price
-            ).toFixed(2)} DH</p>
+            <p class="text-danger fw-bold mb-0 product-price">
+              ${Number(product.price).toLocaleString('fr-FR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }).replace(/\s/g, '\u00A0')} DH
+            </p>
           </div>
         </div>
       </div>
@@ -115,8 +118,13 @@ window.addEventListener("DOMContentLoaded", () => {
         
       <div style="width: 75%" class="d-flex justify-content-between align-items-center text-uppercase fw-semibold text-truncate">
         <span class="text-truncate" style="max-width: 80%">${item.name}</span>
-        <span class="text-danger fw-bold">${item.price.toFixed(2)}</span>
-      </div>
+        <span class="text-danger fw-bold">
+        ${item.price.toLocaleString('fr-FR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+        }).replace(/\s/g, '\u00A0')}
+        </span>
+        </div>
 
       <div style="width: 30%" class="d-flex justify-content-end align-items-center gap-2 text-end ps-2">
         <div class="d-flex align-items-center bg-light rounded-pill qty-control" style="font-size: 0.8rem">
@@ -142,7 +150,11 @@ window.addEventListener("DOMContentLoaded", () => {
       .join("");
 
     cartContainer.innerHTML = cartHTML;
-    subtotalElement.innerText = `${subtotal.toFixed(2)} DH`;
+    subtotalElement.innerText = `${subtotal.toLocaleString('fr-FR', 
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).replace(/\s/g, '\u00A0')} DH`;
   };
 
   // Validate form fields
@@ -276,10 +288,11 @@ window.addEventListener("DOMContentLoaded", () => {
   // IPP autofill on Enter for set patient name and dossier
   const ippInput = document.getElementById("ipp");
   const nomInput = document.getElementById("nom_patient");
-  const dossierInput = document.getElementById("dossier_patient");
+  const dossierSelect = document.getElementById("dossier_patient");
 
   nomInput.disabled = true;
-  dossierInput.disabled = true;
+  dossierSelect.disabled = true;
+
   ippInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -289,10 +302,24 @@ window.addEventListener("DOMContentLoaded", () => {
 
       if (patient) {
         nomInput.value = patient.nom;
-        dossierInput.value = patient.dossier;
+        dossierSelect.innerHTML = ""; // clear previous
+
+        const dossiers = Array.isArray(patient.dossier)
+          ? patient.dossier
+          : [patient.dossier];
+
+        dossiers.forEach((d) => {
+          const option = document.createElement("option");
+          option.value = d;
+          option.textContent = d;
+          dossierSelect.appendChild(option);
+        });
+
+        dossierSelect.disabled = false;
       } else {
         nomInput.value = "";
-        dossierInput.value = "";
+        dossierSelect.innerHTML = "";
+        dossierSelect.disabled = true;
         toastr.error("Aucun patient trouvé avec cet IPP");
       }
     }
@@ -309,7 +336,7 @@ window.addEventListener("DOMContentLoaded", () => {
   if (!pendingDemande || pendingDemande.length === 0) {
     toastr.error("Aucune donnée de panier à envoyer.");
     btn.disabled = false;
-    btn.innerHTML = 'Enregistrer'; // Reset text
+    btn.innerHTML = 'Commander'; 
     return;
   }
 
@@ -324,7 +351,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   if (!validateFormFields(requiredFields)) {
     btn.disabled = false;
-    btn.innerHTML = 'Enregistrer';
+    btn.innerHTML = 'Commander';
     return;
   }
 
@@ -352,7 +379,7 @@ window.addEventListener("DOMContentLoaded", () => {
     if (!res.ok) throw new Error("Erreur serveur");
     await res.json();
 
-    toastr.success("Demande enregistrée avec succès!");
+    toastr.success("Commande enregistrée avec succès!");
     $("#addCommande").modal("hide");
 
     cart = [];
@@ -368,82 +395,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
   } catch (err) {
     console.error(err);
-    toastr.error("Erreur lors de l'enregistrement de la demande.");
+    toastr.error("Erreur lors de l'enregistrement de la commande.");
   } finally {
     // Always re-enable the button
     btn.disabled = false;
-    btn.innerHTML = 'Enregistrer';
+    btn.innerHTML = 'Commander';
   }
 });
 
-  // document.getElementById("submit-demande").addEventListener("click", () => {
-  //   if (btn.disabled) return;
-  //   btn.disabled = true;
-    
-  //   if (!pendingDemande || pendingDemande.length === 0) {
-  //     toastr.error("Aucune donnée de panier à envoyer.");
-  //     btn.disabled = false;
-  //     btn.innerHTML = 'Enregistrer';
-  //     return;
-  //   }
-  //   const requiredFields = [
-  //     { id: "demandeur_id", label: "Magasin Demandeur" },
-  //     { id: "recepteur_id", label: "Magasin de Traitement" },
-  //     { id: "ipp", label: "IPP" },
-  //     { id: "nom_patient", label: "Nom du patient" },
-  //     { id: "dossier_patient", label: "Dossier du patient" },
-  //     { id: "description", label: "description" },
-  //   ];
-
-  //   if (!validateFormFields(requiredFields)) return;
-
-  //   const data = {
-  //     demandeur_id: document.getElementById("demandeur_id").value,
-  //     recepteur_id: document.getElementById("recepteur_id").value,
-  //     urgent: document.getElementById("urgent").checked ? 1 : 0,
-  //     description: document.getElementById("description").value,
-  //     ipp: document.getElementById("ipp").value,
-  //     nom_patient: document.getElementById("nom_patient").value,
-  //     dossier_patient: document.getElementById("dossier_patient").value,
-  //     lignes: pendingDemande,
-  //   };
-
-  //   fetch("/vente/save-demande", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       "X-Requested-With": "XMLHttpRequest",
-  //     },
-  //     body: JSON.stringify(data),
-  //   })
-  //     .then((res) => {
-  //       if (!res.ok) throw new Error("Erreur serveur");
-  //       return res.json();
-  //     })
-  //     .then(() => {
-  //       toastr.success("Demande enregistrée avec succès!");
-  //       $("#addCommande").modal("hide");
-
-  //       cart = [];
-  //       renderCart();
-
-  //       // Clear form
-  //       [
-  //         "demandeur_id",
-  //         "recepteur_id",
-  //         "description",
-  //         "ipp",
-  //         "nom_patient",
-  //         "dossier_patient",
-  //       ].forEach((id) => {
-  //         const el = document.getElementById(id);
-  //         if (el) el.value = "";
-  //       });
-  //       document.getElementById("urgent").checked = false;
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //       toastr.error("Erreur lors de l'enregistrement de la demande.");
-  //     });
-  // });
+  
 });

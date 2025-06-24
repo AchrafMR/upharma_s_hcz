@@ -112,6 +112,12 @@ class TMsCommande
     #[ORM\OneToMany(mappedBy: 'tMsCommande', targetEntity: TMsLivraison::class)]
     private Collection $tMsLivraisons;
 
+    #[ORM\ManyToOne(inversedBy: 'tMsDemandes')]
+    private ?PStatut $status = null;
+
+    #[ORM\ManyToOne(inversedBy: 'tMsDemandes')]
+    private ?PStatut $StPositionActuel = null;
+
     public function __construct()
     {
         $this->tMsCommandelgs = new ArrayCollection();
@@ -515,6 +521,30 @@ class TMsCommande
                 $tMsLivraison->setTMsCommande(null);
             }
         }
+
+        return $this;
+    }
+
+        public function getStatus(): ?PStatut
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?PStatut $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getStPositionActuel(): ?PStatut
+    {
+        return $this->StPositionActuel;
+    }
+
+    public function setStPositionActuel(?PStatut $StPositionActuel): static
+    {
+        $this->StPositionActuel = $StPositionActuel;
 
         return $this;
     }

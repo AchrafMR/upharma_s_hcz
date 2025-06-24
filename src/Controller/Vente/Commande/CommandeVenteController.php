@@ -2,7 +2,6 @@
 
 namespace App\Controller\Vente\Commande;
 
-use App\Entity\PEntite;
 use App\Entity\PMagasins;
 use App\Entity\PProduits;
 use App\Entity\TMsCommande;
@@ -380,6 +379,7 @@ class CommandeVenteController extends AbstractController
         $livraison->setPEntite($commande->getPEntite());
         $livraison->setCreated(new \DateTime());
         $livraison->setUrgent($commande->isUrgent());
+        $livraison->setDescription($commande->getDescription());
         $livraison->setActif(true);
         $livraison->setPositionActuel('Crée');
 
@@ -409,16 +409,20 @@ class CommandeVenteController extends AbstractController
             $livraisonLg->setFlagSynchronisationLocale(false);
             $this->em->persist($livraisonLg);
 
-            $livraisonObj = new TMsLivraisonobj();
-            $livraisonObj->setTMsLivraisonLg($livraisonLg);
-            $livraisonObj->setLot('DEFAULT');
-            $livraisonObj->setDatePeremption(null);
-            $livraisonObj->setQuantitieLivree($qtyLivree);
-            $livraisonObj->setPrixTtc($ligne->getPrixUnitaire());
-            $livraisonObj->setTotalTtc($qtyLivree * $ligne->getPrixUnitaire());
-            $livraisonObj->setCreated(new \DateTime());
-            $livraisonObj->setFlagSynchronisationLocale(false);
-            $this->em->persist($livraisonObj);
+           for ($i = 0; $i < $qtyLivree; $i++) {
+                $livraisonObj = new TMsLivraisonobj();
+                $livraisonObj->setTMsLivraisonLg($livraisonLg);
+                $livraisonObj->setLot('DEFAULT');
+                $livraisonObj->setDatePeremption(null);
+                $livraisonObj->setQuantitieLivree(1); 
+                $livraisonObj->setPrixTtc($ligne->getPrixUnitaire());
+                $livraisonObj->setTotalTtc($ligne->getPrixUnitaire()); // 1 * unit price
+                $livraisonObj->setCreated(new \DateTime());
+                $livraisonObj->setFlagSynchronisationLocale(false);
+
+                $this->em->persist($livraisonObj);
+            }
+
 
             $ligne->setQuantiteServie($newServie);
             $ligne->setQuantiteReste($newReste);

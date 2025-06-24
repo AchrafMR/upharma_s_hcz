@@ -13,16 +13,16 @@ class DashboardController extends AbstractController
     public function index(Connection $conn): Response
     {
         // Raw SQL queries
-        $totalDemandes = $conn->fetchOne("SELECT COUNT(DISTINCT d.id) FROM t_ms_Demande d WHERE d.actif = 1");
-        $validatedDemandes = $conn->fetchOne("SELECT COUNT(DISTINCT d.id) FROM t_ms_Demande d WHERE d.actif = 1 AND d.position_actuel = 'valider'");
-        $generatedDemandes = $conn->fetchOne("SELECT COUNT(DISTINCT d.id) FROM t_ms_Demande d WHERE d.actif = 1 AND d.position_actuel = 'Générer'");
+        $totalDemandes = $conn->fetchOne("SELECT COUNT(DISTINCT d.id) FROM t_ms_commande d WHERE d.actif = 1");
+        $validatedDemandes = $conn->fetchOne("SELECT COUNT(DISTINCT d.id) FROM t_ms_commande d WHERE d.actif = 1 AND d.position_actuel = 'validée'");
+        $generatedDemandes = $conn->fetchOne("SELECT COUNT(DISTINCT d.id) FROM t_ms_commande d WHERE d.actif = 1 AND d.position_actuel = 'Générée'");
 
         return $this->render('dashboard/index.html.twig', [
             'allOrders' => $totalDemandes,
             'validatedOrders' => $validatedDemandes,
-            'ongoingOrders' => 0, // placeholder, you can define your own logic
+            'ongoingOrders' => 0,
             'processedOrders' => $generatedDemandes,
-            'returnedOrders' => 0, // optional, can be replaced with real logic later
+            'returnedOrders' => 0,
         ]);
     }
 }

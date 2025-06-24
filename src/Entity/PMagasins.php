@@ -62,6 +62,12 @@ class PMagasins
     #[ORM\OneToMany(mappedBy: 'recepteur', targetEntity: TMsLivraison::class)]
     private Collection $tMsLivraisons;
 
+    #[ORM\OneToMany(mappedBy: 'magasin', targetEntity: PEmplacements::class)]
+    private Collection $pEmplacements;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $complementaire = null;
+
     public function __construct()
     {
         $this->tMsCommandes = new ArrayCollection();
@@ -289,7 +295,7 @@ class PMagasins
     {
         if (!$this->tMsLivraisons->contains($tMsLivraison)) {
             $this->tMsLivraisons->add($tMsLivraison);
-            $tMsLivraison->setRecepteur($this);
+            $tMsLivraison->setRecepteurId($this);
         }
 
         return $this;
@@ -299,11 +305,52 @@ class PMagasins
     {
         if ($this->tMsLivraisons->removeElement($tMsLivraison)) {
             // set the owning side to null (unless already changed)
-            if ($tMsLivraison->getRecepteur() === $this) {
-                $tMsLivraison->setRecepteur(null);
+            if ($tMsLivraison->getRecepteurId() === $this) {
+                $tMsLivraison->setRecepteurId(null);
             }
         }
 
         return $this;
     }
+        /**
+     * @return Collection<int, PEmplacements>
+     */
+    public function getPEmplacements(): Collection
+    {
+        return $this->pEmplacements;
+    }
+
+    public function addPEmplacement(PEmplacements $pEmplacement): static
+    {
+        if (!$this->pEmplacements->contains($pEmplacement)) {
+            $this->pEmplacements->add($pEmplacement);
+            $pEmplacement->setMagasin($this);
+        }
+
+        return $this;
+    }
+
+    public function removePEmplacement(PEmplacements $pEmplacement): static
+    {
+        if ($this->pEmplacements->removeElement($pEmplacement)) {
+            // set the owning side to null (unless already changed)
+            if ($pEmplacement->getMagasin() === $this) {
+                $pEmplacement->setMagasin(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isComplementaire(): ?bool
+    {
+        return $this->complementaire;
+    }
+
+    public function setComplementaire(?bool $complementaire): static
+    {
+        $this->complementaire = $complementaire;
+        return $this;
+    }
+
 }

@@ -9,7 +9,7 @@
       <div class="modal-dialog" style="width: 50%" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">INFORMATIONS DE LA DEMANDE</h5>
+            <h5 class="modal-title">INFORMATIONS DE LA COMMANDE</h5>
             <button
               type="button"
               class="close"
@@ -78,14 +78,7 @@
               <!-- Dossier Patient -->
               <div class="form-group col-md-6">
                 <label for="dossier_patient">Dossier Patient</label>
-                <input
-                  type="text"
-                  id="dossier_patient"
-                  name="dossier_patient"
-                  class="form-control"
-                  placeholder="Code dossier patient"
-                  required
-                />
+                <select id="dossier_patient" name="dossier_patient" class="form-control" required></select>
               </div>
               <div class="form-group col-md-6">
                 <label for="description">Description</label>
@@ -102,7 +95,7 @@
 
           <div class="modal-footer">
             <button type="button" id="submit-demande" class="btn btn-primary">
-              <i class="fa-regular fa-paper-plane"></i> Enregistrer Demande
+              <i class="fa-regular fa-paper-plane"></i> Commander
             </button>
           </div>
         </div>

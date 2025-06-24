@@ -98,9 +98,13 @@ class TAcReceptionObj
     #[ORM\ManyToOne(inversedBy: 'tAcReceptionObjsEtiqueter')]
     private ?User $userEtiqueter = null;
 
+    #[ORM\OneToMany(mappedBy: 'TAcReceptionObj', targetEntity: TMsLivraisonobj::class)]
+    private Collection $tMsLivraisonobjs;
+
     public function __construct()
     {
         $this->tAcReceptionObjs = new ArrayCollection();
+        $this->tMsLivraisonobjs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -446,6 +450,35 @@ class TAcReceptionObj
     public function setUserEtiqueter(?User $userEtiqueter): static
     {
         $this->userEtiqueter = $userEtiqueter;
+
+        return $this;
+    }
+    /**
+     * @return Collection<int, TMsLivraisonobj>
+     */
+    public function getTMsLivraisonobjs(): Collection
+    {
+        return $this->tMsLivraisonobjs;
+    }
+
+    public function addTMsLivraisonobj(TMsLivraisonobj $tMsLivraisonobj): static
+    {
+        if (!$this->tMsLivraisonobjs->contains($tMsLivraisonobj)) {
+            $this->tMsLivraisonobjs->add($tMsLivraisonobj);
+            $tMsLivraisonobj->setTAcReceptionObj($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsLivraisonobj(TMsLivraisonobj $tMsLivraisonobj): static
+    {
+        if ($this->tMsLivraisonobjs->removeElement($tMsLivraisonobj)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsLivraisonobj->getTAcReceptionObj() === $this) {
+                $tMsLivraisonobj->setTAcReceptionObj(null);
+            }
+        }
 
         return $this;
     }
