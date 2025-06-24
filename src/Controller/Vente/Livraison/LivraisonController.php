@@ -2,12 +2,7 @@
 
 namespace App\Controller\Vente\Livraison;
 
-use App\Entity\PEntite;
-use App\Entity\PMagasins;
-use App\Entity\PProduits;
 use App\Entity\TMsLivraison;
-use App\Entity\TMsLivraisonlg;
-use App\Entity\TMsLivraisonobj;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +12,6 @@ use App\Repository\PEntiteRepository;
 use App\Repository\PProfessionRepository;
 use App\Repository\PMagasinsRepository;
 use App\Repository\PProduitsRepository;
-use App\Repository\TMsCommandeRepository;
 use App\Repository\TMsLivraisonRepository;
 use App\Service\UserOperation;
 use Doctrine\ORM\EntityManagerInterface;
@@ -37,7 +31,7 @@ class LivraisonController extends AbstractController
        
     }
 
-    #[Route('/gestion-livrasions', name: 'vente_gestion_livrasions_index')]
+    #[Route('/gestion-livraisons', name: 'vente_gestion_livrasions_index')]
     public function index(Request $request,PEntiteRepository $pEntiteRepository,PProfessionRepository $professionRep,PModuleRepository $moduleRepository,PMagasinsRepository $magasinsRepository,TMsLivraisonRepository $TMsLivraisonRepository,PProduitsRepository $produitsRepository,): Response 
     {
         $allModules = $moduleRepository->findBy(array("active"=> true));
@@ -111,6 +105,7 @@ class LivraisonController extends AbstractController
         $qb->select('
                 l.id AS id,
                 l.code AS livraison_code,
+                l.description AS description,
                 dem.designationAccess AS demandeur,
                 rec.designationAccess AS recepteur,
                 l.ipp AS ipp_patient,
@@ -128,13 +123,14 @@ class LivraisonController extends AbstractController
             ->where('l.actif = 1')
             ->andWhere('l.pEntite = :entite')
             ->setParameter('entite', $dossier)
-            ->groupBy('l.id, l.code, l.ipp, l.nom_patient, l.created, l.position_actuel, l.urgent, l.multi_recp, dem.designationAccess, rec.designationAccess');
+            ->groupBy('l.id, l.code,l.description, l.ipp, l.nom_patient, l.created, l.position_actuel, l.urgent, l.multi_recp, dem.designationAccess, rec.designationAccess');
 
         if (!empty($search)) {
             $searchLower = strtolower($search);
 
             $qb->andWhere('
                 LOWER(l.code) LIKE :search OR
+                LOWER(l.description) LIKE :search OR
                 LOWER(l.ipp) LIKE :search OR
                 LOWER(l.created) LIKE :search OR
                 LOWER(l.nom_patient) LIKE :search OR

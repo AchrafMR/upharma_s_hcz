@@ -435,10 +435,14 @@ div.dataTables_processing > div:last-child > div{
 //   border: none;
 // }
 
+
 .modal-header {
   border-bottom-color: #eeeeee;
   background-color: #fafafa;
   height: 50px !important;
+}
+.modal-title {
+  font-size: 16px !important;
 }
 
 // .modal-backdrop {

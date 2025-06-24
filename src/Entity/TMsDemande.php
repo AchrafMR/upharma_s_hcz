@@ -110,6 +110,12 @@ class TMsDemande
     #[ORM\JoinColumn(name: "parent_id", referencedColumnName: "id", nullable: true)]
     private ?TMsCommande $parent = null;
 
+    #[ORM\ManyToOne(inversedBy: 'tMsDemandes')]
+    private ?PStatut $status = null;
+
+    #[ORM\ManyToOne(inversedBy: 'tMsDemandes')]
+    private ?PStatut $StPositionActuel = null;
+
     public function __construct()
     {
         $this->tMsDemandelgs = new ArrayCollection();
@@ -497,6 +503,30 @@ class TMsDemande
     public function setParent(?TMsCommande $parent): static
     {
         $this->parent = $parent;
+
+        return $this;
+    }  
+
+        public function getStatus(): ?PStatut
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?PStatut $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getStPositionActuel(): ?PStatut
+    {
+        return $this->StPositionActuel;
+    }
+
+    public function setStPositionActuel(?PStatut $StPositionActuel): static
+    {
+        $this->StPositionActuel = $StPositionActuel;
 
         return $this;
     }  

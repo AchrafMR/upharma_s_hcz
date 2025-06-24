@@ -31,6 +31,9 @@ class PEmplacements
 
     #[ORM\OneToMany(mappedBy: 'adresse', targetEntity: TAcReceptionObj::class)]
     private Collection $tAcReceptionObjs;
+    
+    #[ORM\ManyToOne(inversedBy: 'pEmplacements')]
+    private ?PMagasins $magasin = null;
 
     public function __construct()
     {
@@ -153,6 +156,18 @@ class PEmplacements
                 $tAcReceptionObj->setAdresse(null);
             }
         }
+
+        return $this;
+    }
+    
+    public function getMagasin(): ?PMagasins
+    {
+        return $this->magasin;
+    }
+
+    public function setMagasin(?PMagasins $magasin): static
+    {
+        $this->magasin = $magasin;
 
         return $this;
     }

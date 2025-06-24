@@ -39,6 +39,9 @@ class TMsLivraisonobj
     #[ORM\Column(nullable: true)]
     private ?bool $flag_synchronisation_locale = null;
 
+    #[ORM\ManyToOne(inversedBy: 'tMsLivraisonobjs')]
+    private ?TAcReceptionObj $TAcReceptionObj = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -136,6 +139,18 @@ class TMsLivraisonobj
     public function setFlagSynchronisationLocale(?bool $flag_synchronisation_locale): static
     {
         $this->flag_synchronisation_locale = $flag_synchronisation_locale;
+
+        return $this;
+    }
+    
+        public function getTAcReceptionObj(): ?TAcReceptionObj
+    {
+        return $this->TAcReceptionObj;
+    }
+
+    public function setTAcReceptionObj(?TAcReceptionObj $TAcReceptionObj): static
+    {
+        $this->TAcReceptionObj = $TAcReceptionObj;
 
         return $this;
     }

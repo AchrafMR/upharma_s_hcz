@@ -43,11 +43,34 @@ $(document).ready(function () {
             `;
         },
       },
-      { name: "d.description", data: "description" },
-      { name: "demandeur.designation", data: "demandeur" },
-      { name: "recepteur.designation", data: "recepteur" },
+      {
+        name: "d.created",
+        data: "date_demmande",
+        render: function (data) {
+          return moment(data).format("DD/MM/YYYY ");
+        },
+      },
+      { name: "d.description", data: "description" , 
+        createdCell: function (td) {
+          td.classList.add("force-left-align");
+        },
+      },
+      { name: "demandeur.designation", data: "demandeur",
+        createdCell: function (td) {
+          td.classList.add("force-left-align");
+        },
+      },
+      { name: "recepteur.designation", data: "recepteur",
+        createdCell: function (td) {
+          td.classList.add("force-left-align");
+        },
+      },
       { name: "d.ipp", data: "ipp_patient" },
-      { name: "d.nom_patient", data: "nom_patient" },
+      { name: "d.nom_patient", data: "nom_patient",
+        createdCell: function (td) {
+          td.classList.add("force-left-align");
+        },
+      },
       {
         name: "total_montant_ttc",
         data: "total_montant_ttc",
@@ -64,13 +87,6 @@ $(document).ready(function () {
         },
       },
       { name: "niveau_urgence", data: "niveau_urgence" },
-      {
-        name: "d.created",
-        data: "date_demmande",
-        render: function (data) {
-          return moment(data).format("DD/MM/YYYY ");
-        },
-      },
       { name: "d.position_actuel", data: "position_actuel" },
       {
         name: "actions",

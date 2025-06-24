@@ -27,7 +27,6 @@
     background-color: rgba(80, 136, 132, 0.1);
   }
 
-  /* ✅ Fixed border colors */
   .metric-card.border-success {
     border-left-color: #28a745 !important;
   }
@@ -44,7 +43,6 @@
     border-left-color: #00bcd4 !important;
   }
 
-  /* ✅ Matching icon text colors */
   .text-yellow {
     color: #f5b942 !important;
   }
@@ -53,16 +51,15 @@
   }
 </style>
 
-{% set metrics = [ { title: 'Total des Commandes', value: allOrders, icon: 'fas
-fa-boxes', color: 'yellow', route: 'vente_gestion_demandes_index' }, { title:
-'Commandes Validées', value: validatedOrders, icon: 'fas fa-check', color:
-'primary', route: 'vente_gestion_demandes_index' }, { title: 'Commandes
-Générer', value: processedOrders, icon: 'fas fa-clipboard-check', color:
-'success', route: 'vente_gestion_demandes_index' }, { title: 'Commandes en
-Cours', value: ongoingOrders, icon: 'fas fa-truck-loading', color: 'cyan',
-route: 'vente_gestion_demandes_index' }, { title: 'Commandes Retournées', value:
-returnedOrders, icon: 'fas fa-undo', color: 'danger', route:
-'vente_gestion_demandes_index' } ] %} {% for metric in metrics %}
+{% set metrics = [ 
+  { title: 'Total des commandes', value: allOrders, icon: 'fas fa-boxes', color: 'yellow', route: 'vente_gestion_commandes_index' }, 
+  { title: 'Commandes en cours', value: ongoingOrders, icon: 'fas fa-truck-loading', color: 'cyan', route: 'vente_gestion_commandes_index' }, 
+  { title: 'Commandes validées', value: validatedOrders, icon: 'fas fa-check', color: 'primary', route: 'vente_gestion_commandes_index' }, 
+  { title: 'Commandes générées', value: processedOrders, icon: 'fas fa-clipboard-check', color: 'success', route: 'vente_gestion_commandes_index' },  
+  { title: 'Commandes retournées', value: returnedOrders, icon: 'fas fa-undo', color: 'danger', route: 'vente_gestion_commandes_index' } 
+] %}
+
+{% for metric in metrics %}
 <div class="col">
   <a href="{{ path(metric.route) }}" class="text-decoration-none text-dark">
     <div

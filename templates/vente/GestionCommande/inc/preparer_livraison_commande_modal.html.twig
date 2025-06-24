@@ -23,20 +23,23 @@
             <table class="table table-bordered mb-0">
               <thead class="table-light" style="position: sticky; top: 0; background: white; z-index: 1;">
                 <tr>
-                  <th>Produit</th>
-                  <th>Commandée</th>
-                  <th>Déjà Livrée</th>
-                  <th>Reste</th>
-                  <th>À Livrer</th>
+                  <th>#</th>
+                  <th style="width: max-content;">Produit</th>
+                  <th style="width: 7%;">Commandée</th>
+                  <th style="width: 7%;">Déjà Livrée</th>
+                  <th style="width: 7%;">Reste</th>
+                  <th style="width: 7%;">À Livrer</th>
                 </tr>
               </thead>
               <tbody>
                 {% for ligne in commande.tMsCommandelgs %}
                   <tr>
+                    <td style="vertical-align: top !important; text-align: center !important;">
+                       {{ loop.index }}
                     <td style="vertical-align: top !important; text-align: left !important;">{{ ligne.pProduit.titre }}</td>
-                    <td>{{ ligne.quantiteCommandee }}</td>
-                    <td>{{ ligne.quantiteServie }}</td>
-                    <td>{{ ligne.quantiteReste }}</td>
+                    <td style="vertical-align: top !important; text-align: right !important;">{{ ligne.quantiteCommandee }}</td>
+                    <td style="vertical-align: top !important; text-align: right !important;">{{ ligne.quantiteServie }}</td>
+                    <td style="vertical-align: top !important; text-align: right !important;">{{ ligne.quantiteReste }}</td>
                     <td>
                       <input type="number"
                              step="1"
@@ -44,7 +47,8 @@
                              max="{{ ligne.quantiteReste }}"
                              name="quantites[{{ ligne.id }}]"
                              class="form-control form-control-sm"
-                             placeholder="0" />
+                             placeholder="0"
+                             value="{{ ligne.quantiteReste }}" />
                     </td>
                   </tr>
                 {% else %}

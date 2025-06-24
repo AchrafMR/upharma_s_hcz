@@ -51,7 +51,7 @@
           </div>
 
           <div class="form-group col-md-6">
-              <label>Date commande</label>
+              <label>Date Livraison</label>
               <input type="text" class="form-control" value="{{ livraison.created|date('d/m/Y') }}" disabled>
           </div>
         </div>
@@ -69,8 +69,8 @@
 
         <div class="form-row pr-2">
           <div class="form-group col-md-6">
-            <label>position Actuel</label>
-            <input type="text" class="form-control" value="{{ livraison.positionActuel }}" disabled>
+            <label>Description</label>
+            <input type="text" class="form-control" value="{{ livraison.description }}" disabled>
           </div>
 
           <div class="urgent">
@@ -101,7 +101,7 @@
                   <tr>
                     <td style="vertical-align: top !important;">{{ ligne.pProduit.id }}</td>
                     <td style="vertical-align: top !important; text-align: left !important;">{{ ligne.pProduit.titre ?? '—' }}</td>
-                    <td style="vertical-align: top !important; text-align: right !important;">{{ ligne.quantiteLivree }}</td>
+                    <td style="vertical-align: top !important; text-align: center !important;">{{ ligne.quantiteLivree }}</td>
                     <td style="vertical-align: top !important; text-align: right !important;">{{ ligne.prixUnitaire|number_format(2, ',', ' ') }}</td>
                     <td style="vertical-align: top !important; text-align: right !important;">{{ ligne_total|number_format(2, ',', ' ') }}</td>
                   </tr>
@@ -119,7 +119,7 @@
 
       </div>
 
-      {# <div class="modal-footer">
+      <div class="modal-footer">
         {% if livraison.positionActuel == 'Crée' %}
           <button type="button" class="btn btn-primary btn-valider" data-id="{{ livraison.id }}">
             Valider
@@ -129,7 +129,7 @@
             Générer
           </button>
         {% endif %}
-      </div> #}
+      </div>
 
     </div>
   </div>
