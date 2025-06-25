@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %} {% block title %}Gestion des commandes{% endblock %}
+{% extends 'base.html.twig' %} {% block title %}Gestion des livraisons{% endblock %}
 {% block stylesheets %}
 {{ parent() }}
 <link
@@ -9,13 +9,7 @@
 <div class="main">
   <div class="container">
     <div class="row">
-      <div class="col-md-12 mt-3">
-        <div class="row no-gutters mb-2">
-          <div class="col-md-6 d-flex justify-content-start align-items-center">
-            <h4>LISTE DES LIVRAISONS :</h4>
-          </div>
-        </div>
-
+      <div class="col-md-12 mt-4">
         <table id="livraisonTable" class="table table-striped">
           <thead>
             <tr>

@@ -91,63 +91,49 @@
       </div>
 
     </header>
-    {# <div class="mt-4">
-      <div class="mb-2" style="padding-top:0 !important; height:3rem !important;">
-        <div class="d-flex justify-content-end align-items-center text-center mb-2 mr-2">
-          <h1 class="sum-module-title mr-auto pt-2">{{currentSubModuleTitle}}</h1>
-          {% set path = 'build/images/' %}
-          {% for module in app.session.get('modules') %}
-            {% if not module.setting and module.active %}
-            <a href="{{path(module.route)}}">
-              <div class="icon-module">
-                <img src="{{asset(path ~ module.image )}}" class="image-module" alt="{{module.abreviation}}" />
-                <h5 class="mt-1">{{module.abreviation}}</h5>
+
+
+  {% set path = 'build/images/' %}
+    {% set currentRoute = app.request.attributes.get('_route') %}
+
+    {% for module in app.session.get('modules') %}
+      {% if module.active and module.nom != 'PARAMÉTRAGE' and module.pSousModule is defined %}
+        {% set submodules = module.pSousModule %}
+        
+        {% set isCurrentModule = false %}
+        {% for sm in submodules %}
+          {% if sm.route == currentRoute %}
+            {% set isCurrentModule = true %}
+          {% endif %}
+        {% endfor %}
+
+        {# Only render wrapper if this is the current module AND it has more than one submodule #}
+        {% if isCurrentModule and submodules|length > 1 %}
+          <div class="mt-4">
+            <div  style="padding-top:0 !important; height:3rem !important;">
+              <div class="d-flex justify-content-end align-items-center text-center mr-2">
+               <h2 class="sum-module-title mr-auto pt-2">{{currentSubModuleTitle}}</h2>
+                {% for subModule in submodules %}
+                  {% if subModule.active and subModule.route != currentRoute %}
+                    <a href="{{ path(subModule.route) }}">
+                      <div class="icon-module" style="width: 40px; text-align: center; display: flex; flex-direction: column; align-items: center;">
+                        <img src="{{ asset(path ~ subModule.image) }}" class="image-module" alt="{{ subModule.nom }}" style="height: 40px; object-fit: contain;" />
+                        <h5 class="mt-1" style="white-space: normal; overflow-wrap: normal; margin: 4px 0 0; text-align: center; height: 2.6em; line-height: 1.3em; overflow: hidden;">
+                          {{ subModule.nom }}
+                        </h5>
+                      </div>
+                    </a>
+                  {% endif %}
+                {% endfor %}
               </div>
-            </a>
-            {% endif %}
-          {% endfor %}
-        </div>
-      </div>
-    </div> #}
-    {# <div class="mt-4">
-      <div class="mb-2" style="padding-top:0 !important; height:3rem !important;">
-        <div class="d-flex justify-content-end align-items-center text-center mb-2 mr-2">
-          <h1 class="sum-module-title mr-auto mb-auto align-self-end">{{currentSubModuleTitle}}</h1>
-          <div class="icon-module">
-            <img src="{{asset('build/images/medical-record.png')}}" class="image-module" alt="medical-record" />
-            <h5 class="mt-1">PATIENT</h5>
+            </div>
           </div>
-          <div class="icon-module">
-            <img src="{{asset('build/images/hospital.png')}}" class="image-module" alt="hospital" />
-            <h5 class="mt-1">ADMISSION</h5>
-          </div>
-          <div class="icon-module">
-            <img src="{{asset('build/images/appointment.png')}}" class="image-module" alt="appointment" />
-            <h5 class="mt-1">RDV</h5>
-          </div>
-          <div class="icon-module">
-            <img src="{{asset('build/images/bill.png')}}" class="image-module" alt="bill" />
-            <h5 class="mt-1">ENCAISSEMENT</h5>
-          </div>
-          <div class="icon-module">
-            <img src="{{asset('build/images/factures.png')}}" class="image-module" alt="factures" />
-            <h5 class="mt-1">FACTURATION</h5>
-          </div>
-          <div class="icon-module">
-            <img src="{{asset('build/images/consulting.png')}}" class="image-module" alt="consulting" />
-            <h5 class="mt-1">HONORAIRE</h5>
-          </div>
-          <div class="icon-module">
-            <img src="{{asset('build/images/pec.png')}}" class="image-module" alt="pec" />
-            <h5 class="mt-1">PEC</h5>
-          </div>
-          <div class="icon-module">
-            <img src="{{asset('build/images/archive.png')}}" class="image-module" alt="archive" />
-            <h5 class="mt-1">RECOUVEREMENT</h5>
-          </div>
-        </div>
-      </div>
-    </div> #}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+
+     
     {# <hr> #}
     {# <div class="l-navbar show-sidebar " id="nav-bar"> #}
     <div class="l-navbar nav_width " id="nav-bar">

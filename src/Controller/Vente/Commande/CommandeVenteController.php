@@ -58,13 +58,14 @@ class CommandeVenteController extends AbstractController
         $magasinsTraitement = $magasinsRepository->findTraitementMagasins($this->getUser());
 
         $commandes = $TMsCommandeRepository->findAllActifWithActiveLg();
+        // dd($commandes);
         $products = $produitsRepository->findProductsWithTarificationAndSolde();
 
         $infosPatient = [
-            ['ipp' => '1', 'nom' => 'achraf admin', 'dossier' => 'D00001'],
-            ['ipp' => '10001', 'nom' => 'Ahmed El Mansouri', 'dossier' => 'D10001'],
-            ['ipp' => '10002', 'nom' => 'Sara Ben Ali', 'dossier' => 'D10002'],
-            ['ipp' => '10003', 'nom' => 'Youssef Karim', 'dossier' => 'D10003'],
+            ['ipp' => '1', 'nom' => 'achraf admin', 'dossier' => ['D00001', 'D00002']],
+            ['ipp' => '10001', 'nom' => 'Ahmed El Mansouri', 'dossier' => ['D10001']],
+            ['ipp' => '10002', 'nom' => 'Sara Ben Ali', 'dossier' => ['D10002', 'D10005', 'D10009']],
+            ['ipp' => '10003', 'nom' => 'Youssef Karim', 'dossier' => ['D10003']],
         ];
         return $this->render('vente/GestionCommande/index.html.twig', [
             'professions' => $professions,
@@ -79,16 +80,14 @@ class CommandeVenteController extends AbstractController
         ]);
     }
 
-    #[Route('/fetch-commandes', name: 'app_fetch_commandes', options: ['expose' => true], methods: 'GET')]
+    #[Route('/fetch-commandes', name: 'app_fetch_commandes', options: ['expose' => true], methods: ['GET'])]
     public function fetchCommandes(Request $request, EntityManagerInterface $em): JsonResponse
     {
-        $connection = $em->getConnection();
-  
         $dossier = $request->getSession()->get('dossier');
 
         if (!$dossier || !method_exists($dossier, 'getId')) {
             return new JsonResponse([
-                'draw' => $request->query->get('draw'),
+                'draw' => (int) $request->query->get('draw'),
                 'recordsTotal' => 0,
                 'recordsFiltered' => 0,
                 'data' => [],
@@ -97,96 +96,83 @@ class CommandeVenteController extends AbstractController
             ]);
         }
 
-        $dossierId = $dossier->getId();
-        // dd($dossierId);
-
-        $draw = $request->query->get('draw');
+        $draw = (int) $request->query->get('draw');
         $start = (int) $request->query->get('start', 0);
         $length = (int) $request->query->get('length', 10);
         $search = $request->query->all('search')['value'] ?? '';
-        $orderColumnIndex = (int) $request->query->all('order')[0]['column'] ?? 0;
+        $orderColumnIndex = $request->query->all('order')[0]['column'] ?? 0;
+        $orderColumn = $request->query->all('columns')[$orderColumnIndex]['name'] ?? 'd.id';
         $orderDir = strtoupper($request->query->all('order')[0]['dir'] ?? 'DESC');
 
-        $columns = [
-            'd.id',
-            'd.code',
-            'demandeur.designation_access',
-            'recepteur.designation_access',
-            'd.ipp',
-            'd.nom_patient',
-            'SUM(lg.montant_ttc)',
-            "CASE WHEN d.urgent = 1 THEN 'Urgent' ELSE 'Normal' END",
-            'd.created',
-            'd.position_actuel',
+        $allowedOrderFields = [
+            'd.id', 'd.code', 'dem.designationAccess', 'rec.designationAccess',
+            'd.ipp', 'd.nomPatient', 'd.created', 'd.positionActuel'
         ];
-        $orderColumn = $columns[$orderColumnIndex] ?? 'd.id';
-
-        $where = " AND d.p_entite_id = ?";
-        $params = [$dossierId];
-
-        if (!empty($search)) {
-            $where .= " AND (
-                d.code LIKE ? OR
-                d.ipp LIKE ? OR
-                d.position_actuel LIKE ? OR
-                d.created LIKE ? OR
-                d.nom_patient LIKE ? OR
-                demandeur.designation_access LIKE ? OR
-                recepteur.designation_access LIKE ?
-            )";
-            for ($i = 0; $i < 7; $i++) {
-                $params[] = '%' . $search . '%';
-            }
+        if (!in_array($orderColumn, $allowedOrderFields)) {
+            $orderColumn = 'd.id';
         }
 
-        // Main data query
-        $sql = "
-            SELECT 
+        $qb = $em->createQueryBuilder();
+        $qb->select('
                 d.id AS id,
                 d.code AS commande_code,
                 d.description,
-                demandeur.designation_access AS demandeur,
-                recepteur.designation_access AS recepteur,
+                dem.designationAccess AS demandeur,
+                rec.designationAccess AS recepteur,
                 d.ipp AS ipp_patient,
-                d.nom_patient,
-                SUM(lg.montant_ttc) AS total_montant_ttc,
-                CASE 
-                    WHEN d.urgent = 1 THEN 'Urgent'
-                    ELSE 'Normal'
-                END AS niveau_urgence,
-                d.created AS date_demmande,
-                d.position_actuel
-            FROM t_ms_commande d
-            LEFT JOIN t_ms_commandelg lg ON lg.t_ms_commande_id = d.id AND lg.actif = 1
-            LEFT JOIN p_magasins demandeur ON demandeur.id = d.demandeur_id
-            LEFT JOIN p_magasins recepteur ON recepteur.id = d.recepteur_id
-            WHERE d.actif = 1 AND d.type_commande_id = 2
-            $where
-            GROUP BY 
-                d.id, d.code, d.description, d.ipp, d.nom_patient, d.created, 
-                d.position_actuel, d.urgent, 
-                demandeur.designation_access, recepteur.designation_access
-            ORDER BY $orderColumn $orderDir
-            OFFSET $start ROWS FETCH NEXT $length ROWS ONLY
-        ";
+                d.nomPatient,
+                SUM(lg.montantTtc) AS total_montant_ttc,
+                CASE WHEN d.urgent = true THEN \'Urgent\' ELSE \'Normal\' END AS niveau_urgence,
+                d.created AS date_commande,
+                d.positionActuel
+            ')
+            ->from(TMsCommande::class, 'd')
+            ->leftJoin('d.tMsCommandelgs', 'lg')
+            ->leftJoin('d.demandeur_id', 'dem')
+            ->leftJoin('d.recepteur_id', 'rec')
+            ->where('d.actif = 1')
+            ->andWhere('d.typeCommande = 2')
+            ->andWhere('d.pEntite = :entite')
+            ->setParameter('entite', $dossier)
+            ->groupBy('d.id, d.code, d.description, d.ipp, d.nomPatient, d.created, d.positionActuel, d.urgent, dem.designationAccess, rec.designationAccess');
 
-        $stmt = $connection->prepare($sql);
-        $results = $stmt->executeQuery($params)->fetchAllAssociative();
+        if (!empty($search)) {
+            $searchLower = strtolower($search);
+            $qb->andWhere('
+                LOWER(d.code) LIKE :search OR
+                LOWER(d.description) LIKE :search OR
+                LOWER(d.ipp) LIKE :search OR
+                LOWER(d.created) LIKE :search OR
+                LOWER(d.nomPatient) LIKE :search OR
+                LOWER(d.positionActuel) LIKE :search OR
+                LOWER(dem.designationAccess) LIKE :search OR
+                LOWER(rec.designationAccess) LIKE :search OR
+                (:search LIKE \'%urgent%\' AND d.urgent = true) OR
+                (:search LIKE \'%normal%\' AND d.urgent = false)
+            ')
+            ->setParameter('search', "%$searchLower%");
+        }
 
-        // Count query (filtered)
-        $countSql = "
-            SELECT COUNT(DISTINCT d.id) as total
-            FROM t_ms_commande d
-            LEFT JOIN p_magasins demandeur ON demandeur.id = d.demandeur_id
-            LEFT JOIN p_magasins recepteur ON recepteur.id = d.recepteur_id
-            WHERE d.actif = 1 AND d.type_commande_id = 2 AND d.p_entite_id = ?
-            " . (!empty($search) ? substr($where, strpos($where, 'AND (')) : '')
-        ;
+        $qb->orderBy($orderColumn, $orderDir)
+        ->setFirstResult($start)
+        ->setMaxResults($length);
 
-        $countStmt = $connection->prepare($countSql);
-        $totalRecords = $countStmt->executeQuery($params)->fetchOne();
+        $results = $qb->getQuery()->getResult();
+        $results = array_map(function ($row) {
+            if ($row['date_commande'] instanceof \DateTimeInterface) {
+                $row['date_commande'] = $row['date_commande']->format('Y-m-d H:i:s');
+            }
+            return $row;
+        }, $results);
 
-        // Get user action permissions
+        $clonedQB = clone $qb;
+        $clonedQB->resetDQLPart('select')
+            ->resetDQLPart('orderBy')
+            ->resetDQLPart('groupBy')
+            ->select('COUNT(DISTINCT d.id)');
+
+        $totalRecords = $clonedQB->getQuery()->getSingleScalarResult();
+
         $actions = $this->userOperation->getOperations($this->getUser(), 'vente_gestion_commandes_index', $request);
         $filteredActions = array_filter($actions, fn($action) => !$action->isHorizontal());
         $allActions = array_map(function($action) {
@@ -222,7 +208,7 @@ class CommandeVenteController extends AbstractController
             return $this->json(['status' => 'error', 'message' => 'commande introuvable.'], 404);
         }
 
-        // Update general info
+        
         $commande->setDescription($data['description'] ?? null);
         $commande->setNomPatient($data['nom_patient'] ?? null);
         $commande->setDossierPatient($data['dossier_patient'] ?? null);
@@ -235,7 +221,7 @@ class CommandeVenteController extends AbstractController
         $commande->setRecepteurId($recepteur);
         $user = $this->getUser();
         $commande->setUserUpdated($user);
-        // edited lignes
+       
         foreach ($data['edited'] ?? [] as $row) {
             $ligne = $this->em->getRepository(TMsCommandelg::class)->find($row['commandelg_id']);
             $produit = $this->em->getRepository(PProduits::class)->find($row['produit_id']);
@@ -261,7 +247,6 @@ class CommandeVenteController extends AbstractController
             $ligne->setMontantTtc($montantTtc);
         }
 
-        //  new lignes
         foreach ($data['added'] ?? [] as $row) {
             $produit = $this->em->getRepository(PProduits::class)->find($row['produit_id']);
             if (!$produit) continue;
@@ -290,7 +275,6 @@ class CommandeVenteController extends AbstractController
             $this->em->persist($ligne);
         }
 
-        //  deleted lignes
         foreach ($data['deleted'] ?? [] as $row) {
             $ligne = $this->em->getRepository(TMsCommandelg::class)->find($row['commandelg_id']);
             if ($ligne) {
@@ -432,7 +416,6 @@ class CommandeVenteController extends AbstractController
             }
         }
 
-        // No valid lignes treated
         if ($ligneProcessed === 0) {
             return new JsonResponse([
                 'status' => 'error',
@@ -440,16 +423,12 @@ class CommandeVenteController extends AbstractController
             ]);
         }
 
-        // Is this the first livraison for this commande?
         $isFirstLivraison = $this->em->getRepository(TMsLivraison::class)
             ->count(['tMsCommande' => $commande]) === 0;
 
-        // Set livraison status
         $isCompletelyDeliveredFirstTime = $isFirstLivraison && $allDelivered;
         $livraison->setMultiRecp($isCompletelyDeliveredFirstTime ? 0 : 1);
         
-
-        // Check if ALL lignes in commande are fully delivered
         $allLignesDelivered = true;
         foreach ($commande->getTMsCommandelgs() as $ligne) {
             if ($ligne->getQuantiteReste() > 0) {
@@ -458,7 +437,6 @@ class CommandeVenteController extends AbstractController
             }
         }
 
-        //  If all lignes served → push Générée
         if ($allLignesDelivered) {
             $commande->setPositionActuel('Générée');
             $commande->setUserGenerer($this->getUser());

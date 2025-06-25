@@ -1,5 +1,5 @@
 {
-  "build/app.css": "/build/app.92e8ab66.css",
+  "build/app.css": "/build/app.8092ed37.css",
   "build/app.js": "/build/app.ba15c848.js",
   "build/setting_user.js": "/build/setting_user.efa4e188.js",
   "build/setting_module.js": "/build/setting_module.66cdca75.js",
@@ -11,8 +11,8 @@
   "build/sidebar.js": "/build/sidebar.88fb69e5.js",
   "build/point_vente.js": "/build/point_vente.b59a0ff6.js",
   "build/gestion_demandes.js": "/build/gestion_demandes.777f3d59.js",
-  "build/gestion_commandes.js": "/build/gestion_commandes.f61374c5.js",
-  "build/gestion_livraisons.js": "/build/gestion_livraisons.2dcab48c.js",
+  "build/gestion_commandes.js": "/build/gestion_commandes.6194a31a.js",
+  "build/gestion_livraisons.js": "/build/gestion_livraisons.7d1b3f85.js",
   "build/login.css": "/build/login.30eaa17e.css",
   "build/siteStyle.css": "/build/siteStyle.d7173035.css",
   "build/listModulesStyle.css": "/build/listModulesStyle.9dfda2b8.css",

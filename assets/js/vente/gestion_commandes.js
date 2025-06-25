@@ -6,8 +6,8 @@ $(document).ready(function () {
         '<i style="color:#7593ae; margin-top:100px !important; font-size:25px !important;" class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only"></span> ',
     },
     lengthMenu: [
-      [21, 50, 100, 200],
-      [21, 50, 100, 200],
+      [20, 50, 100, 200],
+      [20, 50, 100, 200],
     ],
     processing: true,
     serverSide: true,
@@ -45,7 +45,7 @@ $(document).ready(function () {
       },
       {
         name: "d.created",
-        data: "date_demmande",
+        data: "date_commande",
         render: function (data) {
           return moment(data).format("DD/MM/YYYY ");
         },
@@ -66,7 +66,7 @@ $(document).ready(function () {
         },
       },
       { name: "d.ipp", data: "ipp_patient" },
-      { name: "d.nom_patient", data: "nom_patient",
+      { name: "d.nomPatient", data: "nomPatient",
         createdCell: function (td) {
           td.classList.add("force-left-align");
         },
@@ -87,7 +87,7 @@ $(document).ready(function () {
         },
       },
       { name: "niveau_urgence", data: "niveau_urgence" },
-      { name: "d.position_actuel", data: "position_actuel" },
+      { name: "d.positionActuel", data: "positionActuel" },
       {
         name: "actions",
         data: null,
@@ -526,7 +526,8 @@ $(document).on("keydown", ".ipp", function (e) {
 
     const $ipp = $(this);
     const ippValue = $ipp.val().trim();
-    const $modal = $ipp.closest('.modal');
+    const $modal = $ipp.closest(".modal");
+
     const $nom = $modal.find('[name="nom_patient"]');
     const $dossier = $modal.find('[name="dossier_patient"]');
 
@@ -534,10 +535,30 @@ $(document).on("keydown", ".ipp", function (e) {
 
     if (patient) {
       $nom.val(patient.nom);
-      $dossier.val(patient.dossier);
+      $dossier.empty();
+
+      const dossiers = Array.isArray(patient.dossier) ? patient.dossier : [patient.dossier];
+
+      dossiers.forEach(d => {
+        $dossier.append($('<option>', {
+          value: d,
+          text: d
+        }));
+      });
+
+      if (dossiers.length === 1) {
+        // Don't disable: just make it "readonly" visually
+        $dossier.prop("readonly", true)
+                .css("pointer-events", "none")
+                .css("background-color", "#e9ecef");
+      } else {
+        $dossier.prop("readonly", false)
+                .css("pointer-events", "")
+                .css("background-color", "");
+      }
     } else {
       $nom.val('');
-      $dossier.val('');
+      $dossier.empty();
       toastr.error("Aucun patient trouvé avec cet IPP");
     }
   }

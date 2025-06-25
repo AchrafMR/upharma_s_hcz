@@ -12,7 +12,6 @@
         </div>
 
         <div class="modal-body">
-        <!-- Infos générales -->
             <div class="form-row">
               <!-- Magasin Demandeur -->
               <div class="form-group col-md-6">
@@ -59,8 +58,14 @@
             <div class="form-row">
               <!-- Dossier Patient -->
               <div class="form-group col-md-6">
-                <label for="">Dossier Patient</label>
-                <input type="text" name="dossier_patient" class="form-control dossier_patient" value="{{ commande.dossierPatient }}" placeholder="Code dossier patient" readonly required/>
+                <label for="dossier_patient">Dossier Patient</label>
+                <select name="dossier_patient" class="form-control dossier_patient" required>
+                  {% if commande.dossierPatient %}
+                    <option value="{{ commande.dossierPatient }}">{{ commande.dossierPatient }}</option>
+                  {% else %}
+                    <option value="">Sélectionnez un dossier</option>
+                  {% endif %}
+                </select>
               </div>
               <!-- Description -->
               <div class="form-group col-md-6">
