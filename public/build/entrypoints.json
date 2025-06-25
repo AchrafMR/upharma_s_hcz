@@ -9,7 +9,7 @@
       ],
       "css": [
         "/build/525.4d445ace.css",
-        "/build/app.92e8ab66.css"
+        "/build/app.8092ed37.css"
       ]
     },
     "setting_user": {
@@ -93,14 +93,14 @@
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
         "/build/959.a5d20ad0.js",
-        "/build/gestion_commandes.f61374c5.js"
+        "/build/gestion_commandes.6194a31a.js"
       ]
     },
     "gestion_livraisons": {
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
-        "/build/gestion_livraisons.2dcab48c.js"
+        "/build/gestion_livraisons.7d1b3f85.js"
       ]
     },
     "login": {

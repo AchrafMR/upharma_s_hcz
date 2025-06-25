@@ -479,7 +479,6 @@ class TAcReceptionObj
                 $tMsLivraisonobj->setTAcReceptionObj(null);
             }
         }
-
         return $this;
     }
 }

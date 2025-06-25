@@ -15,17 +15,17 @@
 }
 
 .search_section {
-  padding-right: 28.8%;
+  padding-top: -102px !important;
+  padding-right: 33.4%;
+  margin-bottom: 4px !important;
 }
 
 @media (max-width: 990px) {
-  .custom-header {
-    padding-right: 0;
+  .search_section {
+    padding-top: 18px !important;
+    padding-right: 0 !important;
   }
-  .search_input {
-    width: 80%;
-    margin: 0 !important;
-  }
+
 }
 
 .category-nav-btn {

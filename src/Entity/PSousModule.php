@@ -41,6 +41,9 @@ class PSousModule
 
     #[ORM\ManyToOne]
     private ?User $userUpdate = null;
+    
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
 
 
     public function __construct()
@@ -165,6 +168,18 @@ class PSousModule
     public function setUserUpdate(?User $userUpdate): self
     {
         $this->userUpdate = $userUpdate;
+
+        return $this;
+    }
+    
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
 
         return $this;
     }

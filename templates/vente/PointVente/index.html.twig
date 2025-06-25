@@ -9,76 +9,37 @@ block stylesheets %}
 
 {% endblock %} {% block body %}
 
-<!-- Header -->
-<div
-  class="custom-header d-flex align-items-center justify-content-between flex-wrap gap-3 pt-1"
->
-  <!--Title -->
-  <div class="flex-shrink-0">
-    <h3
-      class="text-bold pb-3 text-primary text-uppercase point-vente-title mb-0"
-    >
-      Point de Vente
-    </h3>
-  </div>
-
-  {# Search Input #}
-  <div class="search_section flex-grow-1 d-flex justify-content-end pt-4">
-    <div class="mr-2"  style="min-width: 170px; text-align: center !important;">
-      <select class="form-control shadow-none" >
-        {% for magasin in magasinsDemandeur %}
-          <option value="{{ magasin.id }}"
-            {% if defaultMagasin and magasin.id == defaultMagasin.id %}selected{% endif %}>
-            {{ magasin.designationAccess }}
-          </option>
-        {% endfor %}
-      </select>
-    </div>
-    <div
-      class="search_input"
-      style="min-width: 195px"
-    >
-      <input
-        type="text"
-        class="form-control form-control-sm w-100"
-        placeholder="Rechercher des produits..."
-        id="product-search"
-      />
-    </div>
-  </div>
-  <div class="d-flex justify-content-end align-items-center text-center mb-2 mr-2">
-    <a href="/vente/gestion-commandes" class="text-decoration-none ms-3">
-      <div class="icon-module">
-        <i class="fas fa-cogs fa-xl text-primary"></i>
-        <h5
-          class="mt-1 text-dark"
-          style="font-size: 0.5rem !important; font-weight: normal !important"
-        >
-          commandes
-        </h5>
-      </div>
-    </a>
-    {# <a href="/vente/gestion-livraisons" class="text-decoration-none ms-3">
-      <div class="icon-module">
-        <i class="fa-solid fa-truck-fast fa-2xl text-primary"></i>
-        <h5
-          class="mt-1 text-dark"
-          style="font-size: 0.5rem !important; font-weight: normal !important"
-        >
-          Livraisons
-        </h5>
-      </div>
-    </a> #}
-  </div>
-</div>
-
 <!-- Main Grid -->
 <div class="container-fluid px-0">
   <div class="row gx-0 px-2">
+      {# Search Input and select magasim #}
+      <div class="search_section flex-grow-1 d-flex justify-content-end">
+          <div class="mr-2"  style="min-width: 170px; text-align: center !important;">
+            <select class="form-control shadow-none" >
+              {% for magasin in magasinsDemandeur %}
+                <option value="{{ magasin.id }}"
+                  {% if defaultMagasin and magasin.id == defaultMagasin.id %}selected{% endif %}>
+                  {{ magasin.designationAccess }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div
+            class="search_input"
+            style="min-width: 195px"
+          >
+            <input
+              type="text"
+              class="form-control form-control-sm w-100"
+              placeholder="Rechercher des produits..."
+              id="product-search"
+            />
+          </div>
+      </div>
+
     <div class="col-lg-8 px-0">
       <div class="h-100 border rounded shadow-sm bg-white py-1 pt-1 pr-2 pl-2">
         <div class="d-flex">
-          <!-- CATEGORY LIST -->
           <div
             class="d-flex flex-column align-items-center py-3 pr-2 gap-2 pe-2 border-end"
           >
