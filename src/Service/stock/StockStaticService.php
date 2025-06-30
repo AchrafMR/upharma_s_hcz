@@ -28,10 +28,7 @@ class StockStaticService
             'pPrUnite' => $unite,
             'pEmplacements' => $emplacement,
         ]);
-
-
         if ($stock) {
-            //  Update existing solde
             $newSolde = $stock->getSolde() + $quantite;
             $stock->setSolde($newSolde);
         } else {
@@ -45,7 +42,6 @@ class StockStaticService
             $stock->setFlagSynchronisationLocale(0);
         }
 
-        //  Always update these
         $stock->setUserupdate($this->security->getUser());
         $stock->setDateupdate(new \DateTime());
 
