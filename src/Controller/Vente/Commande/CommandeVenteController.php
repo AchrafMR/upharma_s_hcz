@@ -19,6 +19,7 @@ use App\Repository\PProfessionRepository;
 use App\Repository\PMagasinsRepository;
 use App\Repository\PProduitsRepository;
 use App\Repository\TMsCommandeRepository;
+use App\Service\stock\StockDynaService;
 use Symfony\Component\Security\Core\Security;
 use App\Service\UserOperation;
 use App\Service\Vente\DemandeService;
@@ -31,12 +32,14 @@ class CommandeVenteController extends AbstractController
     private UserOperation $userOperation;
     private $em;
     private $demandeService;
+    private StockDynaService $stockDynaService;
 
-    public function __construct(UserOperation $userOperation,DemandeService $demandeService, EntityManagerInterface $em)
+    public function __construct(stockDynaService  $stockDynaService ,UserOperation $userOperation,DemandeService $demandeService, EntityManagerInterface $em)
     {
         $this->userOperation = $userOperation;
         $this->em = $em;
         $this->demandeService = $demandeService;
+        $this->stockDynaService = $stockDynaService;
     }
 
     #[Route('/gestion-commandes', name: 'vente_gestion_commandes_index')]
@@ -366,6 +369,7 @@ class CommandeVenteController extends AbstractController
         $livraison->setDescription($commande->getDescription());
         $livraison->setActif(true);
         $livraison->setPositionActuel('Crée');
+        $livraison->setTypeLivraison($commande->getTypeCommande());
 
         $allDelivered = true;
         $ligneProcessed = 0;
@@ -391,7 +395,18 @@ class CommandeVenteController extends AbstractController
             $livraisonLg->setMontantTotal($qtyLivree * $ligne->getPrixUnitaire());
             $livraisonLg->setObservation($ligne->getObservation());
             $livraisonLg->setFlagSynchronisationLocale(false);
+
             $this->em->persist($livraisonLg);
+
+            // Call the service to insert stock dynamique
+            $magasinId = $commande->getDemandeurId()->getId();
+            $this->stockDynaService->insertStockDynamique(
+                $ligne->getPProduit(),
+                $ligne->getPPrUnite(),
+                $qtyLivree,
+                $magasinId,
+                'sortie',
+            );
 
            for ($i = 0; $i < $qtyLivree; $i++) {
                 $livraisonObj = new TMsLivraisonobj();
