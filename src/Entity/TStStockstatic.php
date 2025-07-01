@@ -36,6 +36,9 @@ class TStStockstatic
     #[ORM\Column(nullable: true)]
     private ?int $flagSynchronisationLocale = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $quantiteReserve = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -115,6 +118,18 @@ class TStStockstatic
     public function setFlagSynchronisationLocale(?int $flagSynchronisationLocale): static
     {
         $this->flagSynchronisationLocale = $flagSynchronisationLocale;
+        return $this;
+    }
+
+    public function getQuantiteReserve(): ?float
+    {
+        return $this->quantiteReserve;
+    }
+
+    public function setQuantiteReserve(?float $quantiteReserve): static
+    {
+        $this->quantiteReserve = $quantiteReserve;
+
         return $this;
     }
 }

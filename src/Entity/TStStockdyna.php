@@ -19,7 +19,7 @@ class TStStockdyna
     private ?PProduits $pProduit = null;
 
     #[ORM\Column]
-    private ?float $qantite = null;
+    private ?float $quantite = null;
 
     #[ORM\ManyToOne(inversedBy: 'tStStockdynas')]
     private ?PPrUnites $pPrUnite = null;
@@ -54,14 +54,14 @@ class TStStockdyna
         return $this;
     }
 
-    public function getQantite(): ?float
+    public function getQuantite(): ?float
     {
-        return $this->qantite;
+        return $this->quantite;
     }
 
-    public function setQantite(float $qantite): static
+    public function setQuantite(float $quantite): static
     {
-        $this->qantite = $qantite;
+        $this->quantite = $quantite;
 
         return $this;
     }
