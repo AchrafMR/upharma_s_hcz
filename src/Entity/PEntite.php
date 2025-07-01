@@ -79,6 +79,20 @@ class PEntite
     #[ORM\OneToMany(mappedBy: 'dossier', targetEntity: PCounter::class)]
     private Collection $counters;
 
+    #[ORM\OneToMany(mappedBy: 'pEntite', targetEntity: TAcPrecommande::class)]
+    private Collection $tAcPrecommandes;
+
+    #[ORM\OneToMany(mappedBy: 'entite', targetEntity: TAcCommande::class)]
+    private Collection $tAcCommandes;
+
+    #[ORM\OneToMany(mappedBy: 'entite', targetEntity: TAcFacture::class)]
+    private Collection $tAcFactures;
+
+    #[ORM\OneToMany(mappedBy: 'entite', targetEntity: TAcReception::class)]
+    private Collection $tAcReceptions;
+    
+    #[ORM\OneToMany(mappedBy: 'entite', targetEntity: TAcReceptionObj::class)]
+    private Collection $tAcReceptionObjs;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $natureentite = null;
@@ -152,9 +166,6 @@ class PEntite
     #[ORM\Column(nullable: true)]
     private ?bool $immo = null;
 
-    #[ORM\OneToMany(mappedBy: 'entite', targetEntity: TAcReceptionObj::class)]
-    private Collection $tAcReceptionObjs;
-
     #[ORM\Column(nullable: true)]
     private ?int $idAccess = null;
 
@@ -171,6 +182,11 @@ class PEntite
         $this->tMsDemandes = new ArrayCollection();
         $this->tMsCommandes = new ArrayCollection();
         $this->tMsLivraisons = new ArrayCollection();
+        $this->tAcPrecommandes = new ArrayCollection();
+        $this->tAcCommandes = new ArrayCollection();
+        $this->tAcFactures = new ArrayCollection();
+        $this->tAcReceptions = new ArrayCollection();
+        $this->tAcReceptionObjs = new ArrayCollection();
 
     }
     
@@ -576,6 +592,156 @@ class PEntite
         return $this;
     }
 
+   /**
+     * @return Collection<int, TAcPrecommande>
+     */
+    public function getTAcPrecommandes(): Collection
+    {
+        return $this->tAcPrecommandes;
+    }
+
+    public function addTAcPrecommande(TAcPrecommande $tAcPrecommande): static
+    {
+        if (!$this->tAcPrecommandes->contains($tAcPrecommande)) {
+            $this->tAcPrecommandes->add($tAcPrecommande);
+            $tAcPrecommande->setPEntite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcPrecommande(TAcPrecommande $tAcPrecommande): static
+    {
+        if ($this->tAcPrecommandes->removeElement($tAcPrecommande)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcPrecommande->getPEntite() === $this) {
+                $tAcPrecommande->setPEntite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TAcCommande>
+     */
+    public function getTAcCommandes(): Collection
+    {
+        return $this->tAcCommandes;
+    }
+
+    public function addTAcCommande(TAcCommande $tAcCommande): static
+    {
+        if (!$this->tAcCommandes->contains($tAcCommande)) {
+            $this->tAcCommandes->add($tAcCommande);
+            $tAcCommande->setEntite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcCommande(TAcCommande $tAcCommande): static
+    {
+        if ($this->tAcCommandes->removeElement($tAcCommande)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcCommande->getEntite() === $this) {
+                $tAcCommande->setEntite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TAcFacture>
+     */
+    public function getTAcFactures(): Collection
+    {
+        return $this->tAcFactures;
+    }
+
+    public function addTAcFacture(TAcFacture $tAcFacture): static
+    {
+        if (!$this->tAcFactures->contains($tAcFacture)) {
+            $this->tAcFactures->add($tAcFacture);
+            $tAcFacture->setEntite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcFacture(TAcFacture $tAcFacture): static
+    {
+        if ($this->tAcFactures->removeElement($tAcFacture)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcFacture->getEntite() === $this) {
+                $tAcFacture->setEntite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TAcReception>
+     */
+    public function getTAcReceptions(): Collection
+    {
+        return $this->tAcReceptions;
+    }
+
+    public function addTAcReception(TAcReception $tAcReception): static
+    {
+        if (!$this->tAcReceptions->contains($tAcReception)) {
+            $this->tAcReceptions->add($tAcReception);
+            $tAcReception->setEntite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcReception(TAcReception $tAcReception): static
+    {
+        if ($this->tAcReceptions->removeElement($tAcReception)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcReception->getEntite() === $this) {
+                $tAcReception->setEntite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TAcReceptionObj>
+     */
+    public function getTAcReceptionObjs(): Collection
+    {
+        return $this->tAcReceptionObjs;
+    }
+
+    public function addTAcReceptionObj(TAcReceptionObj $tAcReceptionObj): static
+    {
+        if (!$this->tAcReceptionObjs->contains($tAcReceptionObj)) {
+            $this->tAcReceptionObjs->add($tAcReceptionObj);
+            $tAcReceptionObj->setEntite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcReceptionObj(TAcReceptionObj $tAcReceptionObj): static
+    {
+        if ($this->tAcReceptionObjs->removeElement($tAcReceptionObj)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcReceptionObj->getEntite() === $this) {
+                $tAcReceptionObj->setEntite(null);
+            }
+        }
+
+        return $this;
+    }
+    
     /**
      * @return Collection<int, self>
      */

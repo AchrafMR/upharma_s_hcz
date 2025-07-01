@@ -72,6 +72,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'userCreated', targetEntity: TMsCommande::class)]
     private Collection $tMsCommandes;
+    
+    #[ORM\OneToMany(mappedBy: 'userCreated', targetEntity: TAcReception::class)]
+    private Collection $tAcReceptions;
+
+    #[ORM\OneToMany(mappedBy: 'userAffAdresse', targetEntity: TAcReceptionObj::class)]
+    private Collection $receptionObjsAff;
+
+    #[ORM\OneToMany(mappedBy: 'userUpdate', targetEntity: TAcReceptionObj::class)]
+    private Collection $receptionObjsUpdated;
+
+    #[ORM\OneToMany(mappedBy: 'userEtiqueter', targetEntity: TAcReceptionObj::class)]
+    private Collection $tAcReceptionObjsEtiqueter;
 
     #[ORM\OneToMany(mappedBy: 'userr', targetEntity: PAffectationMagasin::class)]
     private Collection $pAffectationMagasins;
@@ -85,6 +97,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->tStStockdynas = new ArrayCollection();
         $this->tStStockstatics = new ArrayCollection();
         $this->tMsCommandes = new ArrayCollection();
+        $this->pAffectationMagasins = new ArrayCollection();
+        $this->tAcReceptions = new ArrayCollection();
+        $this->receptionObjsAff = new ArrayCollection();
+        $this->receptionObjsUpdated = new ArrayCollection();
+        $this->tAcReceptionObjsEtiqueter = new ArrayCollection();
         $this->pAffectationMagasins = new ArrayCollection();
 
     }
@@ -450,6 +467,126 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($pAffectationMagasin->getUserr() === $this) {
                 $pAffectationMagasin->setUserr(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TAcReception>
+     */
+    public function getTAcReceptions(): Collection
+    {
+        return $this->tAcReceptions;
+    }
+
+    public function addTAcReception(TAcReception $tAcReception): static
+    {
+        if (!$this->tAcReceptions->contains($tAcReception)) {
+            $this->tAcReceptions->add($tAcReception);
+            $tAcReception->setUserCreated($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcReception(TAcReception $tAcReception): static
+    {
+        if ($this->tAcReceptions->removeElement($tAcReception)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcReception->getUserCreated() === $this) {
+                $tAcReception->setUserCreated(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TAcReceptionObj>
+     */
+    public function getReceptionObjsAff(): Collection
+    {
+        return $this->receptionObjsAff;
+    }
+
+    public function addReceptionObjsAff(TAcReceptionObj $receptionObjsAff): static
+    {
+        if (!$this->receptionObjsAff->contains($receptionObjsAff)) {
+            $this->receptionObjsAff->add($receptionObjsAff);
+            $receptionObjsAff->setUserAffAdresse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReceptionObjsAff(TAcReceptionObj $receptionObjsAff): static
+    {
+        if ($this->receptionObjsAff->removeElement($receptionObjsAff)) {
+            // set the owning side to null (unless already changed)
+            if ($receptionObjsAff->getUserAffAdresse() === $this) {
+                $receptionObjsAff->setUserAffAdresse(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TAcReceptionObj>
+     */
+    public function getReceptionObjsUpdated(): Collection
+    {
+        return $this->receptionObjsUpdated;
+    }
+
+    public function addReceptionObjsUpdated(TAcReceptionObj $receptionObjsUpdated): static
+    {
+        if (!$this->receptionObjsUpdated->contains($receptionObjsUpdated)) {
+            $this->receptionObjsUpdated->add($receptionObjsUpdated);
+            $receptionObjsUpdated->setUserUpdate($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReceptionObjsUpdated(TAcReceptionObj $receptionObjsUpdated): static
+    {
+        if ($this->receptionObjsUpdated->removeElement($receptionObjsUpdated)) {
+            // set the owning side to null (unless already changed)
+            if ($receptionObjsUpdated->getUserUpdate() === $this) {
+                $receptionObjsUpdated->setUserUpdate(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TAcReceptionObj>
+     */
+    public function getTAcReceptionObjsEtiqueter(): Collection
+    {
+        return $this->tAcReceptionObjsEtiqueter;
+    }
+
+    public function addTAcReceptionObjsEtiqueter(TAcReceptionObj $tAcReceptionObjsEtiqueter): static
+    {
+        if (!$this->tAcReceptionObjsEtiqueter->contains($tAcReceptionObjsEtiqueter)) {
+            $this->tAcReceptionObjsEtiqueter->add($tAcReceptionObjsEtiqueter);
+            $tAcReceptionObjsEtiqueter->setUserEtiqueter($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcReceptionObjsEtiqueter(TAcReceptionObj $tAcReceptionObjsEtiqueter): static
+    {
+        if ($this->tAcReceptionObjsEtiqueter->removeElement($tAcReceptionObjsEtiqueter)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcReceptionObjsEtiqueter->getUserEtiqueter() === $this) {
+                $tAcReceptionObjsEtiqueter->setUserEtiqueter(null);
             }
         }
 

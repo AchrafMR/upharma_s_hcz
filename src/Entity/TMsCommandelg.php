@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TMsCommandelgRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -61,6 +63,14 @@ class TMsCommandelg
 
     #[ORM\Column(nullable: true)]
     private ?bool $actif = null;
+
+    #[ORM\OneToMany(mappedBy: 'tMsCommandelg', targetEntity: TMsLivraisonlg::class)]
+    private Collection $tMsLivraisonlgs;
+
+    public function __construct()
+    {
+        $this->tMsLivraisonlgs = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -243,6 +253,36 @@ class TMsCommandelg
     public function setActif(?bool $actif): static
     {
         $this->actif = $actif;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsLivraisonlg>
+     */
+    public function getTMsLivraisonlgs(): Collection
+    {
+        return $this->tMsLivraisonlgs;
+    }
+
+    public function addTMsLivraisonlg(TMsLivraisonlg $tMsLivraisonlg): static
+    {
+        if (!$this->tMsLivraisonlgs->contains($tMsLivraisonlg)) {
+            $this->tMsLivraisonlgs->add($tMsLivraisonlg);
+            $tMsLivraisonlg->setTMsCommandelg($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsLivraisonlg(TMsLivraisonlg $tMsLivraisonlg): static
+    {
+        if ($this->tMsLivraisonlgs->removeElement($tMsLivraisonlg)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsLivraisonlg->getTMsCommandelg() === $this) {
+                $tMsLivraisonlg->setTMsCommandelg(null);
+            }
+        }
 
         return $this;
     }

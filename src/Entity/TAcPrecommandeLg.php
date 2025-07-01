@@ -60,6 +60,9 @@ class TAcPrecommandeLg
     #[ORM\Column(nullable: true)]
     private ?float $totalRemise = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $descriptionComplementaire = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -241,6 +244,18 @@ class TAcPrecommandeLg
     public function setTotalRemise(?float $totalRemise): static
     {
         $this->totalRemise = $totalRemise;
+
+        return $this;
+    }
+
+    public function getDescriptionComplementaire(): ?string
+    {
+        return $this->descriptionComplementaire;
+    }
+
+    public function setDescriptionComplementaire(?string $descriptionComplementaire): static
+    {
+        $this->descriptionComplementaire = $descriptionComplementaire;
 
         return $this;
     }

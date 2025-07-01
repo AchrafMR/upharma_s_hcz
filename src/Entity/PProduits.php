@@ -160,10 +160,36 @@ class PProduits
 
     #[ORM\OneToMany(mappedBy: 'pProduit', targetEntity: TMsLivraisonlg::class)]
     private Collection $tMsLivraisonlgs;
+
+    #[ORM\OneToMany(mappedBy: 'produit', targetEntity: TAcPrecommandeLg::class)]
+    private Collection $tAcPrecommandeLgs;
+
+    #[ORM\OneToMany(mappedBy: 'produit', targetEntity: TAcCommandeLg::class)]
+    private Collection $tAcCommandeLgs;
+
+    #[ORM\OneToMany(mappedBy: 'produit', targetEntity: TAcFactureLg::class)]
+    private Collection $tAcFactureLgs;
+
+    #[ORM\OneToMany(mappedBy: 'produit', targetEntity: TAcReceptionLg::class)]
+    private Collection $tAcReceptionLgs;
+
+    #[ORM\OneToMany(mappedBy: 'produit', targetEntity: TAcReceptionObj::class)]
+    private Collection $tAcReceptionObjs;
+
+    #[ORM\OneToMany(mappedBy: 'produit', targetEntity: TAcReceptionLot::class)]
+    private Collection $tAcReceptionLots;
+
     
     public function __construct()
     {
         $this->pPrTarifications = new ArrayCollection();
+        $this->tAcPrecommandeLgs = new ArrayCollection();
+        $this->tAcCommandeLgs = new ArrayCollection();
+        $this->tAcFactureLgs = new ArrayCollection();
+        $this->tAcReceptionLgs = new ArrayCollection();
+        $this->tAcReceptionObjs = new ArrayCollection();
+        $this->tAcReceptionLots = new ArrayCollection();
+        $this->pTarifFournisseurs = new ArrayCollection();
         $this->tMsDemandelgs = new ArrayCollection();
         $this->tStStockdynas = new ArrayCollection();
         $this->tStStockstatics = new ArrayCollection();
@@ -841,5 +867,185 @@ class PProduits
 
         return $this;
     }
+     /**
+     * @return Collection<int, TAcPrecommandeLg>
+     */
+    public function getTAcPrecommandeLgs(): Collection
+    {
+        return $this->tAcPrecommandeLgs;
+    }
+
+    public function addTAcPrecommandeLg(TAcPrecommandeLg $tAcPrecommandeLg): static
+    {
+        if (!$this->tAcPrecommandeLgs->contains($tAcPrecommandeLg)) {
+            $this->tAcPrecommandeLgs->add($tAcPrecommandeLg);
+            $tAcPrecommandeLg->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcPrecommandeLg(TAcPrecommandeLg $tAcPrecommandeLg): static
+    {
+        if ($this->tAcPrecommandeLgs->removeElement($tAcPrecommandeLg)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcPrecommandeLg->getProduit() === $this) {
+                $tAcPrecommandeLg->setProduit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TAcCommandeLg>
+     */
+    public function getTAcCommandeLgs(): Collection
+    {
+        return $this->tAcCommandeLgs;
+    }
+
+    public function addTAcCommandeLg(TAcCommandeLg $tAcCommandeLg): static
+    {
+        if (!$this->tAcCommandeLgs->contains($tAcCommandeLg)) {
+            $this->tAcCommandeLgs->add($tAcCommandeLg);
+            $tAcCommandeLg->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcCommandeLg(TAcCommandeLg $tAcCommandeLg): static
+    {
+        if ($this->tAcCommandeLgs->removeElement($tAcCommandeLg)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcCommandeLg->getProduit() === $this) {
+                $tAcCommandeLg->setProduit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TAcFactureLg>
+     */
+    public function getTAcFactureLgs(): Collection
+    {
+        return $this->tAcFactureLgs;
+    }
+
+    public function addTAcFactureLg(TAcFactureLg $tAcFactureLg): static
+    {
+        if (!$this->tAcFactureLgs->contains($tAcFactureLg)) {
+            $this->tAcFactureLgs->add($tAcFactureLg);
+            $tAcFactureLg->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcFactureLg(TAcFactureLg $tAcFactureLg): static
+    {
+        if ($this->tAcFactureLgs->removeElement($tAcFactureLg)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcFactureLg->getProduit() === $this) {
+                $tAcFactureLg->setProduit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TAcReceptionLg>
+     */
+    public function getTAcReceptionLgs(): Collection
+    {
+        return $this->tAcReceptionLgs;
+    }
+
+    public function addTAcReceptionLg(TAcReceptionLg $tAcReceptionLg): static
+    {
+        if (!$this->tAcReceptionLgs->contains($tAcReceptionLg)) {
+            $this->tAcReceptionLgs->add($tAcReceptionLg);
+            $tAcReceptionLg->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcReceptionLg(TAcReceptionLg $tAcReceptionLg): static
+    {
+        if ($this->tAcReceptionLgs->removeElement($tAcReceptionLg)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcReceptionLg->getProduit() === $this) {
+                $tAcReceptionLg->setProduit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TAcReceptionObj>
+     */
+    public function getTAcReceptionObjs(): Collection
+    {
+        return $this->tAcReceptionObjs;
+    }
+
+    public function addTAcReceptionObj(TAcReceptionObj $tAcReceptionObj): static
+    {
+        if (!$this->tAcReceptionObjs->contains($tAcReceptionObj)) {
+            $this->tAcReceptionObjs->add($tAcReceptionObj);
+            $tAcReceptionObj->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcReceptionObj(TAcReceptionObj $tAcReceptionObj): static
+    {
+        if ($this->tAcReceptionObjs->removeElement($tAcReceptionObj)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcReceptionObj->getProduit() === $this) {
+                $tAcReceptionObj->setProduit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TAcReceptionLot>
+     */
+    public function getTAcReceptionLots(): Collection
+    {
+        return $this->tAcReceptionLots;
+    }
+
+    public function addTAcReceptionLot(TAcReceptionLot $tAcReceptionLot): static
+    {
+        if (!$this->tAcReceptionLots->contains($tAcReceptionLot)) {
+            $this->tAcReceptionLots->add($tAcReceptionLot);
+            $tAcReceptionLot->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcReceptionLot(TAcReceptionLot $tAcReceptionLot): static
+    {
+        if ($this->tAcReceptionLots->removeElement($tAcReceptionLot)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcReceptionLot->getProduit() === $this) {
+                $tAcReceptionLot->setProduit(null);
+            }
+        }
+
+        return $this;
+    }
+
 
 }

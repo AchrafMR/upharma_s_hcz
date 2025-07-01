@@ -28,7 +28,6 @@ class TStStockdyna
     private ?PEmplacements $PEmplacements = null;
 
     #[ORM\ManyToOne(inversedBy: 'tStStockdynas')]
-    #[ORM\JoinColumn(nullable: false)]
     private ?User $userupdate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]

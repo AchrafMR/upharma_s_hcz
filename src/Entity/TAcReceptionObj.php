@@ -453,6 +453,7 @@ class TAcReceptionObj
 
         return $this;
     }
+
     /**
      * @return Collection<int, TMsLivraisonobj>
      */
@@ -479,6 +480,7 @@ class TAcReceptionObj
                 $tMsLivraisonobj->setTAcReceptionObj(null);
             }
         }
+
         return $this;
     }
 }

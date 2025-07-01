@@ -35,10 +35,14 @@ class PTypeOprt
     #[ORM\OneToMany(mappedBy: 'typeDemande', targetEntity: TMsCommande::class)]
     private Collection $tMsCommandes;
 
+    #[ORM\OneToMany(mappedBy: 'typeLivraison', targetEntity: TMsLivraison::class)]
+    private Collection $tMsLivraisons;
+
     public function __construct()
     {
         $this->tMsDemandes = new ArrayCollection();
         $this->tMsCommandes = new ArrayCollection();
+        $this->tMsLivraisons = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -148,6 +152,36 @@ class PTypeOprt
             // set the owning side to null (unless already changed)
             if ($tMsCommande->getTypeDemande() === $this) {
                 $tMsCommande->setTypeDemande(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsLivraison>
+     */
+    public function getTMsLivraisons(): Collection
+    {
+        return $this->tMsLivraisons;
+    }
+
+    public function addTMsLivraison(TMsLivraison $tMsLivraison): static
+    {
+        if (!$this->tMsLivraisons->contains($tMsLivraison)) {
+            $this->tMsLivraisons->add($tMsLivraison);
+            $tMsLivraison->setTypeLivraison($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsLivraison(TMsLivraison $tMsLivraison): static
+    {
+        if ($this->tMsLivraisons->removeElement($tMsLivraison)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsLivraison->getTypeLivraison() === $this) {
+                $tMsLivraison->setTypeLivraison(null);
             }
         }
 
