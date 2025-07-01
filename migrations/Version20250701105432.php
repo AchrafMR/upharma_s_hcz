@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250603153652 extends AbstractMigration
+final class Version20250701105432 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,25 +21,22 @@ final class Version20250603153652 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            CREATE TABLE paffectation_magasin (id INT IDENTITY NOT NULL, magasin_id INT NOT NULL, userr_id INT NOT NULL, PRIMARY KEY (id))
+            ALTER TABLE t_st_stockdyna DROP CONSTRAINT FK_8B554BDF1BDB4BD1
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE INDEX IDX_8CBF784220096AE3 ON paffectation_magasin (magasin_id)
+            DROP INDEX IDX_8B554BDF1BDB4BD1 ON t_st_stockdyna
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE INDEX IDX_8CBF7842DF0FD358 ON paffectation_magasin (userr_id)
+            sp_rename 't_st_stockdyna.userupdate_id', 'user_created_id', 'COLUMN'
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE paffectation_magasin ADD CONSTRAINT FK_8CBF784220096AE3 FOREIGN KEY (magasin_id) REFERENCES pmagasins (id)
+            sp_rename 't_st_stockdyna.dateupdate', 'date_create', 'COLUMN'
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE paffectation_magasin ADD CONSTRAINT FK_8CBF7842DF0FD358 FOREIGN KEY (userr_id) REFERENCES p_pv000_user (id)
+            ALTER TABLE t_st_stockdyna ADD CONSTRAINT FK_8B554BDFF987D8A8 FOREIGN KEY (user_created_id) REFERENCES p_pv000_user (id)
         SQL);
-        // $this->addSql(<<<'SQL'
-        //     ALTER TABLE t_ms_demandelg DROP CONSTRAINT DF_E329DC42_8F52502
-        // SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE t_ms_demandelg ALTER COLUMN actif INT
+            CREATE INDEX IDX_8B554BDFF987D8A8 ON t_st_stockdyna (user_created_id)
         SQL);
     }
 
@@ -77,19 +74,22 @@ final class Version20250603153652 extends AbstractMigration
             CREATE SCHEMA dbo
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE paffectation_magasin DROP CONSTRAINT FK_8CBF784220096AE3
+            ALTER TABLE t_st_stockdyna DROP CONSTRAINT FK_8B554BDFF987D8A8
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE paffectation_magasin DROP CONSTRAINT FK_8CBF7842DF0FD358
+            DROP INDEX IDX_8B554BDFF987D8A8 ON t_st_stockdyna
         SQL);
         $this->addSql(<<<'SQL'
-            DROP TABLE paffectation_magasin
+            sp_rename 't_st_stockdyna.user_created_id', 'userupdate_id', 'COLUMN'
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE t_ms_demandelg ALTER COLUMN actif INT
+            sp_rename 't_st_stockdyna.date_create', 'dateupdate', 'COLUMN'
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE t_ms_demandelg ADD CONSTRAINT DF_E329DC42_8F52502 DEFAULT 1 FOR actif
+            ALTER TABLE t_st_stockdyna ADD CONSTRAINT FK_8B554BDF1BDB4BD1 FOREIGN KEY (userupdate_id) REFERENCES p_pv000_user (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+        SQL);
+        $this->addSql(<<<'SQL'
+            CREATE NONCLUSTERED INDEX IDX_8B554BDF1BDB4BD1 ON t_st_stockdyna (userupdate_id)
         SQL);
     }
 }

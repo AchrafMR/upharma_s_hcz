@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250610095407 extends AbstractMigration
+final class Version20250701154112 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,28 +21,37 @@ final class Version20250610095407 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE t_ms_commande ADD commande_consommation_id INT
+            CREATE TABLE tsstockdyna (id INT IDENTITY NOT NULL, user_created_id INT, date_created DATETIME2(6), PRIMARY KEY (id))
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE t_ms_commande ADD CONSTRAINT FK_1BCB87FAA7C40F41 FOREIGN KEY (commande_consommation_id) REFERENCES t_ms_commande (id)
+            CREATE INDEX IDX_EAE5EDB4F987D8A8 ON tsstockdyna (user_created_id)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE INDEX IDX_1BCB87FAA7C40F41 ON t_ms_commande (commande_consommation_id)
+            CREATE TABLE tsstockstatic (id INT IDENTITY NOT NULL, user_created_id INT, date_created DATETIME2(6), PRIMARY KEY (id))
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE t_ms_Demande ADD commande_consommation_id INT
+            CREATE INDEX IDX_DB826A30F987D8A8 ON tsstockstatic (user_created_id)
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE t_ms_Demande ADD CONSTRAINT FK_6D16CC67A7C40F41 FOREIGN KEY (commande_consommation_id) REFERENCES t_ms_demande (id)
+            ALTER TABLE tsstockdyna ADD CONSTRAINT FK_EAE5EDB4F987D8A8 FOREIGN KEY (user_created_id) REFERENCES p_pv000_user (id)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE INDEX IDX_6D16CC67A7C40F41 ON t_ms_Demande (commande_consommation_id)
+            ALTER TABLE tsstockstatic ADD CONSTRAINT FK_DB826A30F987D8A8 FOREIGN KEY (user_created_id) REFERENCES p_pv000_user (id)
         SQL);
-        // $this->addSql(<<<'SQL'
-        //     ALTER TABLE t_ms_demandelg DROP CONSTRAINT DF_E329DC42_8F52502
-        // SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE t_ms_demandelg ALTER COLUMN actif INT
+            ALTER TABLE t_ms_livraisonlg DROP COLUMN num_lot
+        SQL);
+        $this->addSql(<<<'SQL'
+            ALTER TABLE t_st_stockdyna DROP CONSTRAINT FK_8B554BDFF987D8A8
+        SQL);
+        $this->addSql(<<<'SQL'
+            DROP INDEX IDX_8B554BDFF987D8A8 ON t_st_stockdyna
+        SQL);
+        $this->addSql(<<<'SQL'
+            ALTER TABLE t_st_stockdyna DROP COLUMN user_created_id
+        SQL);
+        $this->addSql(<<<'SQL'
+            ALTER TABLE t_st_stockdyna DROP COLUMN date_create
         SQL);
     }
 
@@ -80,28 +89,31 @@ final class Version20250610095407 extends AbstractMigration
             CREATE SCHEMA dbo
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE t_ms_commande DROP CONSTRAINT FK_1BCB87FAA7C40F41
+            ALTER TABLE tsstockdyna DROP CONSTRAINT FK_EAE5EDB4F987D8A8
         SQL);
         $this->addSql(<<<'SQL'
-            DROP INDEX IDX_1BCB87FAA7C40F41 ON t_ms_commande
+            ALTER TABLE tsstockstatic DROP CONSTRAINT FK_DB826A30F987D8A8
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE t_ms_commande DROP COLUMN commande_consommation_id
+            DROP TABLE tsstockdyna
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE t_ms_demandelg ALTER COLUMN actif INT
+            DROP TABLE tsstockstatic
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE t_ms_demandelg ADD CONSTRAINT DF_E329DC42_8F52502 DEFAULT 1 FOR actif
+            ALTER TABLE t_ms_livraisonlg ADD num_lot NVARCHAR(255)
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE t_ms_demande DROP CONSTRAINT FK_6D16CC67A7C40F41
+            ALTER TABLE t_st_stockdyna ADD user_created_id INT
         SQL);
         $this->addSql(<<<'SQL'
-            DROP INDEX IDX_6D16CC67A7C40F41 ON t_ms_demande
+            ALTER TABLE t_st_stockdyna ADD date_create DATETIME2(6) NOT NULL
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE t_ms_demande DROP COLUMN commande_consommation_id
+            ALTER TABLE t_st_stockdyna ADD CONSTRAINT FK_8B554BDFF987D8A8 FOREIGN KEY (user_created_id) REFERENCES p_pv000_user (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+        SQL);
+        $this->addSql(<<<'SQL'
+            CREATE NONCLUSTERED INDEX IDX_8B554BDFF987D8A8 ON t_st_stockdyna (user_created_id)
         SQL);
     }
 }

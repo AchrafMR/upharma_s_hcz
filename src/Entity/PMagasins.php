@@ -49,6 +49,10 @@ class PMagasins
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $accessCode = null;
+    
+    #[ORM\OneToMany(mappedBy: 'magasin', targetEntity: TAcReceptionObj::class)]
+    private Collection $tAcReceptionObjs;
+
 
     #[ORM\Column(nullable: true)]
     private ?int $niveau = null;
@@ -73,6 +77,7 @@ class PMagasins
         $this->tMsCommandes = new ArrayCollection();
         $this->pAffectationMagasins = new ArrayCollection();
         $this->tMsLivraisons = new ArrayCollection();
+        $this->tAcReceptionObjs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -312,6 +317,38 @@ class PMagasins
 
         return $this;
     }
+
+     /**
+     * @return Collection<int, TAcReceptionObj>
+     */
+    public function getTAcReceptionObjs(): Collection
+    {
+        return $this->tAcReceptionObjs;
+    }
+
+    public function addTAcReceptionObj(TAcReceptionObj $tAcReceptionObj): static
+    {
+        if (!$this->tAcReceptionObjs->contains($tAcReceptionObj)) {
+            $this->tAcReceptionObjs->add($tAcReceptionObj);
+            $tAcReceptionObj->setMagasin($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcReceptionObj(TAcReceptionObj $tAcReceptionObj): static
+    {
+        if ($this->tAcReceptionObjs->removeElement($tAcReceptionObj)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcReceptionObj->getMagasin() === $this) {
+                $tAcReceptionObj->setMagasin(null);
+            }
+        }
+
+        return $this;
+    }
+
+
         /**
      * @return Collection<int, PEmplacements>
      */

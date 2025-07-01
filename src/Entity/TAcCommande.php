@@ -125,6 +125,9 @@ class TAcCommande
     #[ORM\Column(nullable: true)]
     private ?float $tva = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $datePrevueLivraison = null;
+
     public function __construct()
     {
         $this->tAcCommandeLgs = new ArrayCollection();
@@ -600,6 +603,18 @@ class TAcCommande
     public function setTva(?float $tva): static
     {
         $this->tva = $tva;
+
+        return $this;
+    }
+
+    public function getDatePrevueLivraison(): ?\DateTimeInterface
+    {
+        return $this->datePrevueLivraison;
+    }
+
+    public function setDatePrevueLivraison(?\DateTimeInterface $datePrevueLivraison): static
+    {
+        $this->datePrevueLivraison = $datePrevueLivraison;
 
         return $this;
     }

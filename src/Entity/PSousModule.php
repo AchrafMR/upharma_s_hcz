@@ -41,7 +41,7 @@ class PSousModule
 
     #[ORM\ManyToOne]
     private ?User $userUpdate = null;
-    
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
@@ -171,7 +171,7 @@ class PSousModule
 
         return $this;
     }
-    
+
     public function getImage(): ?string
     {
         return $this->image;

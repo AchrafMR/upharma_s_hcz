@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250625155447 extends AbstractMigration
+final class Version20250701104653 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,7 +20,9 @@ final class Version20250625155447 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-
+        $this->addSql(<<<'SQL'
+            ALTER TABLE p_affectation_magasin ALTER COLUMN defaut BIT
+        SQL);
     }
 
     public function down(Schema $schema): void
@@ -55,6 +57,9 @@ final class Version20250625155447 extends AbstractMigration
         SQL);
         $this->addSql(<<<'SQL'
             CREATE SCHEMA dbo
+        SQL);
+        $this->addSql(<<<'SQL'
+            ALTER TABLE p_affectation_magasin ALTER COLUMN defaut BIT NOT NULL
         SQL);
     }
 }

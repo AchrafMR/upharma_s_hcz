@@ -27,7 +27,6 @@ class TMsLivraisonlg
     #[ORM\ManyToOne(inversedBy: 'tMsLivraisonlgs')]
     private ?PPrUnites $pPrUnite = null;
 
-
     #[ORM\Column(nullable: true)]
     private ?float $quantite_livree = null;
 
@@ -43,8 +42,11 @@ class TMsLivraisonlg
     #[ORM\Column(nullable: true)]
     private ?bool $flag_synchronisation_locale = null;
 
-    #[ORM\OneToMany(mappedBy: 'tMsLivraisonLg', targetEntity: TMsLivraisonobj::class)]
+    #[ORM\OneToMany(mappedBy: 'tMsLivraisonlg', targetEntity: TMsLivraisonobj::class)]
     private Collection $tMsLivraisonobjs;
+
+    #[ORM\ManyToOne(inversedBy: 'tMsLivraisonlgs')]
+    private ?TMsCommandelg $tMsCommandelg = null;
 
     public function __construct()
     {
@@ -164,7 +166,7 @@ class TMsLivraisonlg
     {
         if (!$this->tMsLivraisonobjs->contains($tMsLivraisonobj)) {
             $this->tMsLivraisonobjs->add($tMsLivraisonobj);
-            $tMsLivraisonobj->setTMsLivraisonLg($this);
+            $tMsLivraisonobj->setTMsLivraisonlg($this);
         }
 
         return $this;
@@ -174,10 +176,22 @@ class TMsLivraisonlg
     {
         if ($this->tMsLivraisonobjs->removeElement($tMsLivraisonobj)) {
             // set the owning side to null (unless already changed)
-            if ($tMsLivraisonobj->getTMsLivraisonLg() === $this) {
-                $tMsLivraisonobj->setTMsLivraisonLg(null);
+            if ($tMsLivraisonobj->getTMsLivraisonlg() === $this) {
+                $tMsLivraisonobj->setTMsLivraisonlg(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTMsCommandelg(): ?TMsCommandelg
+    {
+        return $this->tMsCommandelg;
+    }
+
+    public function setTMsCommandelg(?TMsCommandelg $tMsCommandelg): static
+    {
+        $this->tMsCommandelg = $tMsCommandelg;
 
         return $this;
     }

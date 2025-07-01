@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250603102313 extends AbstractMigration
+final class Version20250701155105 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,47 +20,41 @@ final class Version20250603102313 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        // $this->addSql(<<<'SQL'
-        //     ALTER TABLE t_ms_demandelg DROP CONSTRAINT DF_E329DC42_8F52502
-        // SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE t_ms_demandelg ALTER COLUMN actif INT
+            ALTER TABLE tsstockdyna DROP CONSTRAINT FK_EAE5EDB4F987D8A8
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE tms_commande DROP CONSTRAINT FK_7C846EF3FA640825
+            ALTER TABLE tsstockstatic DROP CONSTRAINT FK_DB826A30F987D8A8
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE tms_commande DROP CONSTRAINT FK_7C846EF3BE321A72
+            DROP TABLE tsstockdyna
         SQL);
         $this->addSql(<<<'SQL'
-            DROP INDEX IDX_7C846EF3FA640825 ON tms_commande
+            DROP TABLE tsstockstatic
         SQL);
         $this->addSql(<<<'SQL'
-            DROP INDEX IDX_7C846EF3BE321A72 ON tms_commande
+            ALTER TABLE t_st_stockdyna ADD user_created_id INT
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE tms_commande ADD demandeur_id INT NOT NULL
+            ALTER TABLE t_st_stockdyna ADD date_create DATETIME2(6)
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE tms_commande ADD recepteur_id INT
+            ALTER TABLE t_st_stockdyna ADD CONSTRAINT FK_8B554BDFF987D8A8 FOREIGN KEY (user_created_id) REFERENCES p_pv000_user (id)
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE tms_commande DROP COLUMN demandeur_id_id
+            CREATE INDEX IDX_8B554BDFF987D8A8 ON t_st_stockdyna (user_created_id)
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE tms_commande DROP COLUMN recepteur_id_id
+            ALTER TABLE t_st_stockstatic ADD user_created_id INT
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE tms_commande ADD CONSTRAINT FK_7C846EF395A6EE59 FOREIGN KEY (demandeur_id) REFERENCES pmagasins (id)
+            ALTER TABLE t_st_stockstatic ADD date_create DATETIME2(6)
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE tms_commande ADD CONSTRAINT FK_7C846EF33B49782D FOREIGN KEY (recepteur_id) REFERENCES pmagasins (id)
+            ALTER TABLE t_st_stockstatic ADD CONSTRAINT FK_623EBF31F987D8A8 FOREIGN KEY (user_created_id) REFERENCES p_pv000_user (id)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE INDEX IDX_7C846EF395A6EE59 ON tms_commande (demandeur_id)
-        SQL);
-        $this->addSql(<<<'SQL'
-            CREATE INDEX IDX_7C846EF33B49782D ON tms_commande (recepteur_id)
+            CREATE INDEX IDX_623EBF31F987D8A8 ON t_st_stockstatic (user_created_id)
         SQL);
     }
 
@@ -98,43 +92,46 @@ final class Version20250603102313 extends AbstractMigration
             CREATE SCHEMA dbo
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE tms_commande DROP CONSTRAINT FK_7C846EF395A6EE59
+            CREATE TABLE tsstockdyna (id INT IDENTITY NOT NULL, user_created_id INT, date_created DATETIME2(6), PRIMARY KEY (id))
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE tms_commande DROP CONSTRAINT FK_7C846EF33B49782D
+            CREATE NONCLUSTERED INDEX IDX_EAE5EDB4F987D8A8 ON tsstockdyna (user_created_id)
         SQL);
         $this->addSql(<<<'SQL'
-            DROP INDEX IDX_7C846EF395A6EE59 ON tms_commande
+            CREATE TABLE tsstockstatic (id INT IDENTITY NOT NULL, user_created_id INT, date_created DATETIME2(6), PRIMARY KEY (id))
         SQL);
         $this->addSql(<<<'SQL'
-            DROP INDEX IDX_7C846EF33B49782D ON tms_commande
+            CREATE NONCLUSTERED INDEX IDX_DB826A30F987D8A8 ON tsstockstatic (user_created_id)
         SQL);
         $this->addSql(<<<'SQL'
-            sp_rename 'tms_commande.recepteur_id', 'demandeur_id_id', 'COLUMN'
+            ALTER TABLE tsstockdyna ADD CONSTRAINT FK_EAE5EDB4F987D8A8 FOREIGN KEY (user_created_id) REFERENCES p_pv000_user (id) ON UPDATE NO ACTION ON DELETE NO ACTION
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE tms_commande ADD recepteur_id_id INT
+            ALTER TABLE tsstockstatic ADD CONSTRAINT FK_DB826A30F987D8A8 FOREIGN KEY (user_created_id) REFERENCES p_pv000_user (id) ON UPDATE NO ACTION ON DELETE NO ACTION
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE tms_commande DROP COLUMN demandeur_id
+            ALTER TABLE t_st_stockdyna DROP CONSTRAINT FK_8B554BDFF987D8A8
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE tms_commande ADD CONSTRAINT FK_7C846EF3FA640825 FOREIGN KEY (demandeur_id_id) REFERENCES pmagasins (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+            DROP INDEX IDX_8B554BDFF987D8A8 ON t_st_stockdyna
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE tms_commande ADD CONSTRAINT FK_7C846EF3BE321A72 FOREIGN KEY (recepteur_id_id) REFERENCES pmagasins (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+            ALTER TABLE t_st_stockdyna DROP COLUMN user_created_id
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE NONCLUSTERED INDEX IDX_7C846EF3FA640825 ON tms_commande (demandeur_id_id)
+            ALTER TABLE t_st_stockdyna DROP COLUMN date_create
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE NONCLUSTERED INDEX IDX_7C846EF3BE321A72 ON tms_commande (recepteur_id_id)
+            ALTER TABLE t_st_stockstatic DROP CONSTRAINT FK_623EBF31F987D8A8
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE t_ms_demandelg ALTER COLUMN actif INT
+            DROP INDEX IDX_623EBF31F987D8A8 ON t_st_stockstatic
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE t_ms_demandelg ADD CONSTRAINT DF_E329DC42_8F52502 DEFAULT 1 FOR actif
+            ALTER TABLE t_st_stockstatic DROP COLUMN user_created_id
+        SQL);
+        $this->addSql(<<<'SQL'
+            ALTER TABLE t_st_stockstatic DROP COLUMN date_create
         SQL);
     }
 }

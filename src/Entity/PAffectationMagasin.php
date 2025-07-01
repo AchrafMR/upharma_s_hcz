@@ -22,7 +22,7 @@ class PAffectationMagasin
     #[ORM\JoinColumn(nullable: false)]
     private ?User $userr = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'boolean', nullable: true)]
     private ?bool $defaut = null;
 
     public function getId(): ?int

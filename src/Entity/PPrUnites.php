@@ -46,10 +46,26 @@ class PPrUnites
 
     #[ORM\OneToMany(mappedBy: 'pPrUnite', targetEntity: TMsLivraisonlg::class)]
     private Collection $tMsLivraisonlgs;
+       
+    #[ORM\OneToMany(mappedBy: 'unite', targetEntity: TAcPrecommandeLg::class)]
+    private Collection $tAcPrecommandeLgs;
+
+    #[ORM\OneToMany(mappedBy: 'unite', targetEntity: TAcCommandeLg::class)]
+    private Collection $tAcCommandeLgs;
+
+    #[ORM\OneToMany(mappedBy: 'unite', targetEntity: TAcFactureLg::class)]
+    private Collection $tAcFactureLgs;
+
+    #[ORM\OneToMany(mappedBy: 'unite', targetEntity: TAcReceptionLg::class)]
+    private Collection $tAcReceptionLgs;
 
     public function __construct()
     {
         $this->pProduits = new ArrayCollection();
+        $this->tAcPrecommandeLgs = new ArrayCollection();
+        $this->tAcCommandeLgs = new ArrayCollection();
+        $this->tAcFactureLgs = new ArrayCollection();
+        $this->tAcReceptionLgs = new ArrayCollection();
         $this->tMsDemandelgs = new ArrayCollection();
         $this->tStStockdynas = new ArrayCollection();
         $this->tStStockstatics = new ArrayCollection();
@@ -86,6 +102,125 @@ class PPrUnites
             // set the owning side to null (unless already changed)
             if ($pProduit->getPPrUnite() === $this) {
                 $pProduit->setPPrUnite(null);
+            }
+        }
+
+        return $this;
+    }
+     /**
+     * @return Collection<int, TAcPrecommandeLg>
+     */
+    public function getTAcPrecommandeLgs(): Collection
+    {
+        return $this->tAcPrecommandeLgs;
+    }
+
+    public function addTAcPrecommandeLg(TAcPrecommandeLg $tAcPrecommandeLg): static
+    {
+        if (!$this->tAcPrecommandeLgs->contains($tAcPrecommandeLg)) {
+            $this->tAcPrecommandeLgs->add($tAcPrecommandeLg);
+            $tAcPrecommandeLg->setUnite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcPrecommandeLg(TAcPrecommandeLg $tAcPrecommandeLg): static
+    {
+        if ($this->tAcPrecommandeLgs->removeElement($tAcPrecommandeLg)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcPrecommandeLg->getUnite() === $this) {
+                $tAcPrecommandeLg->setUnite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TAcCommandeLg>
+     */
+    public function getTAcCommandeLgs(): Collection
+    {
+        return $this->tAcCommandeLgs;
+    }
+
+    public function addTAcCommandeLg(TAcCommandeLg $tAcCommandeLg): static
+    {
+        if (!$this->tAcCommandeLgs->contains($tAcCommandeLg)) {
+            $this->tAcCommandeLgs->add($tAcCommandeLg);
+            $tAcCommandeLg->setUnite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcCommandeLg(TAcCommandeLg $tAcCommandeLg): static
+    {
+        if ($this->tAcCommandeLgs->removeElement($tAcCommandeLg)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcCommandeLg->getUnite() === $this) {
+                $tAcCommandeLg->setUnite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TAcFactureLg>
+     */
+    public function getTAcFactureLgs(): Collection
+    {
+        return $this->tAcFactureLgs;
+    }
+
+    public function addTAcFactureLg(TAcFactureLg $tAcFactureLg): static
+    {
+        if (!$this->tAcFactureLgs->contains($tAcFactureLg)) {
+            $this->tAcFactureLgs->add($tAcFactureLg);
+            $tAcFactureLg->setUnite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcFactureLg(TAcFactureLg $tAcFactureLg): static
+    {
+        if ($this->tAcFactureLgs->removeElement($tAcFactureLg)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcFactureLg->getUnite() === $this) {
+                $tAcFactureLg->setUnite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TAcReceptionLg>
+     */
+    public function getTAcReceptionLgs(): Collection
+    {
+        return $this->tAcReceptionLgs;
+    }
+
+    public function addTAcReceptionLg(TAcReceptionLg $tAcReceptionLg): static
+    {
+        if (!$this->tAcReceptionLgs->contains($tAcReceptionLg)) {
+            $this->tAcReceptionLgs->add($tAcReceptionLg);
+            $tAcReceptionLg->setUnite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTAcReceptionLg(TAcReceptionLg $tAcReceptionLg): static
+    {
+        if ($this->tAcReceptionLgs->removeElement($tAcReceptionLg)) {
+            // set the owning side to null (unless already changed)
+            if ($tAcReceptionLg->getUnite() === $this) {
+                $tAcReceptionLg->setUnite(null);
             }
         }
 

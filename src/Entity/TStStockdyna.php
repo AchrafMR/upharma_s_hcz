@@ -27,15 +27,15 @@ class TStStockdyna
     #[ORM\ManyToOne(inversedBy: 'userupdate')]
     private ?PEmplacements $PEmplacements = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tStStockdynas')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $userupdate = null;
-
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateupdate = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $flagSynchronisationLocale = null;
+
+    #[ORM\ManyToOne(inversedBy: 'tStStockdyna')]
+    private ?User $userCreated = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $dateCreate = null;
 
     public function getId(): ?int
     {
@@ -90,29 +90,6 @@ class TStStockdyna
         return $this;
     }
 
-    public function getUserupdate(): ?User
-    {
-        return $this->userupdate;
-    }
-
-    public function setUserupdate(?User $userupdate): static
-    {
-        $this->userupdate = $userupdate;
-
-        return $this;
-    }
-
-    public function getDateupdate(): ?\DateTimeInterface
-    {
-        return $this->dateupdate;
-    }
-
-    public function setDateupdate(\DateTimeInterface $dateupdate): static
-    {
-        $this->dateupdate = $dateupdate;
-
-        return $this;
-    }
 
     public function getFlagSynchronisationLocale(): ?int
     {
@@ -122,6 +99,30 @@ class TStStockdyna
     public function setFlagSynchronisationLocale(?int $flagSynchronisationLocale): static
     {
         $this->flagSynchronisationLocale = $flagSynchronisationLocale;
+
+        return $this;
+    }
+
+    public function getUserCreated(): ?User
+    {
+        return $this->userCreated;
+    }
+
+    public function setUserCreated(?User $userCreated): static
+    {
+        $this->userCreated = $userCreated;
+
+        return $this;
+    }
+
+    public function getDateCreate(): ?\DateTimeInterface
+    {
+        return $this->dateCreate;
+    }
+
+    public function setDateCreate(?\DateTimeInterface $dateCreate): static
+    {
+        $this->dateCreate = $dateCreate;
 
         return $this;
     }

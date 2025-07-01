@@ -16,7 +16,7 @@ class TMsLivraisonobj
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'tMsLivraisonobjs')]
-    private ?TMsLivraisonLg $tMsLivraisonLg = null;
+    private ?TMsLivraisonlg $tMsLivraisonlg = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date_peremption = null;
@@ -47,14 +47,14 @@ class TMsLivraisonobj
         return $this->id;
     }
 
-    public function getTMsLivraisonLg(): ?TMsLivraisonLg
+    public function getTMsLivraisonlg(): ?TMsLivraisonlg
     {
-        return $this->tMsLivraisonLg;
+        return $this->tMsLivraisonlg;
     }
 
-    public function setTMsLivraisonLg(?TMsLivraisonLg $tMsLivraisonLg): static
+    public function setTMsLivraisonlg(?TMsLivraisonlg $tMsLivraisonlg): static
     {
-        $this->tMsLivraisonLg = $tMsLivraisonLg;
+        $this->tMsLivraisonlg = $tMsLivraisonlg;
 
         return $this;
     }
@@ -142,8 +142,8 @@ class TMsLivraisonobj
 
         return $this;
     }
-    
-        public function getTAcReceptionObj(): ?TAcReceptionObj
+
+    public function getTAcReceptionObj(): ?TAcReceptionObj
     {
         return $this->TAcReceptionObj;
     }
