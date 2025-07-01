@@ -39,6 +39,12 @@ class TStStockstatic
     #[ORM\Column(nullable: true)]
     private ?float $quantiteReserve = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $dateCreate = null;
+
+    #[ORM\ManyToOne]
+    private ?User $userCreated = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -129,6 +135,30 @@ class TStStockstatic
     public function setQuantiteReserve(?float $quantiteReserve): static
     {
         $this->quantiteReserve = $quantiteReserve;
+
+        return $this;
+    }
+
+    public function getDateCreate(): ?\DateTimeInterface
+    {
+        return $this->dateCreate;
+    }
+
+    public function setDateCreate(?\DateTimeInterface $dateCreate): static
+    {
+        $this->dateCreate = $dateCreate;
+
+        return $this;
+    }
+
+    public function getUserCreated(): ?User
+    {
+        return $this->userCreated;
+    }
+
+    public function setUserCreated(?User $userCreated): static
+    {
+        $this->userCreated = $userCreated;
 
         return $this;
     }

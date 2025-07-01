@@ -64,9 +64,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'userCreated', targetEntity: PDepots::class)]
     private Collection $pDepots;
 
-    #[ORM\OneToMany(mappedBy: 'userupdate', targetEntity: TStStockdyna::class)]
-    private Collection $tStStockdynas;
-
     #[ORM\OneToMany(mappedBy: 'userupdate', targetEntity: TStStockstatic::class)]
     private Collection $tStStockstatics;
 
@@ -88,13 +85,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'userr', targetEntity: PAffectationMagasin::class)]
     private Collection $pAffectationMagasins;
 
+    #[ORM\OneToMany(mappedBy: 'userCreated', targetEntity: TStStockdyna::class)]
+    private Collection $tStStockdyna;
 
     public function __construct()
     {
         $this->pUserDossierActions = new ArrayCollection();
         $this->pPartenaires = new ArrayCollection();
         $this->pDepots = new ArrayCollection();
-        $this->tStStockdynas = new ArrayCollection();
         $this->tStStockstatics = new ArrayCollection();
         $this->tMsCommandes = new ArrayCollection();
         $this->pAffectationMagasins = new ArrayCollection();
@@ -103,7 +101,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->receptionObjsUpdated = new ArrayCollection();
         $this->tAcReceptionObjsEtiqueter = new ArrayCollection();
         $this->pAffectationMagasins = new ArrayCollection();
-
+        $this->tStStockdyna = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -354,36 +352,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, TStStockdyna>
-     */
-    public function getTStStockdynas(): Collection
-    {
-        return $this->tStStockdynas;
-    }
-
-    public function addTStStockdyna(TStStockdyna $tStStockdyna): static
-    {
-        if (!$this->tStStockdynas->contains($tStStockdyna)) {
-            $this->tStStockdynas->add($tStStockdyna);
-            $tStStockdyna->setUserupdate($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTStStockdyna(TStStockdyna $tStStockdyna): static
-    {
-        if ($this->tStStockdynas->removeElement($tStStockdyna)) {
-            // set the owning side to null (unless already changed)
-            if ($tStStockdyna->getUserupdate() === $this) {
-                $tStStockdyna->setUserupdate(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, TStStockstatic>
      */
     public function getTStStockstatics(): Collection
@@ -587,6 +555,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($tAcReceptionObjsEtiqueter->getUserEtiqueter() === $this) {
                 $tAcReceptionObjsEtiqueter->setUserEtiqueter(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TStStockdyna>
+     */
+    public function getTStStockdyna(): Collection
+    {
+        return $this->tStStockdyna;
+    }
+
+    public function addTStStockdyna(TStStockdyna $tStStockdyna): static
+    {
+        if (!$this->tStStockdyna->contains($tStStockdyna)) {
+            $this->tStStockdyna->add($tStStockdyna);
+            $tStStockdyna->setUserCreated($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTStStockdyna(TStStockdyna $tStStockdyna): static
+    {
+        if ($this->tStStockdyna->removeElement($tStStockdyna)) {
+            // set the owning side to null (unless already changed)
+            if ($tStStockdyna->getUserCreated() === $this) {
+                $tStStockdyna->setUserCreated(null);
             }
         }
 
