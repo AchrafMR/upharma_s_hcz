@@ -28,10 +28,10 @@ class TStStockdyna
     private ?PEmplacements $PEmplacements = null;
 
     #[ORM\ManyToOne(inversedBy: 'tStStockdynas')]
-    private ?User $userupdate = null;
+    private ?User $userCreated = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateupdate = null;
+    private ?\DateTimeInterface $dateCreate = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $flagSynchronisationLocale = null;
@@ -89,29 +89,28 @@ class TStStockdyna
         return $this;
     }
 
-    public function getUserupdate(): ?User
+    public function getUserCreated(): ?User
     {
-        return $this->userupdate;
+        return $this->userCreated;
     }
 
-    public function setUserupdate(?User $userupdate): static
+    public function setUserCreated(?User $user): self
     {
-        $this->userupdate = $userupdate;
-
+        $this->userCreated = $user;
         return $this;
     }
 
-    public function getDateupdate(): ?\DateTimeInterface
+    public function getDateCreate(): ?\DateTimeInterface
     {
-        return $this->dateupdate;
+        return $this->dateCreate;
     }
 
-    public function setDateupdate(\DateTimeInterface $dateupdate): static
+    public function setDateCreate(?\DateTimeInterface $date): self
     {
-        $this->dateupdate = $dateupdate;
-
+        $this->dateCreate = $date;
         return $this;
     }
+
 
     public function getFlagSynchronisationLocale(): ?int
     {

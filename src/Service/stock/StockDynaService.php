@@ -47,8 +47,8 @@ class StockDynaService
         $stock->setPPrUnite($unite);
         $stock->setQuantite($quantite);
         $stock->setPEmplacements($emplacement);
-        $stock->setUserupdate($this->security->getUser());
-        $stock->setDateupdate(new \DateTime());
+        $stock->setUserCreated($this->security->getUser());
+        $stock->setDateCreate(new \DateTime());
         $stock->setFlagSynchronisationLocale(false);
 
         $this->em->persist($stock);
