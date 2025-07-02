@@ -302,6 +302,7 @@ class CommandeVenteController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $id = $data['id'] ?? null;
         $position = $data['position'] ?? null;
+        // dd($position);
 
         if (!$id || !$position) {
             return new JsonResponse(['success' => false, 'message' => 'Données invalides'], 400);
@@ -318,9 +319,14 @@ class CommandeVenteController extends AbstractController
         }
 
         $commande->setPositionActuel($position);
+        $positionActuel = $em->getRepository(PStatut::class)->find(16);
+        $commande->setStPositionActuel($positionActuel);        
         switch ($position) {
             case 'validée':
                 $commande->setUserValider($user);
+                $status = $em->getRepository(PStatut::class)->find(12);
+                $commande->setStatus($status);
+               
                 // create demande alimentation if recepteur ≠ demandeur
                 $newDemande = $this->demandeService->createDemandeAlimentationFromCommande($commande);
                 if ($newDemande) {
@@ -333,6 +339,9 @@ class CommandeVenteController extends AbstractController
                 break;
             case 'Générée':
                 $commande->setUserGenerer($user);
+                $status = $em->getRepository(PStatut::class)->find(13);
+                $commande->setStatus($status);
+           
                 break;
 
             // case 'Crée': // dévalider
@@ -463,6 +472,8 @@ class CommandeVenteController extends AbstractController
         if ($allLignesDelivered) {
             $commande->setPositionActuel('Générée');
             $commande->setUserGenerer($this->getUser());
+            $status = $em->getRepository(PStatut::class)->find(13);
+            $commande->setStatus($status);
         }
 
         $this->em->persist($livraison);

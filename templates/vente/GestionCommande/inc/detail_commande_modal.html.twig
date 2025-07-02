@@ -121,11 +121,11 @@
 
       <div class="modal-footer">
         
-          {% if commande.positionActuel == 'Crée' %}
+          {% if commande.status.id == 9 %}
             <button type="button" class="btn btn-primary btn-valider" data-id="{{ commande.id }}">
               Valider
             </button>
-          {% elseif commande.positionActuel == 'validée' and commande.recepteurId.id == commande.demandeurId.id %}
+          {% elseif commande.status.id == 12 and commande.recepteurId.id == commande.demandeurId.id %}
             <button type="button" class="btn btn-primary btn-generer" data-id="{{ commande.id }}">
               Générer
             </button>
