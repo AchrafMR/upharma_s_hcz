@@ -4,6 +4,7 @@ namespace App\Controller\Vente\Commande;
 
 use App\Entity\PMagasins;
 use App\Entity\PProduits;
+use App\Entity\PStatut;
 use App\Entity\TMsCommande;
 use App\Entity\TMsCommandelg;
 use App\Entity\TMsLivraison;
@@ -243,6 +244,7 @@ class CommandeVenteController extends AbstractController
             $ligne->setPPrUnite($unite);
             $ligne->setQuantiteCommandee($quantite);
             $ligne->setQuantiteReste($quantite);
+            $ligne->setQuantiteServie(0);
             $ligne->setPrixUnitaire($prixUnitaire);
             $ligne->setRemise($remise);
             $ligne->setTva($tva);
@@ -268,6 +270,7 @@ class CommandeVenteController extends AbstractController
             $ligne->setPPrUnite($unite);
             $ligne->setQuantiteCommandee($quantite);
             $ligne->setQuantiteReste($quantite);
+            $ligne->setQuantiteServie(0);
             $ligne->setPrixUnitaire($prixUnitaire);
             $ligne->setRemise($remise);
             $ligne->setTva($tva);
@@ -342,7 +345,7 @@ class CommandeVenteController extends AbstractController
     }
 
     #[Route('/save-livraison', name: 'vente_save_livraison', methods: ['POST'])]
-    public function saveLivraison(Request $request): JsonResponse
+    public function saveLivraison(Request $request,EntityManagerInterface $em): JsonResponse
     {
         $commandeId = $request->request->get('commande_id');
         $quantites = $request->request->all('quantites');
@@ -369,6 +372,10 @@ class CommandeVenteController extends AbstractController
         $livraison->setDescription($commande->getDescription());
         $livraison->setActif(true);
         $livraison->setPositionActuel('Crée');
+        $status = $em->getRepository(PStatut::class)->find(9);
+        $position_actuel=$em->getRepository(PStatut::class)->find(21);
+        $livraison->setStatus($status);
+        $livraison->setStPositionActuel($position_actuel);
         $livraison->setTypeLivraison($commande->getTypeCommande());
 
         $allDelivered = true;

@@ -137,127 +137,32 @@ $(document).on("click", ".details-livraison", function () {
   $(modalSelector).modal("show");
 });
 
-// Update position of commande
-// document.addEventListener("DOMContentLoaded", () => {
-//   let positionChanged = false; // Track whether position has changed
+// Handle status update (Valider or Générer)
+$(document).on("click", ".btn-valider, .btn-generer", function () {
+  const id = $(this).data("id");
+  const action = $(this).hasClass("btn-valider") ? "valider" : "generer";
 
-//   const updatePosition = async (id, position) => {
-//     try {
-//       const response = await fetch('/vente/update-position-commande', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'X-Requested-With': 'XMLHttpRequest',
-//         },
-//         body: JSON.stringify({ id, position })
-//       });
-
-//       const data = await response.json();
-//       if (data.success) {
-//         positionChanged = true; // Mark as changed
-//         let actionMessage = '';
-//         switch (position) {
-//           case 'validée':
-//             actionMessage = 'La commande a été validée avec succès.';
-//             break;
-//           // case 'Crée':
-//           //   actionMessage = 'La commande a été dévalidée avec succès.';
-//           //   break;
-//           case 'Générée':
-//             actionMessage = 'La commande a été générée avec succès.';
-//             break;
-//           default:
-//             actionMessage = 'Mise à jour effectuée.';
-//         }
-//         toastr.success(actionMessage);
-//         updateFooterButtons(id, position);
-//       } else {
-//         toastr.error("Erreur lors de la mise à jour.");
-//       }
-//     } catch (error) {
-//       toastr.error("Erreur réseau.");
-//       console.error(error);
-//     }
-//   };
-
-//   const updateFooterButtons = (id, newPosition) => {
-//     const modal = document.getElementById(`detailsCommande${id}`);
-//     const footer = modal.querySelector('.modal-footer');
-
-//     if (!footer) return;
-//     const demandeurSelect = modal.querySelector('[name="demandeur_id"]');
-//     const recepteurSelect = modal.querySelector('[name="recepteur_id"]');
-
-//     const demandeurId = demandeurSelect?.value;
-//     const recepteurId = recepteurSelect?.value;
-//     console.log(`Demandeur ID: ${demandeurId}, Recepteur ID: ${recepteurId}`);
-
-//     let buttonsHTML = '';
-
-//     if (newPosition === 'validée' && demandeurId && recepteurId && demandeurId === recepteurId) {
-//       buttonsHTML = `
-//         <button type="button" class="btn btn-primary btn-generer" data-id="${id}">
-//           Générer
-//         </button>
-//       `;
-//     } else if (newPosition === 'Crée') {
-//       buttonsHTML = `
-//         <button type="button" class="btn btn-success btn-valider" data-id="${id}">
-//           Valider
-//         </button>
-//       `;
-//     }
-//     footer.innerHTML = buttonsHTML;
-//   };
-
-
-//   document.body.addEventListener("click", async (e) => {
-//     const btn = e.target;
-
-//     // Handle validation position
-//     if (btn.classList.contains("btn-valider")) {
-//       updatePosition(btn.dataset.id, 'validée');
-
-//     } else if (btn.classList.contains("btn-generer")) {
-//       const id = btn.dataset.id;
-//       const modal = document.getElementById(`preparerLivraison${id}`);
-//       if (modal) {
-//         $(modal).modal('show');
-//       }
-
-//     } else if (btn.classList.contains("btn-confirmer-livraison")) {
-//       const commandeId = btn.dataset.id;
-//       const form = document.querySelector(`.livraison-form[data-id="${commandeId}"]`);
-//       if (!form) return;
-
-//       const formData = new FormData(form);
-
-//       try {
-//         const response = await fetch('/vente/save-livraison', {
-//           method: 'POST',
-//           body: formData
-//         });
-
-//         const result = await response.json();
-
-//         if (result.status === 'success') {
-//           toastr.success(' Livraison enregistrée avec succès.');
-//           location.reload();
-//         } else {
-//           toastr.error(' Erreur: ' + (result.message || 'Problème de traitement.'));
-//         }
-
-//       } catch (error) {
-//         console.error('Erreur envoi livraison:', error);
-//          toastr.error('Erreur de communication avec le serveur.');
-//       }
-//     }
-//   });
-
-
-//   $('.modal').on('hidden.bs.modal', function () {
-//     if (positionChanged) {
-//       location.reload();
-//     }
-//   });
-// });
+  $.ajax({
+    url: `/vente/update-status`,
+    method: "POST",
+    data: {
+      id,
+      action,
+    },
+    success: function (response) {
+      if (response.status === "success") {
+        if (action === "valider") {
+          toastr.success("La livraison a été validée avec succès.");
+        } else if (action === "generer") {
+          toastr.success("La livraison a été générée avec succès.");
+        }
+        setTimeout(() => location.reload(), 1000);
+      } else {
+        toastr.error(response.message || "Erreur inconnue");
+      }
+    },
+    error: function () {
+      toastr.error("Erreur serveur !");
+    },
+  });
+});

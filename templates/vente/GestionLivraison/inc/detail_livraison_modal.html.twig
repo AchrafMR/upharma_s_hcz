@@ -120,11 +120,11 @@
       </div>
 
       <div class="modal-footer">
-        {% if livraison.positionActuel == 'Crée' %}
+        {% if livraison.status.id == 9 %}
           <button type="button" class="btn btn-primary btn-valider" data-id="{{ livraison.id }}">
             Valider
           </button>
-        {% elseif livraison.positionActuel == 'validée' and livraison.recepteurId.id == livraison.demandeurId.id %}
+        {% elseif livraison.status.id == 12 and livraison.recepteurId.id == livraison.demandeurId.id %}
           <button type="button" class="btn btn-primary btn-generer" data-id="{{ livraison.id }}">
             Générer
           </button>
