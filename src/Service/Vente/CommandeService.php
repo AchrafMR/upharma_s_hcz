@@ -2,6 +2,7 @@
 
 namespace App\Service\Vente;
 
+use App\Entity\PStatut;
 use App\Entity\TMsCommande;
 use App\Entity\TMsCommandelg;
 use App\Entity\TMsDemande;
@@ -36,6 +37,10 @@ class CommandeService
         $commande->setUserCreated($demande->getUserCreated());
         $commande->setTMsDemande($demande); 
         $commande->setPositionActuel("Crée");
+        $status = $this->em->getRepository(PStatut::class)->find(9);
+        $position_actuel=$this->em->getRepository(PStatut::class)->find(16);
+        $commande->setStatus($status);
+        $commande->setStPositionActuel($position_actuel);
         $commande->setTypeCommande($demande->getTypeDemande());
         $commande->setDemandeurId($demande->getDemandeurId());
         $commande->setRecepteurId($demande->getRecepteurId());

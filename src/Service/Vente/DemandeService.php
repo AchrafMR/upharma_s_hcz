@@ -7,6 +7,7 @@ use App\Entity\PEntite;
 use App\Entity\PProduits;
 use App\Entity\PTypeOprt;
 use App\Entity\PMagasins;
+use App\Entity\PStatut;
 use App\Entity\TMsCommande;
 use App\Service\Vente\CommandeService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,7 +17,10 @@ use Symfony\Component\Security\Core\Security;
 
 class DemandeService
 {
-    public function __construct(private EntityManagerInterface $em, private CommandeService $commandeService,private Security $security)
+    public function __construct(
+        private EntityManagerInterface $em,
+        private CommandeService $commandeService,
+        private Security $security)
     {
     }
 
@@ -30,6 +34,10 @@ class DemandeService
         $demande->setDossierPatient($data['dossier_patient'] ?? null);
         $demande->setIpp((int)($data['ipp'] ?? 0));
         $demande->setPositionActuel('Générée');
+        $status =$this->em->getRepository(PStatut::class)->find(13);
+        $position_actuel=$this->em->getRepository(PStatut::class)->find(16);
+        $demande->setStatus($status);
+        $demande->setStPositionActuel($position_actuel);
         $demande->setHistorique(null);
         $demande->setUrgent(!empty($data['urgent']));
         $demande->setCreated(new DateTime());
@@ -109,6 +117,10 @@ class DemandeService
         $demande->setDossierPatient($commande->getDossierPatient());
         $demande->setIpp($commande->getIpp());
         $demande->setPositionActuel('Crée');
+        $status = $this->em->getRepository(PStatut::class)->find(9);
+        $position_actuel=$this->em->getRepository(PStatut::class)->find(16);
+        $demande->setStatus($status);
+        $demande->setStPositionActuel($position_actuel);
         $demande->setHistorique(null);
         $demande->setUrgent($commande->isUrgent());
         $demande->setCreated(new \DateTime());
