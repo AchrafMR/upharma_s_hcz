@@ -96,5 +96,18 @@ class PModuleRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findAdminModules()
+    {
+        return $this->createQueryBuilder('m')
+            ->innerJoin('m.pSousModule','s')
+            ->innerJoin('s.pActions', 'a')
+            ->andWhere('m.active = 1')
+            ->andWhere('m.master = 0')
+            ->orderBy('m.ord', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     
 }
