@@ -1,5 +1,5 @@
 {% for commande in commandes %}
-<div class="modal right fade" data-position-actuel="{{ commande.positionActuel }}" id="editCommande{{ commande.id }}" role="dialog" data-id="{{ commande.id }}" aria-hidden="true">
+<div class="modal right fade" data-status="{{ commande.status.id }}" id="editCommande{{ commande.id }}" role="dialog" data-id="{{ commande.id }}" aria-hidden="true">
 
   <div class="modal-dialog" style="width: 50%" role="document">
     <div class="modal-content" style="height: 100% !important; max-height: none !important; overflow: hidden !important;">

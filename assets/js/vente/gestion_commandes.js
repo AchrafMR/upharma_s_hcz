@@ -55,12 +55,12 @@ $(document).ready(function () {
           td.classList.add("force-left-align");
         },
       },
-      { name: "demandeur.designation", data: "demandeur",
+      { name: "dem.designationAccess", data: "demandeur",
         createdCell: function (td) {
           td.classList.add("force-left-align");
         },
       },
-      { name: "recepteur.designation", data: "recepteur",
+      { name: "rec.designationAccess", data: "recepteur",
         createdCell: function (td) {
           td.classList.add("force-left-align");
         },
@@ -87,7 +87,7 @@ $(document).ready(function () {
         },
       },
       { name: "niveau_urgence", data: "niveau_urgence" },
-      { name: "d.positionActuel", data: "positionActuel" },
+      { name: "status.designation", data: "cm_status" },
       {
         name: "actions",
         data: null,
@@ -131,9 +131,9 @@ $(document).on("click", ".edit-commande", function () {
     return;
   }
 
-  const status = $(modalSelector).data("position-actuel"); 
+  const status = $(modalSelector).data("status"); 
 
-  if (status === "Crée") {
+  if (status === 9) {
     $(modalSelector).modal("show");
   } else {
     toastr.warning("Impossible de modifier cette commande. Elle n'est plus modifiable.");

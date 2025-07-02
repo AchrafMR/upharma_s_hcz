@@ -93,14 +93,14 @@
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
         "/build/959.a5d20ad0.js",
-        "/build/gestion_commandes.6194a31a.js"
+        "/build/gestion_commandes.9479486f.js"
       ]
     },
     "gestion_livraisons": {
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
-        "/build/gestion_livraisons.77360a23.js"
+        "/build/gestion_livraisons.2122ef27.js"
       ]
     },
     "login": {

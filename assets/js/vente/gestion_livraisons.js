@@ -55,12 +55,12 @@ $(document).ready(function () {
           td.classList.add("force-left-align");
         },
       },
-      { name: "demandeur.designation", data: "demandeur",
+      { name: "dem.designationAccess", data: "demandeur",
         createdCell: function (td) {
           td.classList.add("force-left-align");
         },
        },
-      { name: "recepteur.designation", data: "recepteur",
+      { name: "dem.designationAccess", data: "recepteur",
         createdCell: function (td) {
           td.classList.add("force-left-align");
         },
@@ -88,7 +88,7 @@ $(document).ready(function () {
       },
       { name: "l.urgent", data: "niveau_urgence" },
       
-      { name: "l.position_actuel", data: "position_actuel" },
+      { name: "status.designation", data: "lv_status" },
       {
         name: "actions",
         data: null,

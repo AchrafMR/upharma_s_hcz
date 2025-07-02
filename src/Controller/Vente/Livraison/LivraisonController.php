@@ -100,7 +100,7 @@ class LivraisonController extends AbstractController
         
         $allowedOrderFields = [
             'l.id', 'l.code', 'dem.designationAccess', 'rec.designationAccess',
-            'l.ipp', 'l.nom_patient', 'l.created', 'l.position_actuel'
+            'l.ipp', 'l.nom_patient', 'l.created', 'status.designation'
         ];
         if (!in_array($orderColumn, $allowedOrderFields)) {
             $orderColumn = 'l.id';
@@ -118,16 +118,18 @@ class LivraisonController extends AbstractController
                 SUM(lg.montant_total) AS total_montant_ttc,
                 CASE WHEN l.urgent = true THEN \'Urgent\' ELSE \'Normal\' END AS niveau_urgence,
                 l.created AS date_livraison,
-                l.position_actuel
+                status.designation AS lv_status
             ')
             ->from(TMsLivraison::class, 'l')
             ->leftJoin('l.tMsLivraisonlgs', 'lg')
             ->leftJoin('l.demandeur_id', 'dem')
             ->leftJoin('l.recepteur_id', 'rec')
+            ->leftJoin('l.status', 'status')
             ->where('l.actif = 1')
             ->andWhere('l.pEntite = :entite')
+             ->andWhere('l.typeLivraison = 2')
             ->setParameter('entite', $dossier)
-            ->groupBy('l.id, l.code,l.description, l.ipp, l.nom_patient, l.created, l.position_actuel, l.urgent, dem.designationAccess, rec.designationAccess');
+            ->groupBy('l.id, l.code,l.description, l.ipp, l.nom_patient, l.created, status.designation, l.urgent, dem.designationAccess, rec.designationAccess');
 
         if (!empty($search)) {
             $searchLower = strtolower($search);
@@ -138,7 +140,7 @@ class LivraisonController extends AbstractController
                 LOWER(l.ipp) LIKE :search OR
                 LOWER(l.created) LIKE :search OR
                 LOWER(l.nom_patient) LIKE :search OR
-                LOWER(l.position_actuel) LIKE :search OR
+                LOWER(status.designation) LIKE :search OR
                 LOWER(dem.designationAccess) LIKE :search OR
                 LOWER(rec.designationAccess) LIKE :search OR
                 (:search LIKE \'%multiréception%\' AND l.multi_recp = true) OR

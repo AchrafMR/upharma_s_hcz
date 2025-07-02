@@ -110,7 +110,7 @@ class CommandeVenteController extends AbstractController
 
         $allowedOrderFields = [
             'd.id', 'd.code', 'dem.designationAccess', 'rec.designationAccess',
-            'd.ipp', 'd.nomPatient', 'd.created', 'd.positionActuel'
+            'd.ipp', 'd.nomPatient', 'd.created', 'status.designation'
         ];
         if (!in_array($orderColumn, $allowedOrderFields)) {
             $orderColumn = 'd.id';
@@ -128,17 +128,18 @@ class CommandeVenteController extends AbstractController
                 SUM(lg.montantTtc) AS total_montant_ttc,
                 CASE WHEN d.urgent = true THEN \'Urgent\' ELSE \'Normal\' END AS niveau_urgence,
                 d.created AS date_commande,
-                d.positionActuel
+                status.designation AS cm_status
             ')
             ->from(TMsCommande::class, 'd')
             ->leftJoin('d.tMsCommandelgs', 'lg')
             ->leftJoin('d.demandeur_id', 'dem')
             ->leftJoin('d.recepteur_id', 'rec')
+            ->leftJoin('d.status', 'status')
             ->where('d.actif = 1')
             ->andWhere('d.typeCommande = 2')
             ->andWhere('d.pEntite = :entite')
             ->setParameter('entite', $dossier)
-            ->groupBy('d.id, d.code, d.description, d.ipp, d.nomPatient, d.created, d.positionActuel, d.urgent, dem.designationAccess, rec.designationAccess');
+            ->groupBy('d.id, d.code, d.description, d.ipp, d.nomPatient, d.created, status.designation, d.urgent, dem.designationAccess, rec.designationAccess');
 
         if (!empty($search)) {
             $searchLower = strtolower($search);
@@ -148,7 +149,7 @@ class CommandeVenteController extends AbstractController
                 LOWER(d.ipp) LIKE :search OR
                 LOWER(d.created) LIKE :search OR
                 LOWER(d.nomPatient) LIKE :search OR
-                LOWER(d.positionActuel) LIKE :search OR
+                LOWER(status.designation) LIKE :search OR
                 LOWER(dem.designationAccess) LIKE :search OR
                 LOWER(rec.designationAccess) LIKE :search OR
                 (:search LIKE \'%urgent%\' AND d.urgent = true) OR
