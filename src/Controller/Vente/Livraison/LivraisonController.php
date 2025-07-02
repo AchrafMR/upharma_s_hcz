@@ -16,18 +16,23 @@ use App\Repository\TMsLivraisonRepository;
 use App\Service\UserOperation;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Entity\PStatut;
+use App\Service\stock\StockDynaService;
+
 
 #[Route('/vente')]
 class LivraisonController extends AbstractController
 {
     private UserOperation $userOperation;
     private $em;
+    private StockDynaService $stockDynaService;
    
 
-    public function __construct(UserOperation $userOperation, EntityManagerInterface $em)
+    public function __construct(stockDynaService  $stockDynaService,UserOperation $userOperation, EntityManagerInterface $em)
     {
         $this->userOperation = $userOperation;
         $this->em = $em;
+        $this->stockDynaService = $stockDynaService;
        
     }
 
@@ -47,6 +52,7 @@ class LivraisonController extends AbstractController
         $allModules = $moduleRepository->findBy(['active' => true]);
 
         $livraisons = $TMsLivraisonRepository->findAllActifWithActive();
+        // dd($livraisons);
         
         $magasinsDemandeur = $magasinsRepository->findDemandeurMagasins($this->getUser());
         $magasinsTraitement = $magasinsRepository->findTraitementMagasins($this->getUser());
@@ -188,4 +194,80 @@ class LivraisonController extends AbstractController
             'actions' => $allActions,
         ]);
     }
+
+#[Route('/update-status', name: 'vente_livraison_update_status', methods: ['POST'])]
+public function updateLivraisonStatus(Request $request,EntityManagerInterface $em,): JsonResponse 
+{
+    $id = $request->request->get('id');
+    $action = $request->request->get('action');
+
+    if (!$id || !in_array($action, ['valider', 'generer'])) {
+        return new JsonResponse(['status' => 'error', 'message' => 'Données invalides.']);
+    }
+
+    $livraison = $em->getRepository(TMsLivraison::class)->find($id);
+    $position = $em->getRepository(PStatut::class)->find(21);
+    
+    try {
+        if ($action === 'valider') {
+            if ($livraison->getStatus()?->getId() !== 9) {
+                return new JsonResponse(['status' => 'error', 'message' => 'Statut invalide pour validation.']);
+            }
+
+            $status = $em->getRepository(PStatut::class)->find(12);
+            if (!$status) {
+                return new JsonResponse(['status' => 'error', 'message' => 'Statut VALIDER non trouvé.']);
+            }
+
+            $demandeur = $livraison->getDemandeurId();
+            $recepteur = $livraison->getRecepteurId();
+
+            if ($demandeur && $recepteur && $demandeur->getId() !== $recepteur->getId()) {
+                foreach ($livraison->getTMsLivraisonlgs() as $ligne) {
+                    $this->stockDynaService->insertStockDynamique(
+                        $ligne->getPProduit(),
+                        $ligne->getPPrUnite(),
+                        $ligne->getQuantiteLivree(),
+                        $demandeur->getId(),
+                        'sortie'
+                    );
+                }
+            }
+
+            $livraison->setStatus($status);
+            $livraison->setStPositionActuel($position);
+            $livraison->setPositionActuel('validée');
+        }
+
+        if ($action === 'generer') {
+            $demandeur = $livraison->getDemandeurId();
+            $recepteur = $livraison->getRecepteurId();
+
+            if (
+                $livraison->getStatus()?->getId() !== 12 ||
+                !$demandeur || !$recepteur ||
+                $demandeur->getId() !== $recepteur->getId()
+            ) {
+                return new JsonResponse(['status' => 'error', 'message' => 'Conditions non remplies pour générer.']);
+            }
+
+            $status = $em->getRepository(PStatut::class)->find(13);
+            if (!$status) {
+                return new JsonResponse(['status' => 'error', 'message' => 'Statut GÉNÉRER non trouvé.']);
+            }
+
+            $livraison->setStatus($status);
+            $livraison->setStPositionActuel($position);
+            $livraison->setPositionActuel('générée');
+        }
+
+        $livraison->setUpdated(new \DateTime());
+        $em->flush();
+
+        return new JsonResponse(['status' => 'success', 'message' => 'Statut mis à jour avec succès.']);
+    } catch (\Throwable) {
+        return new JsonResponse(['status' => 'error', 'message' => 'Erreur lors de la mise à jour du statut.']);
+    }
+}
+
 }

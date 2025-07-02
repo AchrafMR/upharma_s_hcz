@@ -51,6 +51,9 @@ class PModule
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $master = null;
+
     
 
     public function __construct()
@@ -210,6 +213,18 @@ class PModule
     public function setImage(?string $image): static
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function isMaster(): ?bool
+    {
+        return $this->master;
+    }
+
+    public function setMaster(?bool $master): static
+    {
+        $this->master = $master;
 
         return $this;
     }

@@ -156,7 +156,8 @@ class GlobalController extends AbstractController
         $currentUser = $this->security->getUser();
 
         if(in_array('ROLE_ADMIN',$currentUser->getRoles())){
-            $modules = $pModuleRepository->findBy(['active' => true], ['ord' => 'ASC']);
+           // $modules = $pModuleRepository->findBy(['active' => true], ['ord' => 'ASC']);
+            $modules = $pModuleRepository->findAdminModules($currentUser, $pEntiteRepository->find($id));
         }
         else{
             $modules = $pModuleRepository->findUserModulesBySite($currentUser, $pEntiteRepository->find($id));
