@@ -116,8 +116,8 @@ class DemandeService
         $demande->setNomPatient($commande->getNomPatient());
         $demande->setDossierPatient($commande->getDossierPatient());
         $demande->setIpp($commande->getIpp());
-        $demande->setPositionActuel('Crée');
-        $status = $this->em->getRepository(PStatut::class)->find(9);
+        $demande->setPositionActuel('Validé');
+        $status = $this->em->getRepository(PStatut::class)->find(12);
         $position_actuel=$this->em->getRepository(PStatut::class)->find(16);
         $demande->setStatus($status);
         $demande->setStPositionActuel($position_actuel);

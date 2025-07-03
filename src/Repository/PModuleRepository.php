@@ -102,7 +102,7 @@ class PModuleRepository extends ServiceEntityRepository
             ->innerJoin('m.pSousModule','s')
             ->innerJoin('s.pActions', 'a')
             ->andWhere('m.active = 1')
-            ->andWhere('m.master = 0')
+            ->andWhere('(m.master = 0 OR m.setting = 1)')
             ->orderBy('m.ord', 'ASC')
             ->getQuery()
             ->getResult()
