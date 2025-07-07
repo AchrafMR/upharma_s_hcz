@@ -1,5 +1,5 @@
 {% for demande in demandes %}
-<div class="modal right fade" id="editDemande{{ demande.id }}" role="dialog" data-id="{{ demande.id }}" aria-hidden="true">
+<div class="modal right fade" data-status="{{ demande.status is not null ? demande.status.id : 0 }}"  id="editDemande{{ demande.id }}" role="dialog" data-id="{{ demande.id }}" aria-hidden="true">
   <div class="modal-dialog" style="width: 50%" role="document">
     <div class="modal-content" style="height: 100% !important; max-height: none !important; overflow: hidden !important;">
 
@@ -16,11 +16,11 @@
               <!-- Magasin Demandeur -->
               <div class="form-group col-md-6">
                 <label for="demandeur_id">Magasin Demandeur</label>
-                <select id="demandeur_id" name="demandeur_id" class="form-control">
+                <select id="demandeur_id" name="demandeur_id" class="form-control" disabled>
                   {% for magasin in magasinsDemandeur %}
                     <option value="{{ magasin.id }}" 
                       {% if demande.demandeurId and demande.demandeurId.id == magasin.id %}selected{% endif %}>
-                      {{ magasin.designation }}
+                      {{ magasin.designationAccess }}
                     </option>
                   {% endfor %}
                 </select>
@@ -29,11 +29,11 @@
               <!-- Magasin de Traitement -->
               <div class="form-group col-md-6">
                 <label for="recepteur_id">Magasin de Traitement</label>
-                <select id="recepteur_id" name="recepteur_id" class="form-control">
+                <select id="recepteur_id" name="recepteur_id" class="form-control" disabled>
                   {% for magasin in magasinsTraitement %}
                     <option value="{{ magasin.id }}" 
                       {% if demande.recepteurId and demande.recepteurId.id == magasin.id %}selected{% endif %}>
-                      {{ magasin.designation }}
+                      {{ magasin.designationAccess }}
                     </option>
                   {% endfor %}
                 </select>
@@ -41,26 +41,6 @@
             </div>
 
             <div class="form-row">
-              <!-- IPP -->
-              <div class="form-group col-md-6">
-                <label for="ipp">IPP (ID Patient)</label>
-                <input type="text" id="ipp" name="ipp" class="form-control" value="{{ demande.ipp }}" placeholder="Identifiant du patient" />
-              </div>
-
-              <!-- Nom du Patient -->
-              <div class="form-group col-md-6">
-                <label for="nom_patient">Nom du Patient</label>
-                <input type="text" id="nom_patient" name="nom_patient" class="form-control" value="{{ demande.nomPatient }}" placeholder="Nom complet du patient" />
-              </div>
-            </div>
-
-            <div class="form-row">
-              <!-- Dossier Patient -->
-              <div class="form-group col-md-6">
-                <label for="dossier_patient">Dossier Patient</label>
-                <input type="text" id="dossier_patient" name="dossier_patient" class="form-control" value="{{ demande.dossierPatient }}" placeholder="Code dossier patient" />
-              </div>
-
               <!-- Description -->
               <div class="form-group col-md-6">
                 <label for="description">Description</label>

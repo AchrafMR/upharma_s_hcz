@@ -485,7 +485,18 @@ $(document).ready(function () {
     btn.innerHTML = 'Commander';
     return;
   }
+  
+  if (typeDemande === "1") {
+    const demandeurId = document.getElementById("demandeur_id").value;
+    const recepteurId = document.getElementById("recepteur_id").value;
 
+    if (demandeurId === recepteurId) {
+      toastr.error("Veuillez changer le magasin de traitement car cette demande est de type Alimentation.");
+      btn.disabled = false;
+      btn.innerHTML = 'Commander';
+      return;
+    }
+  }
 
   const data = {
     type_demande: typeDemande,

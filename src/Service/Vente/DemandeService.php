@@ -30,10 +30,7 @@ class DemandeService
 
         $demande->setCode(null);
         $demande->setDescription($data['description'] ?? null);
-        $demande->setNomPatient($data['nom_patient'] ?? null);
-        $demande->setDossierPatient($data['dossier_patient'] ?? null);
-        $demande->setIpp((int)($data['ipp'] ?? 0));
-
+        
         if (isset($data['type_demande'])) {
             $typeDemande = (int) $data['type_demande'];
 
@@ -42,6 +39,9 @@ class DemandeService
             if ($typeDemande === 2) {
                 $demande->setPositionActuel('Généré');
                 $status = $this->em->getRepository(PStatut::class)->find(13);
+                $demande->setNomPatient($data['nom_patient'] ?? null);
+                $demande->setDossierPatient($data['dossier_patient'] ?? null);
+                $demande->setIpp((int)($data['ipp'] ?? null));
             } else {
                 $demande->setPositionActuel('Crée');
                 $status = $this->em->getRepository(PStatut::class)->find(9);

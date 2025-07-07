@@ -24,6 +24,16 @@ class PPrNiveauProduitsRepository extends ServiceEntityRepository
 //    /**
 //     * @return PPrNiveauProduits[] Returns an array of PPrNiveauProduits objects
 //     */
+
+    public function findCategories(): array
+    {
+        return $this->createQueryBuilder('n')
+            ->select('n.id', 'n.designation AS category')
+            ->where('n.niveau = :niveau')
+            ->setParameter('niveau', 4)
+            ->getQuery()
+            ->getArrayResult();
+    }
 //    public function findByExampleField($value): array
 //    {
 //        return $this->createQueryBuilder('p')

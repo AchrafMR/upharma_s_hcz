@@ -47,17 +47,17 @@ block stylesheets %}
               Tous
             </button>
             {% for category in categories %}
-            <button
-              class="category-nav-btn mx-1 overflow-hidden position-relative"
-              data-category="{{ category }}"
-            >
-              <span class="short-text">
-                {{ category|length > 7 ? category|slice(0,7) ~ '...' : category }}
-              </span>
-              <span class="full-text">
-                {{ category }}
-              </span>
-            </button>
+              <button
+                class="category-nav-btn mx-1 overflow-hidden position-relative"
+                data-category="{{ category.category }}"
+              >
+                <span class="short-text">
+                  {{ category.category|length > 7 ? category.category|slice(0,7) ~ '...' : category.category }}
+                </span>
+                <span class="full-text">
+                  {{ category.category }}
+                </span>
+              </button>
             {% endfor %}
           </div>
 
