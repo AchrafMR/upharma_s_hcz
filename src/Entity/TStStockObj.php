@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\TAcReceptionObjRepository;
+use App\Repository\TStStockObjRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: TAcReceptionObjRepository::class)]
-#[ORM\Table(name: 't_ac_reception_obj')]
-class TAcReceptionObj
+#[ORM\Entity(repositoryClass: TStStockObjRepository::class)]
+#[ORM\Table(name: 't_st_stock_obj')]
+class TStStockObj
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -20,7 +20,7 @@ class TAcReceptionObj
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $code = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tAcReceptionObjs')]
+    #[ORM\ManyToOne(inversedBy: 'tStStockObjs')]
     private ?PProduits $produit = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -32,11 +32,11 @@ class TAcReceptionObj
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $codeBarre = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tAcReceptionObjs')]
+    #[ORM\ManyToOne(inversedBy: 'tStStockObjs')]
     private ?PEntite $entite = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tAcReceptionObjs')]
-    private ?TAcReceptionLot $lot = null;
+    #[ORM\ManyToOne(inversedBy: 'tStStockObjs')]
+    private ?TAcReceptionLot $tAcReceptionLot = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $datePeremption = null;
@@ -47,31 +47,25 @@ class TAcReceptionObj
     #[ORM\Column(nullable: true)]
     private ?float $quantite = null;
 
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'tAcReceptionObjs')]
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'tStStockObjs')]
     private ?self $parentTransfor = null;
 
     #[ORM\OneToMany(mappedBy: 'parentTransfor', targetEntity: self::class)]
-    private Collection $tAcReceptionObjs;
+    private Collection $tStStockObjs;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateAffAdresse = null;
 
-    #[ORM\ManyToOne(inversedBy: 'receptionObjsAff')]
+    #[ORM\ManyToOne(inversedBy: 'objAffect')]
     private ?User $userAffAdresse = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $source = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $active = null;
-
-    #[ORM\Column(nullable: true)]
     private ?bool $conformite = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $reserve = null;
-
-    #[ORM\ManyToOne(inversedBy: 'receptionObjsUpdated')]
+    #[ORM\ManyToOne(inversedBy: 'objUpdate')]
     private ?User $userUpdate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -80,13 +74,10 @@ class TAcReceptionObj
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateSys = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tAcReceptionObjs')]
-    private ?PMagasins $magasin = null;
-
-    #[ORM\ManyToOne(inversedBy: 'tAcReceptionObjs')]
+    #[ORM\ManyToOne(inversedBy: 'tStStockObjs')]
     private ?PNaturePrix $naturePrix = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tAcReceptionObjs')]
+    #[ORM\ManyToOne(inversedBy: 'tStStockObjs')]
     private ?PEmplacements $adresse = null;
 
     #[ORM\Column(nullable: true)]
@@ -95,16 +86,23 @@ class TAcReceptionObj
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateEtiqueter = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tAcReceptionObjsEtiqueter')]
+    #[ORM\ManyToOne(inversedBy: 'objEtiqueter')]
     private ?User $userEtiqueter = null;
 
-    #[ORM\OneToMany(mappedBy: 'TAcReceptionObj', targetEntity: TMsLivraisonobj::class)]
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    private ?int $active = null;
+
+    #[ORM\OneToMany(mappedBy: 'tStStockObj', targetEntity: TMsLivraisonobj::class)]
     private Collection $tMsLivraisonobjs;
+
+    #[ORM\OneToMany(mappedBy: 'tStStockObj', targetEntity: TMsPreparation::class)]
+    private Collection $tMsPreparations;
 
     public function __construct()
     {
-        $this->tAcReceptionObjs = new ArrayCollection();
+        $this->tStStockObjs = new ArrayCollection();
         $this->tMsLivraisonobjs = new ArrayCollection();
+        $this->tMsPreparations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -184,14 +182,14 @@ class TAcReceptionObj
         return $this;
     }
 
-    public function getLot(): ?TAcReceptionLot
+    public function getTAcReceptionLot(): ?TAcReceptionLot
     {
-        return $this->lot;
+        return $this->tAcReceptionLot;
     }
 
-    public function setLot(?TAcReceptionLot $lot): static
+    public function setTAcReceptionLot(?TAcReceptionLot $tAcReceptionLot): static
     {
-        $this->lot = $lot;
+        $this->tAcReceptionLot = $tAcReceptionLot;
 
         return $this;
     }
@@ -247,27 +245,27 @@ class TAcReceptionObj
     /**
      * @return Collection<int, self>
      */
-    public function getTAcReceptionObjs(): Collection
+    public function getTStStockObjs(): Collection
     {
-        return $this->tAcReceptionObjs;
+        return $this->tStStockObjs;
     }
 
-    public function addTAcReceptionObj(self $tAcReceptionObj): static
+    public function addTStStockObj(self $tStStockObj): static
     {
-        if (!$this->tAcReceptionObjs->contains($tAcReceptionObj)) {
-            $this->tAcReceptionObjs->add($tAcReceptionObj);
-            $tAcReceptionObj->setParentTransfor($this);
+        if (!$this->tStStockObjs->contains($tStStockObj)) {
+            $this->tStStockObjs->add($tStStockObj);
+            $tStStockObj->setParentTransfor($this);
         }
 
         return $this;
     }
 
-    public function removeTAcReceptionObj(self $tAcReceptionObj): static
+    public function removeTStStockObj(self $tStStockObj): static
     {
-        if ($this->tAcReceptionObjs->removeElement($tAcReceptionObj)) {
+        if ($this->tStStockObjs->removeElement($tStStockObj)) {
             // set the owning side to null (unless already changed)
-            if ($tAcReceptionObj->getParentTransfor() === $this) {
-                $tAcReceptionObj->setParentTransfor(null);
+            if ($tStStockObj->getParentTransfor() === $this) {
+                $tStStockObj->setParentTransfor(null);
             }
         }
 
@@ -310,18 +308,6 @@ class TAcReceptionObj
         return $this;
     }
 
-    public function isActive(): ?bool
-    {
-        return $this->active;
-    }
-
-    public function setActive(?bool $active): static
-    {
-        $this->active = $active;
-
-        return $this;
-    }
-
     public function isConformite(): ?bool
     {
         return $this->conformite;
@@ -330,18 +316,6 @@ class TAcReceptionObj
     public function setConformite(?bool $conformite): static
     {
         $this->conformite = $conformite;
-
-        return $this;
-    }
-
-    public function isReserve(): ?bool
-    {
-        return $this->reserve;
-    }
-
-    public function setReserve(?bool $reserve): static
-    {
-        $this->reserve = $reserve;
 
         return $this;
     }
@@ -378,18 +352,6 @@ class TAcReceptionObj
     public function setDateSys(?\DateTimeInterface $dateSys): static
     {
         $this->dateSys = $dateSys;
-
-        return $this;
-    }
-
-    public function getMagasin(): ?PMagasins
-    {
-        return $this->magasin;
-    }
-
-    public function setMagasin(?PMagasins $magasin): static
-    {
-        $this->magasin = $magasin;
 
         return $this;
     }
@@ -454,6 +416,18 @@ class TAcReceptionObj
         return $this;
     }
 
+    public function getActive(): ?int
+    {
+        return $this->active;
+    }
+
+    public function setActive(?int $active): static
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, TMsLivraisonobj>
      */
@@ -466,7 +440,7 @@ class TAcReceptionObj
     {
         if (!$this->tMsLivraisonobjs->contains($tMsLivraisonobj)) {
             $this->tMsLivraisonobjs->add($tMsLivraisonobj);
-            $tMsLivraisonobj->setTAcReceptionObj($this);
+            $tMsLivraisonobj->setTStStockObj($this);
         }
 
         return $this;
@@ -476,8 +450,38 @@ class TAcReceptionObj
     {
         if ($this->tMsLivraisonobjs->removeElement($tMsLivraisonobj)) {
             // set the owning side to null (unless already changed)
-            if ($tMsLivraisonobj->getTAcReceptionObj() === $this) {
-                $tMsLivraisonobj->setTAcReceptionObj(null);
+            if ($tMsLivraisonobj->getTStStockObj() === $this) {
+                $tMsLivraisonobj->setTStStockObj(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsPreparation>
+     */
+    public function getTMsPreparations(): Collection
+    {
+        return $this->tMsPreparations;
+    }
+
+    public function addTMsPreparation(TMsPreparation $tMsPreparation): static
+    {
+        if (!$this->tMsPreparations->contains($tMsPreparation)) {
+            $this->tMsPreparations->add($tMsPreparation);
+            $tMsPreparation->setTStStockObj($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsPreparation(TMsPreparation $tMsPreparation): static
+    {
+        if ($this->tMsPreparations->removeElement($tMsPreparation)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsPreparation->getTStStockObj() === $this) {
+                $tMsPreparation->setTStStockObj(null);
             }
         }
 

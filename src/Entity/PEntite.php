@@ -91,8 +91,8 @@ class PEntite
     #[ORM\OneToMany(mappedBy: 'entite', targetEntity: TAcReception::class)]
     private Collection $tAcReceptions;
     
-    #[ORM\OneToMany(mappedBy: 'entite', targetEntity: TAcReceptionObj::class)]
-    private Collection $tAcReceptionObjs;
+        #[ORM\OneToMany(mappedBy: 'entite', targetEntity: TStStockObj::class)]
+    private Collection $tStStockObjs;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $natureentite = null;
@@ -186,7 +186,8 @@ class PEntite
         $this->tAcCommandes = new ArrayCollection();
         $this->tAcFactures = new ArrayCollection();
         $this->tAcReceptions = new ArrayCollection();
-        $this->tAcReceptionObjs = new ArrayCollection();
+        $this->tStStockObjs = new ArrayCollection();
+
 
     }
     
@@ -712,30 +713,30 @@ class PEntite
         return $this;
     }
 
-    /**
-     * @return Collection<int, TAcReceptionObj>
+   /**
+     * @return Collection<int, TStStockObj>
      */
-    public function getTAcReceptionObjs(): Collection
+    public function getTStStockObjs(): Collection
     {
-        return $this->tAcReceptionObjs;
+        return $this->tStStockObjs;
     }
 
-    public function addTAcReceptionObj(TAcReceptionObj $tAcReceptionObj): static
+    public function addTStStockObj(TStStockObj $tStStockObj): static
     {
-        if (!$this->tAcReceptionObjs->contains($tAcReceptionObj)) {
-            $this->tAcReceptionObjs->add($tAcReceptionObj);
-            $tAcReceptionObj->setEntite($this);
+        if (!$this->tStStockObjs->contains($tStStockObj)) {
+            $this->tStStockObjs->add($tStStockObj);
+            $tStStockObj->setEntite($this);
         }
 
         return $this;
     }
 
-    public function removeTAcReceptionObj(TAcReceptionObj $tAcReceptionObj): static
+    public function removeTStStockObj(TStStockObj $tStStockObj): static
     {
-        if ($this->tAcReceptionObjs->removeElement($tAcReceptionObj)) {
+        if ($this->tStStockObjs->removeElement($tStStockObj)) {
             // set the owning side to null (unless already changed)
-            if ($tAcReceptionObj->getEntite() === $this) {
-                $tAcReceptionObj->setEntite(null);
+            if ($tStStockObj->getEntite() === $this) {
+                $tStStockObj->setEntite(null);
             }
         }
 

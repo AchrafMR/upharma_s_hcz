@@ -173,8 +173,8 @@ class PProduits
     #[ORM\OneToMany(mappedBy: 'produit', targetEntity: TAcReceptionLg::class)]
     private Collection $tAcReceptionLgs;
 
-    #[ORM\OneToMany(mappedBy: 'produit', targetEntity: TAcReceptionObj::class)]
-    private Collection $tAcReceptionObjs;
+     #[ORM\OneToMany(mappedBy: 'produit', targetEntity: TStStockObj::class)]
+    private Collection $tStStockObjs;
 
     #[ORM\OneToMany(mappedBy: 'produit', targetEntity: TAcReceptionLot::class)]
     private Collection $tAcReceptionLots;
@@ -187,7 +187,7 @@ class PProduits
         $this->tAcCommandeLgs = new ArrayCollection();
         $this->tAcFactureLgs = new ArrayCollection();
         $this->tAcReceptionLgs = new ArrayCollection();
-        $this->tAcReceptionObjs = new ArrayCollection();
+        $this->tStStockObjs = new ArrayCollection();
         $this->tAcReceptionLots = new ArrayCollection();
         $this->pTarifFournisseurs = new ArrayCollection();
         $this->tMsDemandelgs = new ArrayCollection();
@@ -988,29 +988,29 @@ class PProduits
     }
 
     /**
-     * @return Collection<int, TAcReceptionObj>
+     * @return Collection<int, TStStockObj>
      */
-    public function getTAcReceptionObjs(): Collection
+    public function getTStStockObjs(): Collection
     {
-        return $this->tAcReceptionObjs;
+        return $this->tStStockObjs;
     }
 
-    public function addTAcReceptionObj(TAcReceptionObj $tAcReceptionObj): static
+    public function addTStStockObj(TStStockObj $tStStockObj): static
     {
-        if (!$this->tAcReceptionObjs->contains($tAcReceptionObj)) {
-            $this->tAcReceptionObjs->add($tAcReceptionObj);
-            $tAcReceptionObj->setProduit($this);
+        if (!$this->tStStockObjs->contains($tStStockObj)) {
+            $this->tStStockObjs->add($tStStockObj);
+            $tStStockObj->setProduit($this);
         }
 
         return $this;
     }
 
-    public function removeTAcReceptionObj(TAcReceptionObj $tAcReceptionObj): static
+    public function removeTStStockObj(TStStockObj $tStStockObj): static
     {
-        if ($this->tAcReceptionObjs->removeElement($tAcReceptionObj)) {
+        if ($this->tStStockObjs->removeElement($tStStockObj)) {
             // set the owning side to null (unless already changed)
-            if ($tAcReceptionObj->getProduit() === $this) {
-                $tAcReceptionObj->setProduit(null);
+            if ($tStStockObj->getProduit() === $this) {
+                $tStStockObj->setProduit(null);
             }
         }
 
