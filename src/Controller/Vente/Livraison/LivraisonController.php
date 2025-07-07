@@ -58,7 +58,7 @@ class LivraisonController extends AbstractController
         $magasinsTraitement = $magasinsRepository->findTraitementMagasins($this->getUser());
 
 
-        $products = $produitsRepository->findProductsWithTarificationAndSolde();
+        // $products = $produitsRepository->findProductsWithTarificationAndSolde();
 
 
         return $this->render('vente/GestionLivraison/index.html.twig', [
@@ -69,8 +69,6 @@ class LivraisonController extends AbstractController
             'magasinsDemandeur' => $magasinsDemandeur,
             'magasinsTraitement' => $magasinsTraitement,
             'livraisons' => $livraisons,
-            'produits' => $products,
-           
         ]);
     }
 
