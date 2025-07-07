@@ -214,7 +214,7 @@ class DemandeVenteController extends AbstractController
             return $this->json(['status' => 'error', 'message' => 'Aucune donnée reçue.'], 400);
         }
 
-        $demande = $demandeService->createDemande($data, 2, $request);
+        $demande = $demandeService->createDemande($data,$request);
 
         return $this->json([
             'status' => 'success',

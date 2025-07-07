@@ -117,15 +117,12 @@ class TMsCommande
 
     #[ORM\ManyToOne(inversedBy: 'tMsDemandes')]
     private ?PStatut $StPositionActuel = null;
-     #[ORM\OneToMany(mappedBy: 'tMsCommande', targetEntity: TMsPreparation::class)]
-    private Collection $tMsPreparations;
+    
 
     public function __construct()
     {
         $this->tMsCommandelgs = new ArrayCollection();
         $this->tMsLivraisons = new ArrayCollection();
-        $this->tMsPreparations = new ArrayCollection();
-
     }
 
     public function getId(): ?int
@@ -552,33 +549,5 @@ class TMsCommande
 
         return $this;
     }
-    /**
-     * @return Collection<int, TMsPreparation>
-     */
-    public function getTMsPreparations(): Collection
-    {
-        return $this->tMsPreparations;
-    }
-
-    public function addTMsPreparation(TMsPreparation $tMsPreparation): static
-    {
-        if (!$this->tMsPreparations->contains($tMsPreparation)) {
-            $this->tMsPreparations->add($tMsPreparation);
-            $tMsPreparation->setTMsCommande($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTMsPreparation(TMsPreparation $tMsPreparation): static
-    {
-        if ($this->tMsPreparations->removeElement($tMsPreparation)) {
-            // set the owning side to null (unless already changed)
-            if ($tMsPreparation->getTMsCommande() === $this) {
-                $tMsPreparation->setTMsCommande(null);
-            }
-        }
-
-        return $this;
-    }
+    
 }

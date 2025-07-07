@@ -48,49 +48,59 @@
                 </select>
               </div>
             </div>
+            <!-- Type de Demande -->
+            <div class="form-row"> 
+              <div class="form-group col-md-6">
+                <label for="type_demande">Type de Demande</label>
+                <select id="type_demande" class="form-control select2" data-live-search="true">
+                  <option value="2" selected>Consommation</option>
+                  <option value="1">Alimentation</option>
+                </select>
+              </div>
+              
+              <!-- Urgent -->
+              <div class="urgent-check-wrapper">
+                <label class="form-check-label " for="urgent">Urgent</label>
+                <input class="form-check-input" type="checkbox" id="urgent" />
+              </div>
+              
+            </div>
 
-            <!-- IPP -->
-            <div class="form-row">
+            <!-- Patient Fields -->
+            <div id="patient-fields">
+              <div class="form-row">
                 <div class="form-group col-md-6">
                   <label for="ipp">IPP (ID Patient)</label>
-                  <input
-                    type="text"
-                    id="ipp"
-                    class="form-control"
-                    placeholder="Identifiant du patient"
-                    required
-                  />
+                  <input type="text" id="ipp" class="form-control" placeholder="Identifiant du patient" required />
                 </div>
                 <div class="form-group col-md-6">
                   <label for="nom_patient">Nom du Patient</label>
-                  <input
-                    type="text"
-                    id="nom_patient"
-                    name="nom_patient"
-                    class="form-control"
-                    placeholder="Nom complet du patient"
-                    required
-                  />
+                  <input type="text" id="nom_patient" class="form-control" placeholder="Nom complet du patient" required />
                 </div>
-            </div>
-          
-            <div class="form-row">
-              <!-- Dossier Patient -->
-              <div class="form-group col-md-6">
-                <label for="dossier_patient">Dossier Patient</label>
-                <select id="dossier_patient" name="dossier_patient" class="form-control" required></select>
               </div>
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="dossier_patient">Dossier Patient</label>
+                  <select id="dossier_patient" class="form-control" required></select>
+                </div>
+                <div class="form-group col-md-6">
+                      <label for="description">Description</label>
+                      <input type="text" id="description_patient" class="form-control" required placeholder="Description..." />
+                </div>
+                </div>
+                
+            </div>
+
+            
+            <div class="form-row" id="not-patient-fields">
               <div class="form-group col-md-6">
-                <label for="description">Description</label>
-                <input type="text" id="description" class="form-control" required placeholder="Description..." />
+                    <label for="description">Description</label>
+                    <input type="text" id="description" class="form-control" required placeholder="Description..." />
               </div>
             </div>
-        
-            <!-- Urgent -->
-            <div class="urgent-check-wrapper">
-              <label class="form-check-label " for="urgent">Urgent</label>
-              <input class="form-check-input" type="checkbox" id="urgent" />
-            </div>
+
+            
           </div>
 
           <div class="modal-footer">

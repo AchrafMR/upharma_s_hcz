@@ -86,10 +86,13 @@ class TMsLivraison
 
     #[ORM\ManyToOne(inversedBy: 'tMsLivraisons')]
     private ?PTypeOprt $typeLivraison = null;
+     #[ORM\OneToMany(mappedBy: 'tMsLivraison', targetEntity: TMsPreparation::class)]
+    private Collection $tMsPreparations;
 
     public function __construct()
     {
         $this->tMsLivraisonlgs = new ArrayCollection();
+        $this->tMsPreparations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -188,7 +191,6 @@ class TMsLivraison
     public function setDossierPatient(string $dossier_patient): static
     {
         $this->dossier_patient = $dossier_patient;
-
         return $this;
     }
 
@@ -373,6 +375,36 @@ class TMsLivraison
     public function setTypeLivraison(?PTypeOprt $typeLivraison): static
     {
         $this->typeLivraison = $typeLivraison;
+
+        return $this;
+    }
+
+/**
+     * @return Collection<int, TMsPreparation>
+     */
+    public function getTMsPreparations(): Collection
+    {
+        return $this->tMsPreparations;
+    }
+
+    public function addTMsPreparation(TMsPreparation $tMsPreparation): static
+    {
+        if (!$this->tMsPreparations->contains($tMsPreparation)) {
+            $this->tMsPreparations->add($tMsPreparation);
+            $tMsPreparation->setTMsLivraison($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsPreparation(TMsPreparation $tMsPreparation): static
+    {
+        if ($this->tMsPreparations->removeElement($tMsPreparation)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsPreparation->getTMsLivraison() === $this) {
+                $tMsPreparation->setTMsLivraison(null);
+            }
+        }
 
         return $this;
     }
