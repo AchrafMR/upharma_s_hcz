@@ -10,7 +10,7 @@
   <div class="modal-dialog" style="width: 55%" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Détails de la commande</h5>
+        <h5 class="modal-title">Détails de la demande</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -25,7 +25,7 @@
               {% for magasin in magasinsDemandeur %}
                 <option value="{{ magasin.id }}"
                   {% if demande.demandeurId and demande.demandeurId.id == magasin.id %}selected{% endif %}>
-                  {{ magasin.designation }}
+                  {{ magasin.designationAccess }}
                 </option>
               {% endfor %}
             </select>
@@ -38,7 +38,7 @@
               {% for magasin in magasinsTraitement %}
                 <option value="{{ magasin.id }}"
                   {% if demande.recepteurId and demande.recepteurId.id == magasin.id %}selected{% endif %}>
-                  {{ magasin.designation }}
+                  {{ magasin.designationAccess }}
                 </option>
               {% endfor %}
             </select>
@@ -47,24 +47,12 @@
   
         <div class="form-row">
           <div class="form-group col-md-6">
-            <label>IPP (ID Patient)</label>
-            <input type="text" class="form-control" value="{{ demande.ipp }}" disabled>
+              <label>Type demande</label>
+              <input type="text" class="form-control" value="Alimentation" disabled>
           </div>
-
           <div class="form-group col-md-6">
               <label>Date demande</label>
               <input type="text" class="form-control" value="{{ demande.created|date('d/m/Y') }}" disabled>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label>Nom du Patient</label>
-            <input type="text" class="form-control" value="{{ demande.nomPatient }}" disabled>
-          </div>
-          <div class="form-group col-md-6">
-            <label>Dossier Patient</label>
-            <input type="text" class="form-control" value="{{ demande.dossierPatient }}" disabled>
           </div>
         </div>
 
@@ -122,21 +110,10 @@
 
       <div class="modal-footer">
         
-          {% if demande.positionActuel == 'Crée' %}
+          {% if demande.status is not null and demande.status.id == 9 %}
             <button type="button" class="btn btn-primary btn-valider" data-id="{{ demande.id }}">
               Valider
             </button>
-          {% elseif demande.positionActuel == 'validée' %}
-            <button type="button" class="btn btn-danger btn-devalider" data-id="{{ demande.id }}">
-              Dévalider
-            </button>
-            <button type="button" class="btn btn-primary btn-generer" data-id="{{ demande.id }}">
-              Générer
-            </button>
-          {% else %}
-            {# <button type="button" class="btn btn-secondary" data-dismiss="modal">
-              Fermer
-            </button> #}
           {% endif %}
       </div>
 

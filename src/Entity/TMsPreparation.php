@@ -16,7 +16,7 @@ class TMsPreparation
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'tMsPreparations')]
-    private ?TMsCommande $tMsCommande = null;
+    private ?TMsLivraison $tMsLivraison = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $created = null;
@@ -35,14 +35,14 @@ class TMsPreparation
         return $this->id;
     }
 
-    public function getTMsCommande(): ?TMsCommande
+    public function getTMsLivraison(): ?TMsLivraison
     {
-        return $this->tMsCommande;
+        return $this->tMsLivraison;
     }
 
-    public function setTMsCommande(?TMsCommande $tMsCommande): static
+    public function setTMsLivraison(?TMsLivraison $tMsLivraison): static
     {
-        $this->tMsCommande = $tMsCommande;
+        $this->tMsLivraison = $tMsLivraison;
 
         return $this;
     }

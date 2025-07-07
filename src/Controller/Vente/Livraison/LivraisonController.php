@@ -52,13 +52,8 @@ class LivraisonController extends AbstractController
         $allModules = $moduleRepository->findBy(['active' => true]);
 
         $livraisons = $TMsLivraisonRepository->findAllActifWithActive();
-        // dd($livraisons);
-        
         $magasinsDemandeur = $magasinsRepository->findDemandeurMagasins($this->getUser());
         $magasinsTraitement = $magasinsRepository->findTraitementMagasins($this->getUser());
-
-
-        // $products = $produitsRepository->findProductsWithTarificationAndSolde();
 
 
         return $this->render('vente/GestionLivraison/index.html.twig', [

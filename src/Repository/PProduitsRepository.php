@@ -283,86 +283,86 @@ class PProduitsRepository extends ServiceEntityRepository
 
 
     public function findProductsWithTarificationAndSolde(?int $parentId = null, ?int $magasinId = null): array
-{
-    $conn = $this->getEntityManager()->getConnection();
+    {
+        $conn = $this->getEntityManager()->getConnection();
 
-    $filters = '';
-    $params = [];
+        $filters = '';
+        $params = [];
 
-    if ($parentId !== null) {
-        $filters .= ' AND n4.parent_id = :parentId';
-        $params['parentId'] = $parentId;
-    }
+        if ($parentId !== null) {
+            $filters .= ' AND n4.parent_id = :parentId';
+            $params['parentId'] = $parentId;
+        }
 
-    $sql = <<<SQL
-    WITH RecursiveNiveaux AS (
-        SELECT 
-            id,
-            parent_id,
-            id AS original_id,
-            id AS niveau4_id
-        FROM p_pr_niveau_produits
-        WHERE niveau = 4
+        $sql = <<<SQL
+        WITH RecursiveNiveaux AS (
+            SELECT 
+                id,
+                parent_id,
+                id AS original_id,
+                id AS niveau4_id
+            FROM p_pr_niveau_produits
+            WHERE niveau = 4
 
-        UNION ALL
+            UNION ALL
 
-        SELECT 
-            c.id,
-            c.parent_id,
-            r.original_id,
-            r.niveau4_id
-        FROM p_pr_niveau_produits c
-        INNER JOIN RecursiveNiveaux r ON c.parent_id = r.id
-    )
-    SELECT TOP 1700
-        p.id,
-        p.titre AS name,
-        p.image,
-        t.prix_vente_ppv AS price,
-        COALESCE(SUM(CASE 
-            WHEN e.magasin_id = :magasinId THEN s.solde 
-            ELSE 0 
-        END), 0) AS quantity,
-        n4.designation AS category,
-        :magasinId AS magasin_id
-
-    FROM 
-        p_produits p
-    LEFT JOIN 
-        p_pr_tarifications t ON t.produit_id = p.id AND t.active = 1
-    LEFT JOIN 
-        t_st_stockstatic s ON s.p_produit_id = p.id
-    LEFT JOIN 
-        p_emplacements e ON e.id = s.p_emplacements_id
-    INNER JOIN 
-        RecursiveNiveaux map ON map.id = p.niveau_id
-    INNER JOIN 
-        p_pr_niveau_produits n4 ON n4.id = map.niveau4_id
-
-    WHERE 
-        p.active = 1
-        $filters
-
-    GROUP BY 
-        p.id, p.titre, p.image, t.prix_vente_ppv, n4.designation
-
-    ORDER BY 
-        CASE 
-            WHEN SUM(CASE 
+            SELECT 
+                c.id,
+                c.parent_id,
+                r.original_id,
+                r.niveau4_id
+            FROM p_pr_niveau_produits c
+            INNER JOIN RecursiveNiveaux r ON c.parent_id = r.id
+        )
+        SELECT TOP 100
+            p.id,
+            p.titre AS name,
+            p.image,
+            t.prix_vente_ppv AS price,
+            COALESCE(SUM(CASE 
                 WHEN e.magasin_id = :magasinId THEN s.solde 
                 ELSE 0 
-            END) > 0 THEN 0 
-            ELSE 1 
-        END,
-        p.titre ASC
-SQL;
+            END), 0) AS quantity,
+            n4.designation AS category,
+            :magasinId AS magasin_id
 
-    if ($magasinId !== null) {
-        $params['magasinId'] = $magasinId;
+        FROM 
+            p_produits p
+        LEFT JOIN 
+            p_pr_tarifications t ON t.produit_id = p.id AND t.active = 1
+        LEFT JOIN 
+            t_st_stockstatic s ON s.p_produit_id = p.id
+        LEFT JOIN 
+            p_emplacements e ON e.id = s.p_emplacements_id
+        INNER JOIN 
+            RecursiveNiveaux map ON map.id = p.niveau_id
+        INNER JOIN 
+            p_pr_niveau_produits n4 ON n4.id = map.niveau4_id
+
+        WHERE 
+            p.active = 1
+            $filters
+
+        GROUP BY 
+            p.id, p.titre, p.image, t.prix_vente_ppv, n4.designation
+
+        ORDER BY 
+            CASE 
+                WHEN SUM(CASE 
+                    WHEN e.magasin_id = :magasinId THEN s.solde 
+                    ELSE 0 
+                END) > 0 THEN 0 
+                ELSE 1 
+            END,
+            p.titre ASC
+    SQL;
+
+        if ($magasinId !== null) {
+            $params['magasinId'] = $magasinId;
+        }
+
+        return $conn->executeQuery($sql, $params)->fetchAllAssociative();
     }
-
-    return $conn->executeQuery($sql, $params)->fetchAllAssociative();
-}
 
 
 // public function findProductsWithTarificationAndSolde(?int $parentId = null, ?int $magasinId = null): array

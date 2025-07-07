@@ -247,46 +247,44 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Handle Submit coomander
   const commanderButton = document.querySelector('[data-target="#addCommande"]');
-let isCommandLocked = false;
+  let isCommandLocked = false;
 
-commanderButton?.addEventListener("click", (e) => {
-  e.preventDefault();
-  if (isCommandLocked) return;
+  commanderButton?.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (isCommandLocked) return;
 
-  if (cart.length === 0) {
-    toastr.error("Votre panier est vide. Ajoutez des produits avant de commander.");
-    return;
-  }
+    if (cart.length === 0) {
+      toastr.error("Votre panier est vide. Ajoutez des produits avant de commander.");
+      return;
+    }
 
-  isCommandLocked = true;
+    isCommandLocked = true;
 
-  pendingDemande = cart.map(item => ({
-    id: item.id,
-    name: item.name,
-    image: item.image,
-    price: item.price,
-    quantity: item.quantity,
-    category: item.category,
-    magasin_id: item.magasin_id,
-  }));
+    pendingDemande = cart.map(item => ({
+      id: item.id,
+      name: item.name,
+      image: item.image,
+      price: item.price,
+      quantity: item.quantity,
+      category: item.category,
+      magasin_id: item.magasin_id,
+    }));
 
-  console.log(" Pending Demande:", pendingDemande);
+    // Set the select box value to the magasin_id
+    const magasinId = pendingDemande[0]?.magasin_id;
+    const demandeurSelect = document.getElementById("demandeur_id");
+    if (demandeurSelect && magasinId) {
+      $(demandeurSelect).val(magasinId).trigger('change'); // 💡 Select2 update
+    }
 
-  // Set the select box value to the magasin_id
-  const magasinId = pendingDemande[0]?.magasin_id;
-  const demandeurSelect = document.getElementById("demandeur_id");
-  if (demandeurSelect && magasinId) {
-    $(demandeurSelect).val(magasinId).trigger('change'); // 💡 Select2 update
-  }
+    // Show modal
+    $("#addCommande").modal("show");
 
-  // Show modal
-  $("#addCommande").modal("show");
-
-  // Reset lock when modal is closed
-  $('#addCommande').on('hidden.bs.modal', () => {
-    isCommandLocked = false;
+    // Reset lock when modal is closed
+    $('#addCommande').on('hidden.bs.modal', () => {
+      isCommandLocked = false;
+    });
   });
-});
 
   // const commanderButton = document.querySelector(
   //   '[data-target="#addCommande"]'
@@ -347,6 +345,54 @@ commanderButton?.addEventListener("click", (e) => {
     $traitementSelect.trigger("change.select2");
     $demandeurSelect.trigger("change.select2");
   };
+
+$(document).ready(function () {
+  const $typeDemande = $('#type_demande');
+  const $patientFields = $('#patient-fields');
+  const $notPatientFields = $('#not-patient-fields');
+  const $ipp = $('#ipp');
+  const $nomPatient = $('#nom_patient');
+  const $dossierPatient = $('#dossier_patient');
+
+  // Initialize Select2 only if not already initialized
+  if (!$typeDemande.hasClass("select2-hidden-accessible")) {
+    $typeDemande.select2({ width: '100%' });
+  }
+
+  function togglePatientFields() {
+    const selectedValue = $typeDemande.val();
+
+    if (selectedValue === '2') {
+      // Show patient fields, hide non-patient fields
+      $patientFields.show();
+      $notPatientFields.hide();
+
+      // Make fields required
+      $ipp.prop('required', true);
+      $nomPatient.prop('required', true);
+      $dossierPatient.prop('required', true);
+    } else {
+      // Hide patient fields, show non-patient fields
+      $patientFields.hide();
+      $notPatientFields.show();
+
+      // Clear and remove required attributes
+      $ipp.val('').prop('required', false);
+      $nomPatient.val('').prop('required', false);
+      $dossierPatient.empty().prop('required', false);
+    }
+  }
+
+  // Initial toggle on page load
+  togglePatientFields();
+
+  // Toggle on change
+  $typeDemande.on('change', togglePatientFields);
+});
+
+
+
+
 
   // Bind change event for Demandeur
   $("#demandeur_id").on("change", () => {
@@ -410,31 +456,62 @@ commanderButton?.addEventListener("click", (e) => {
     return;
   }
 
+  const typeDemande = document.getElementById("type_demande").value;
+
   const requiredFields = [
     { id: "demandeur_id", label: "Magasin Demandeur" },
     { id: "recepteur_id", label: "Magasin de Traitement" },
-    { id: "ipp", label: "IPP" },
-    { id: "nom_patient", label: "Nom du patient" },
-    { id: "dossier_patient", label: "Dossier du patient" },
-    { id: "description", label: "description" },
   ];
 
+  // Conditionally add fields based on type
+  if (typeDemande === "2") {
+    // Consommation
+    requiredFields.push(
+      { id: "ipp", label: "IPP" },
+      { id: "nom_patient", label: "Nom du patient" },
+      { id: "dossier_patient", label: "Dossier du patient" },
+      { id: "description_patient", label: "Description" }
+    );
+  } else {
+    // Alimentation
+    requiredFields.push(
+      { id: "description", label: "Description" }
+    );
+  }
+
+  // Validate
   if (!validateFormFields(requiredFields)) {
     btn.disabled = false;
     btn.innerHTML = 'Commander';
     return;
   }
+  
+  if (typeDemande === "1") {
+    const demandeurId = document.getElementById("demandeur_id").value;
+    const recepteurId = document.getElementById("recepteur_id").value;
+
+    if (demandeurId === recepteurId) {
+      toastr.error("Veuillez changer le magasin de traitement car cette demande est de type Alimentation.");
+      btn.disabled = false;
+      btn.innerHTML = 'Commander';
+      return;
+    }
+  }
 
   const data = {
+    type_demande: typeDemande,
     demandeur_id: document.getElementById("demandeur_id").value,
     recepteur_id: document.getElementById("recepteur_id").value,
     urgent: document.getElementById("urgent").checked ? 1 : 0,
-    description: document.getElementById("description").value,
+    description: typeDemande === "2"
+      ? document.getElementById("description_patient").value
+      : document.getElementById("description").value,
     ipp: document.getElementById("ipp").value,
     nom_patient: document.getElementById("nom_patient").value,
     dossier_patient: document.getElementById("dossier_patient").value,
     lignes: pendingDemande,
   };
+  console.log("Submitting data:", data);
 
   try {
     const res = await fetch("/vente/save-demande", {

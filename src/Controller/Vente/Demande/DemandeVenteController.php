@@ -5,6 +5,7 @@ namespace App\Controller\Vente\Demande;
 use App\Entity\PEntite;
 use App\Entity\PMagasins;
 use App\Entity\PProduits;
+use App\Entity\PStatut;
 use App\Entity\PTypeOprt;
 use App\Entity\TMsDemande;
 use App\Entity\TMsDemandelg;
@@ -72,7 +73,9 @@ class DemandeVenteController extends AbstractController
         $magasinsTraitement = $magasinsRepository->findTraitementMagasins($this->getUser());
 
         $demandes = $TMsDemandeRepository->findAllActifWithActiveLg();
-        $products = $produitsRepository->findProductsWithTarificationAndSolde();
+        // dd($demandes);
+        $firstMagasinDemandeur = !empty($magasinsDemandeur) ? $magasinsDemandeur[0] : null;
+        $products = $produitsRepository->findProductsWithTarificationAndSolde(null, $firstMagasinDemandeur?->getId());
         // dd($demandes);
 
         return $this->render('vente/GestionDemande/index.html.twig', [
@@ -90,100 +93,100 @@ class DemandeVenteController extends AbstractController
     #[Route('/fetch-demandes', name: 'app_fetch_demandes', options: ['expose' => true], methods: 'GET')]
     public function fetchDemandes(Request $request, EntityManagerInterface $em): JsonResponse
     {
-        $connection = $em->getConnection();
-        $draw = $request->query->get('draw');
+        $dossier = $request->getSession()->get('dossier');
+
+        if (!$dossier || !method_exists($dossier, 'getId')) {
+            return new JsonResponse([
+                'draw' => (int) $request->query->get('draw'),
+                'recordsTotal' => 0,
+                'recordsFiltered' => 0,
+                'data' => [],
+                'actions' => [],
+                'error' => 'Dossier invalide'
+            ]);
+        }
+
+        $draw = (int) $request->query->get('draw');
         $start = (int) $request->query->get('start', 0);
         $length = (int) $request->query->get('length', 10);
         $search = $request->query->all('search')['value'] ?? '';
-        $orderColumnIndex = (int) $request->query->all('order')[0]['column'] ?? 0;
+        $orderColumnIndex = $request->query->all('order')[0]['column'] ?? 0;
+        $orderColumn = $request->query->all('columns')[$orderColumnIndex]['name'] ?? 'd.id';
         $orderDir = strtoupper($request->query->all('order')[0]['dir'] ?? 'DESC');
 
-        // Column mapping
-        $columns = [
-            'd.id',
-            'd.code',
-            'demandeur.designation',
-            'recepteur.designation',
-            'd.ipp',
-            'd.nom_patient',
-            'SUM(lg.montant_ttc)',
-            "CASE WHEN d.urgent = 1 THEN 'Urgent' ELSE 'Normal' END",
-            'd.created',
-            'd.position_actuel',
+        $allowedOrderFields = [
+            'd.id', 'd.code', 'dem.designationAccess', 'rec.designationAccess',
+            'd.created', 'status.designation'
         ];
-
-        $orderColumn = $columns[$orderColumnIndex] ?? 'd.id';
-
-        // Search setup
-        $where = '';
-        $params = [];
-        // CASE WHEN d.urgent = 1 THEN 'Urgent' ELSE 'Normal' END LIKE ? OR
-        if (!empty($search)) {
-            $where = " AND (
-            d.code LIKE ? OR
-            d.ipp LIKE ? OR
-            d.position_actuel LIKE ? OR
-            d.created LIKE ? OR
-            d.nom_patient LIKE ? OR
-            demandeur.designation LIKE ? OR
-            recepteur.designation LIKE ?
-          )";
-
-            // Positional parameters
-            for ($i = 0; $i <7; $i++) {
-                $params[] = '%' . $search . '%';
-            }
+        if (!in_array($orderColumn, $allowedOrderFields)) {
+            $orderColumn = 'd.id';
         }
 
-        // Main query
-        $sql = "
-            SELECT 
+        $qb = $em->createQueryBuilder();
+        $qb->select('
                 d.id AS id,
                 d.code AS demande_code,
                 d.description,
-                demandeur.designation AS demandeur,
-                recepteur.designation AS recepteur,
-                d.ipp AS ipp_patient,
-                d.nom_patient,
+                dem.designationAccess AS demandeur,
+                rec.designationAccess AS recepteur,
                 SUM(lg.montant_ttc) AS total_montant_ttc,
-                CASE 
-                    WHEN d.urgent = 1 THEN 'Urgent'
-                    ELSE 'Normal'
-                END AS niveau_urgence,
-                d.created AS date_demmande,
-                d.position_actuel
-            FROM t_ms_Demande d
-            LEFT JOIN t_ms_demandelg lg ON lg.t_ms_demande_id = d.id AND lg.actif = 1
-            LEFT JOIN pmagasins demandeur ON demandeur.id = d.demandeur_id
-            LEFT JOIN pmagasins recepteur ON recepteur.id = d.recepteur_id
-            WHERE d.actif = 1 AND d.type_demande_id=2
-            $where
-            GROUP BY 
-                d.id, d.code,d.description, d.ipp, d.nom_patient, d.created, 
-                d.position_actuel, d.urgent, 
-                demandeur.designation, recepteur.designation
-            ORDER BY $orderColumn $orderDir
-            OFFSET $start ROWS FETCH NEXT $length ROWS ONLY
-        ";
+                CASE WHEN d.urgent = true THEN \'Urgent\' ELSE \'Normal\' END AS niveau_urgence,
+                d.created AS date_demande,
+                status.designation AS cm_status
+            ')
+            ->from(TMsDemande::class, 'd')
+            ->leftJoin('d.tMsDemandelgs', 'lg')
+            ->leftJoin('d.demandeur_id', 'dem')
+            ->leftJoin('d.recepteur_id', 'rec')
+            ->leftJoin('d.status', 'status')
+            ->where('d.actif = 1')
+            ->andWhere('d.typeDemande = 1')
+            ->andWhere('
+                (d.ipp IS NULL OR d.ipp = \'\') AND
+                (d.nomPatient IS NULL OR d.nomPatient = \'\') AND
+                (d.dossierPatient IS NULL OR d.dossierPatient = \'\')
+            ')
+            ->andWhere('d.pEntite = :entite')
+            ->setParameter('entite', $dossier)
+            ->groupBy('d.id, d.code, d.description, d.created, status.designation, d.urgent, dem.designationAccess, rec.designationAccess');
 
-        $stmt = $connection->prepare($sql);
-        $results = $stmt->executeQuery($params)->fetchAllAssociative();
+        if (!empty($search)) {
+            $searchLower = strtolower($search);
+            $qb->andWhere('
+                LOWER(d.code) LIKE :search OR
+                LOWER(d.description) LIKE :search OR
+                LOWER(d.created) LIKE :search OR
+                LOWER(status.designation) LIKE :search OR
+                LOWER(dem.designationAccess) LIKE :search OR
+                LOWER(rec.designationAccess) LIKE :search OR
+                (:search LIKE \'%urgent%\' AND d.urgent = true) OR
+                (:search LIKE \'%normal%\' AND d.urgent = false)
+            ')
+            ->setParameter('search', "%$searchLower%");
+        }
 
-        // Count query
-        $countSql = "
-            SELECT COUNT(DISTINCT d.id) as total
-            FROM t_ms_Demande d
-            LEFT JOIN pmagasins demandeur ON demandeur.id = d.demandeur_id
-            LEFT JOIN pmagasins recepteur ON recepteur.id = d.recepteur_id
-            $where
-        ";
-        $countStmt = $connection->prepare($countSql);
-        $totalRecords = $countStmt->executeQuery($params)->fetchOne();
+        $qb->orderBy($orderColumn, $orderDir)
+        ->setFirstResult($start)
+        ->setMaxResults($length);
+
+        $results = $qb->getQuery()->getResult();
+        $results = array_map(function ($row) {
+            if ($row['date_demande'] instanceof \DateTimeInterface) {
+                $row['date_demande'] = $row['date_demande']->format('Y-m-d H:i:s');
+            }
+            return $row;
+        }, $results);
+
+        $clonedQB = clone $qb;
+        $clonedQB->resetDQLPart('select')
+            ->resetDQLPart('orderBy')
+            ->resetDQLPart('groupBy')
+            ->select('COUNT(DISTINCT d.id)');
+
+        $totalRecords = $clonedQB->getQuery()->getSingleScalarResult();
 
         $actions = $this->userOperation->getOperations($this->getUser(), 'vente_gestion_demandes_index', $request);
-        $filteredActions = array_filter($actions, function($action) {
-            return (!$action->isHorizontal());
-        });
+        $filteredActions = array_filter($actions, fn($action) => !$action->isHorizontal());
         $allActions = array_map(function($action) {
             return [
                 'sousModuleId'=> $action->getPSousModule()->getId(),
@@ -203,7 +206,6 @@ class DemandeVenteController extends AbstractController
             'actions' => $allActions
         ]);
     }
-
     
     #[Route('/save-demande', name: 'vente_save_demande', methods: ['POST'])]
     public function saveDemande(Request $request, DemandeService $demandeService): Response
@@ -214,7 +216,7 @@ class DemandeVenteController extends AbstractController
             return $this->json(['status' => 'error', 'message' => 'Aucune donnée reçue.'], 400);
         }
 
-        $demande = $demandeService->createDemande($data, 2, $request);
+        $demande = $demandeService->createDemande($data,$request);
 
         return $this->json([
             'status' => 'success',
@@ -239,9 +241,6 @@ class DemandeVenteController extends AbstractController
 
         // Update general info
         $demande->setDescription($data['description'] ?? null);
-        $demande->setNomPatient($data['nom_patient'] ?? null);
-        $demande->setDossierPatient($data['dossier_patient'] ?? null);
-        $demande->setIpp((int)($data['ipp'] ?? 0));
         $demande->setUrgent(!empty($data['urgent']));
 
         $demandeur = $this->em->getRepository(PMagasins::class)->find($data['demandeur_id'] ?? null);
@@ -319,7 +318,7 @@ class DemandeVenteController extends AbstractController
             'message' => 'Demande mise à jour avec succès.'
         ]);
     }
-    #[Route('/update-position', name: 'update_position', methods: ['POST'])]
+    #[Route('/update-position-demande', name: 'update_position', methods: ['POST'])]
     public function updatePosition(Request $request,EntityManagerInterface $em,TMsDemandeRepository $repo,Security $security): JsonResponse 
     {
         $data = json_decode($request->getContent(), true);
@@ -341,15 +340,14 @@ class DemandeVenteController extends AbstractController
         }
 
         $demande->setPositionActuel($position);
+        $demande->setPositionActuel($position);
+        $positionActuel = $em->getRepository(PStatut::class)->find(16);
+        $demande->setStPositionActuel($positionActuel);        
         switch ($position) {
             case 'validée':
                 $demande->setUserValider($user);
-                break;
-            case 'Générée':
-                $demande->setUserGenerer($user);
-                break;
-            case 'Crée': // dévalider
-                $demande->setUserAnnuler($user);
+                $status = $em->getRepository(PStatut::class)->find(12);
+                $demande->setStatus($status);
                 break;
         }
 
@@ -357,5 +355,6 @@ class DemandeVenteController extends AbstractController
 
         return new JsonResponse(['success' => true]);
     }
+
 
 }

@@ -7,6 +7,7 @@ use App\Service\UserOperation;
 use App\Repository\PModuleRepository;
 use App\Repository\PEntiteRepository;
 use App\Repository\PMagasinsRepository;
+use App\Repository\PPrNiveauProduitsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PProfessionRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +16,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Repository\PProduitsRepository;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 #[Route('/vente')]
 class PointVenteController extends AbstractController
@@ -35,7 +35,7 @@ class PointVenteController extends AbstractController
     }
 
     #[Route('/point-vente', name: 'app_vente_demande_vente')]
-    public function index(PEntiteRepository $pEntiteRepository,PProduitsRepository $produitsRepository,PProfessionRepository $professionRep,PModuleRepository $moduleRepository,PMagasinsRepository $magasinsRepository,Request $request): Response 
+    public function index(PPrNiveauProduitsRepository $niveauProduit ,PEntiteRepository $pEntiteRepository,PProduitsRepository $produitsRepository,PProfessionRepository $professionRep,PModuleRepository $moduleRepository,PMagasinsRepository $magasinsRepository,Request $request): Response 
     {
         $allModules = $moduleRepository->findBy(['active' => true]);
         $dossiers = $pEntiteRepository->findBy(['active' => true]);
@@ -47,13 +47,9 @@ class PointVenteController extends AbstractController
         }
         $magasinSelected = $magasinsRepository->findSelectedMagasin($this->getUser());
         $products = $produitsRepository->findProductsWithTarificationAndSolde(null, $magasinSelected?->getId());
-        // dd($products);
-
-        // dd($products);
-        $categories = array_unique(array_column($products, 'category'));
+        $categories = $niveauProduit->findCategories(); 
         $magasinsDemandeur = $magasinsRepository->findDemandeurMagasins($this->getUser());
         $magasinsTraitement = $magasinsRepository->findTraitementMagasins($this->getUser());
-        // $magasinSelected = $magasinsRepository->findSelectedMagasin($this->getUser());
 
         $infosPatient = [
             ['ipp' => '1', 'nom' => 'achraf admin', 'dossier' => ['D00001', 'D00002']],

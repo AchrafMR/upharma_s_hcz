@@ -6,8 +6,8 @@ $(document).ready(function () {
         '<i style="color:#7593ae; margin-top:100px !important; font-size:25px !important;" class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only"></span> ',
     },
     lengthMenu: [
-      [21, 50, 100, 200],
-      [21, 50, 100, 200],
+      [20, 50, 100, 200],
+      [20, 50, 100, 200],
     ],
     processing: true,
     serverSide: true,
@@ -43,13 +43,30 @@ $(document).ready(function () {
             `;
         },
       },
-      { name: "d.description", data: "description" },
-      { name: "demandeur.designation", data: "demandeur" },
-      { name: "recepteur.designation", data: "recepteur" },
-      { name: "d.ipp", data: "ipp_patient" },
-      { name: "d.nom_patient", data: "nom_patient" },
       {
-        name: "total_montant_ttc",
+        name: "d.created",
+        data: "date_demande",
+        render: function (data) {
+          return moment(data).format("DD/MM/YYYY ");
+        },
+      },
+      { name: "d.description", data: "description" , 
+        createdCell: function (td) {
+          td.classList.add("force-left-align");
+        },
+      },
+      { name: "dem.designationAccess", data: "demandeur",
+        createdCell: function (td) {
+          td.classList.add("force-left-align");
+        },
+      },
+      { name: "rec.designationAccess", data: "recepteur",
+        createdCell: function (td) {
+          td.classList.add("force-left-align");
+        },
+      },
+      {
+        name: "lg.montant_ttc",
         data: "total_montant_ttc",
         render: function (data) {
           return data
@@ -64,14 +81,7 @@ $(document).ready(function () {
         },
       },
       { name: "niveau_urgence", data: "niveau_urgence" },
-      {
-        name: "d.created",
-        data: "date_demmande",
-        render: function (data) {
-          return moment(data).format("DD/MM/YYYY ");
-        },
-      },
-      { name: "d.position_actuel", data: "position_actuel" },
+      { name: "status.designation", data: "cm_status" },
       {
         name: "actions",
         data: null,
@@ -88,7 +98,6 @@ $(document).ready(function () {
             '">';
 
           window.globalActions.forEach(function (action) {
-            // if (action.ord === 1 && row.position_actuel?.toLowerCase() !== "Créer") return;
             actionsHtml += `
                 <button class="${action.className} dropdown-item"
                         id="${data.id}"
@@ -107,6 +116,7 @@ $(document).ready(function () {
   });
 });
 
+
 $(document).on("click", ".edit-demande", function () {
   const demandeId = $(this).attr("id");
   const modalSelector = `#editDemande${demandeId}`;
@@ -118,8 +128,12 @@ $(document).on("click", ".edit-demande", function () {
     });
     return;
   }
-
-  $(modalSelector).modal("show");
+  const status = $(modalSelector).data("status");
+  if (status === 9) {
+    $(modalSelector).modal("show");
+  } else {
+    toastr.warning("Impossible de modifier cette demande. Elle n'est plus modifiable."); 
+  }
 });
 
 $(document).on("click", ".details-demande", function () {
@@ -267,11 +281,6 @@ window.addEventListener("load", () => {
       const description = modal.querySelector('[name="description"]')?.value;
       const demandeurId = modal.querySelector('[name="demandeur_id"]')?.value;
       const recepteurId = modal.querySelector('[name="recepteur_id"]')?.value;
-      const nomPatient = modal.querySelector('[name="nom_patient"]')?.value;
-      const dossierPatient = modal.querySelector(
-        '[name="dossier_patient"]'
-      )?.value;
-      const ipp = modal.querySelector('[name="ipp"]')?.value;
       const urgent = modal.querySelector('[name="urgent"]')?.checked;
 
       const editedProduits = [];
@@ -319,9 +328,6 @@ window.addEventListener("load", () => {
             description,
             demandeur_id: parseInt(demandeurId),
             recepteur_id: parseInt(recepteurId),
-            nom_patient: nomPatient,
-            dossier_patient: dossierPatient,
-            ipp,
             urgent,
             edited: editedProduits,
             added: newProduits,
@@ -350,9 +356,11 @@ window.addEventListener("load", () => {
 
 // Update position of demande
 document.addEventListener("DOMContentLoaded", () => {
-  const updatePosition = async (id, position) => {
+  let shouldRefresh = false; 
+
+  const updatePosition = async (id, position, button) => {
     try {
-      const response = await fetch("/vente/update-position", {
+      const response = await fetch("/vente/update-position-demande", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -363,22 +371,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await response.json();
       if (data.success) {
-        let actionMessage = "";
-        switch (position) {
-          case "validée":
-            actionMessage = " La demande a été validée avec succès.";
-            break;
-          case "Crée":
-            actionMessage = " La demande a été dévalidée avec succès.";
-            break;
-          case "Générée":
-            actionMessage = " La demande a été générée avec succès.";
-            break;
-          default:
-            actionMessage = " Mise à jour effectuée.";
+        toastr.success("La demande a été validée avec succès.");
+
+        if (button) {
+          button.style.display = "none";
         }
-        toastr.success(actionMessage);
-        updateFooterButtons(id, position);
+
+        shouldRefresh = true;
       } else {
         toastr.error("Erreur lors de la mise à jour.");
       }
@@ -388,41 +387,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  const updateFooterButtons = (id, newPosition) => {
-    const modal = document.getElementById(`detailsDemande${id}`);
-    const footer = modal.querySelector(".modal-footer");
-
-    if (!footer) return;
-
-    let buttonsHTML = "";
-
-    if (newPosition === "validée") {
-      buttonsHTML = `
-        <button type="button" class="btn btn-danger btn-devalider" data-id="${id}">
-          Dévalider
-        </button>
-        <button type="button" class="btn btn-primary btn-generer" data-id="${id}">
-          Générer
-        </button>
-      `;
-    } else if (newPosition === "Crée") {
-      buttonsHTML = `
-        <button type="button" class="btn btn-success btn-valider" data-id="${id}">
-          Valider
-        </button>
-      `;
-    }
-    footer.innerHTML = buttonsHTML;
-  };
-
+  // When clicking the "Valider" button
   document.body.addEventListener("click", (e) => {
     const btn = e.target;
     if (btn.classList.contains("btn-valider")) {
-      updatePosition(btn.dataset.id, "validée");
-    } else if (btn.classList.contains("btn-devalider")) {
-      updatePosition(btn.dataset.id, "Crée");
-    } else if (btn.classList.contains("btn-generer")) {
-      updatePosition(btn.dataset.id, "Générée");
+      const id = btn.dataset.id;
+      updatePosition(id, "validée", btn);
+    }
+  });
+
+  // Attach a listener to all future modals
+  $(document).on("hidden.bs.modal", ".modal", function () {
+    if (shouldRefresh) {
+      location.reload();
     }
   });
 });
+
+

@@ -24,20 +24,32 @@ class DemandeService
     {
     }
 
-    public function createDemande(array $data, int $typeOprtId, Request $request): TMsDemande
+    public function createDemande(array $data, Request $request): TMsDemande
     {
         $demande = new TMsDemande();
 
         $demande->setCode(null);
         $demande->setDescription($data['description'] ?? null);
-        $demande->setNomPatient($data['nom_patient'] ?? null);
-        $demande->setDossierPatient($data['dossier_patient'] ?? null);
-        $demande->setIpp((int)($data['ipp'] ?? 0));
-        $demande->setPositionActuel('Générée');
-        $status =$this->em->getRepository(PStatut::class)->find(13);
-        $position_actuel=$this->em->getRepository(PStatut::class)->find(16);
-        $demande->setStatus($status);
-        $demande->setStPositionActuel($position_actuel);
+        
+        if (isset($data['type_demande'])) {
+            $typeDemande = (int) $data['type_demande'];
+
+            $position_actuel = $this->em->getRepository(PStatut::class)->find(16);
+
+            if ($typeDemande === 2) {
+                $demande->setPositionActuel('Généré');
+                $status = $this->em->getRepository(PStatut::class)->find(13);
+                $demande->setNomPatient($data['nom_patient'] ?? null);
+                $demande->setDossierPatient($data['dossier_patient'] ?? null);
+                $demande->setIpp((int)($data['ipp'] ?? null));
+            } else {
+                $demande->setPositionActuel('Crée');
+                $status = $this->em->getRepository(PStatut::class)->find(9);
+            }
+
+            $demande->setStatus($status);
+            $demande->setStPositionActuel($position_actuel);
+        }
         $demande->setHistorique(null);
         $demande->setUrgent(!empty($data['urgent']));
         $demande->setCreated(new DateTime());
@@ -58,7 +70,8 @@ class DemandeService
         $demande->setDemandeurId($demandeur);
         $demande->setRecepteurId($recepteur);
 
-        $typeDemande = $this->em->getRepository(PTypeOprt::class)->find($typeOprtId);
+        $typeDemande = $this->em->getRepository(PTypeOprt::class)->find($data['type_demande'] ?? null);
+        // dd($typeDemande);
         $demande->setTypeDemande($typeDemande);
 
         $this->em->persist($demande);
@@ -95,7 +108,7 @@ class DemandeService
 
         $this->em->flush();
 
-        if ($demande->getPositionActuel() === 'Générée') {
+        if (isset($data['type_demande']) && (int)$data['type_demande'] === 2) {
             $this->commandeService->createFromDemande($demande);
         }
 
