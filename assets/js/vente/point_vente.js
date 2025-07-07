@@ -1,7 +1,7 @@
 import facke_img_product from "../../images/facke_img_product.png";
 
 window.addEventListener("DOMContentLoaded", () => {
-  const PRODUCTS = window.PRODUCTS || [];
+  window.PRODUCTS = window.PRODUCTS || [];
   let cart = [];
   let selectedCategory = "all";
   let searchQuery = "";
@@ -23,7 +23,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const addProductToCart = (productId) => {
     const id = Number(productId);
-    const product = PRODUCTS.find((p) => p.id === id);
+    const product = window.PRODUCTS.find((p) => p.id === id);
     if (!product) return;
 
     const existing = cart.find((p) => p.id === id);
@@ -38,8 +38,35 @@ window.addEventListener("DOMContentLoaded", () => {
     renderCart();
   };
 
+  $('#magasin-select').on('change', async function () {
+  const selectedMagasinId = this.value;
+
+  console.log("Changed to magasin:", selectedMagasinId); // debug
+
+  const productGrid = document.getElementById("product-list");
+  productGrid.innerHTML = `<p class="text-center text-muted">Chargement...</p>`;
+
+  try {
+    const res = await fetch(`/vente/api/produits/${selectedMagasinId}`);
+    const data = await res.json();
+
+      window.PRODUCTS = data; 
+      cart = [];            
+      searchQuery = "";     
+      selectedCategory = "all";
+
+      renderFilteredProducts(); 
+      renderCart();            
+  } catch (err) {
+    console.error("Erreur lors du chargement des produits", err);
+    toastr.error("Impossible de charger les produits.");
+  }
+});
+
+
+
   const renderFilteredProducts = () => {
-    const filtered = PRODUCTS.filter((product) => {
+    const filtered = window.PRODUCTS.filter((product) => {
       const matchCategory =
         selectedCategory === "all" || product.category === selectedCategory;
       const matchSearch = product.name
@@ -107,7 +134,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const cartHTML = cart
       .map((item) => {
-        const product = PRODUCTS.find((p) => p.id === item.id);
+        const product = window.PRODUCTS.find((p) => p.id === item.id);
         const stock = product?.quantity ?? 0;
         subtotal += item.price * item.quantity;
 
@@ -219,22 +246,65 @@ window.addEventListener("DOMContentLoaded", () => {
   renderFilteredProducts();
 
   // Handle Submit coomander
-  const commanderButton = document.querySelector(
-    '[data-target="#addCommande"]'
-  );
-  commanderButton?.addEventListener("click", (e) => {
-    e.preventDefault();
+  const commanderButton = document.querySelector('[data-target="#addCommande"]');
+let isCommandLocked = false;
 
-    if (cart.length === 0) {
-      toastr.error(
-        "Votre panier est vide. Ajoutez des produits avant de commander."
-      );
-      return;
-    }
+commanderButton?.addEventListener("click", (e) => {
+  e.preventDefault();
+  if (isCommandLocked) return;
 
-    pendingDemande = [...cart.map((item) => ({ ...item }))];
-    $("#addCommande").modal("show");
+  if (cart.length === 0) {
+    toastr.error("Votre panier est vide. Ajoutez des produits avant de commander.");
+    return;
+  }
+
+  isCommandLocked = true;
+
+  pendingDemande = cart.map(item => ({
+    id: item.id,
+    name: item.name,
+    image: item.image,
+    price: item.price,
+    quantity: item.quantity,
+    category: item.category,
+    magasin_id: item.magasin_id,
+  }));
+
+  console.log(" Pending Demande:", pendingDemande);
+
+  // Set the select box value to the magasin_id
+  const magasinId = pendingDemande[0]?.magasin_id;
+  const demandeurSelect = document.getElementById("demandeur_id");
+  if (demandeurSelect && magasinId) {
+    $(demandeurSelect).val(magasinId).trigger('change'); // 💡 Select2 update
+  }
+
+  // Show modal
+  $("#addCommande").modal("show");
+
+  // Reset lock when modal is closed
+  $('#addCommande').on('hidden.bs.modal', () => {
+    isCommandLocked = false;
   });
+});
+
+  // const commanderButton = document.querySelector(
+  //   '[data-target="#addCommande"]'
+  // );
+  // commanderButton?.addEventListener("click", (e) => {
+  //   e.preventDefault();
+
+  //   if (cart.length === 0) {
+  //     toastr.error(
+  //       "Votre panier est vide. Ajoutez des produits avant de commander."
+  //     );
+  //     return;
+  //   }
+
+  //   pendingDemande = [...cart.map((item) => ({ ...item }))];
+  //   console.log("Pending Demande:", pendingDemande);
+  //   $("#addCommande").modal("show");
+  // });
 
   // Handle Demandeur and Traitement options
   const defaultTraitementMagasins = window.DEFAULT_TRAITEMENT_IDS || [];
@@ -405,3 +475,4 @@ window.addEventListener("DOMContentLoaded", () => {
 
   
 });
+

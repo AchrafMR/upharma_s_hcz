@@ -25,7 +25,7 @@
               <!-- Magasin Demandeur -->
               <div class="form-group col-md-6">
                 <label for="demandeur_id">Magasin Demandeur</label>
-                <select id="demandeur_id" class="form-control select2" data-live-search="true">
+                <select id="demandeur_id" class="form-control select2" data-live-search="true" disabled>
                   {% for magasin in magasinsDemandeur %}
                     <option value="{{ magasin.id }}"
                       {% if defaultMagasin and magasin.id == defaultMagasin.id %}selected{% endif %}>
