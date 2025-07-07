@@ -73,21 +73,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'userCreated', targetEntity: TAcReception::class)]
     private Collection $tAcReceptions;
 
-    #[ORM\OneToMany(mappedBy: 'userAffAdresse', targetEntity: TAcReceptionObj::class)]
-    private Collection $receptionObjsAff;
+    #[ORM\OneToMany(mappedBy: 'userAffAdresse', targetEntity: TStStockObj::class)]
+    private Collection $objAffect;
 
-    #[ORM\OneToMany(mappedBy: 'userUpdate', targetEntity: TAcReceptionObj::class)]
-    private Collection $receptionObjsUpdated;
+    #[ORM\OneToMany(mappedBy: 'userUpdate', targetEntity: TStStockObj::class)]
+    private Collection $objUpdate;
 
-    #[ORM\OneToMany(mappedBy: 'userEtiqueter', targetEntity: TAcReceptionObj::class)]
-    private Collection $tAcReceptionObjsEtiqueter;
+    #[ORM\OneToMany(mappedBy: 'userEtiqueter', targetEntity: TStStockObj::class)]
+    private Collection $objEtiqueter;
 
     #[ORM\OneToMany(mappedBy: 'userr', targetEntity: PAffectationMagasin::class)]
     private Collection $pAffectationMagasins;
 
     #[ORM\OneToMany(mappedBy: 'userCreated', targetEntity: TStStockdyna::class)]
     private Collection $tStStockdyna;
-
+    
+    #[ORM\OneToMany(mappedBy: 'userCreated', targetEntity: TMsPreparation::class)]
+    private Collection $tMsPreparations;
+    
     public function __construct()
     {
         $this->pUserDossierActions = new ArrayCollection();
@@ -97,11 +100,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->tMsCommandes = new ArrayCollection();
         $this->pAffectationMagasins = new ArrayCollection();
         $this->tAcReceptions = new ArrayCollection();
-        $this->receptionObjsAff = new ArrayCollection();
-        $this->receptionObjsUpdated = new ArrayCollection();
-        $this->tAcReceptionObjsEtiqueter = new ArrayCollection();
+        $this->objAffect = new ArrayCollection();
+        $this->objUpdate = new ArrayCollection();
+        $this->objEtiqueter = new ArrayCollection();
         $this->pAffectationMagasins = new ArrayCollection();
         $this->tStStockdyna = new ArrayCollection();
+        $this->tMsPreparations = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -471,30 +476,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, TAcReceptionObj>
+       /**
+     * @return Collection<int, TStStockObj>
      */
-    public function getReceptionObjsAff(): Collection
+    public function getObjAffect(): Collection
     {
-        return $this->receptionObjsAff;
+        return $this->objAffect;
     }
 
-    public function addReceptionObjsAff(TAcReceptionObj $receptionObjsAff): static
+    public function addObjAffect(TStStockObj $objAffect): static
     {
-        if (!$this->receptionObjsAff->contains($receptionObjsAff)) {
-            $this->receptionObjsAff->add($receptionObjsAff);
-            $receptionObjsAff->setUserAffAdresse($this);
+        if (!$this->objAffect->contains($objAffect)) {
+            $this->objAffect->add($objAffect);
+            $objAffect->setUserAffAdresse($this);
         }
 
         return $this;
     }
 
-    public function removeReceptionObjsAff(TAcReceptionObj $receptionObjsAff): static
+    public function removeObjAffect(TStStockObj $objAffect): static
     {
-        if ($this->receptionObjsAff->removeElement($receptionObjsAff)) {
+        if ($this->objAffect->removeElement($objAffect)) {
             // set the owning side to null (unless already changed)
-            if ($receptionObjsAff->getUserAffAdresse() === $this) {
-                $receptionObjsAff->setUserAffAdresse(null);
+            if ($objAffect->getUserAffAdresse() === $this) {
+                $objAffect->setUserAffAdresse(null);
             }
         }
 
@@ -502,29 +507,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, TAcReceptionObj>
+     * @return Collection<int, TStStockObj>
      */
-    public function getReceptionObjsUpdated(): Collection
+    public function getObjUpdate(): Collection
     {
-        return $this->receptionObjsUpdated;
+        return $this->objUpdate;
     }
 
-    public function addReceptionObjsUpdated(TAcReceptionObj $receptionObjsUpdated): static
+    public function addObjUpdate(TStStockObj $objUpdate): static
     {
-        if (!$this->receptionObjsUpdated->contains($receptionObjsUpdated)) {
-            $this->receptionObjsUpdated->add($receptionObjsUpdated);
-            $receptionObjsUpdated->setUserUpdate($this);
+        if (!$this->objUpdate->contains($objUpdate)) {
+            $this->objUpdate->add($objUpdate);
+            $objUpdate->setUserUpdate($this);
         }
 
         return $this;
     }
 
-    public function removeReceptionObjsUpdated(TAcReceptionObj $receptionObjsUpdated): static
+    public function removeObjUpdate(TStStockObj $objUpdate): static
     {
-        if ($this->receptionObjsUpdated->removeElement($receptionObjsUpdated)) {
+        if ($this->objUpdate->removeElement($objUpdate)) {
             // set the owning side to null (unless already changed)
-            if ($receptionObjsUpdated->getUserUpdate() === $this) {
-                $receptionObjsUpdated->setUserUpdate(null);
+            if ($objUpdate->getUserUpdate() === $this) {
+                $objUpdate->setUserUpdate(null);
             }
         }
 
@@ -532,29 +537,59 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, TAcReceptionObj>
+     * @return Collection<int, TStStockObj>
      */
-    public function getTAcReceptionObjsEtiqueter(): Collection
+    public function getObjEtiqueter(): Collection
     {
-        return $this->tAcReceptionObjsEtiqueter;
+        return $this->objEtiqueter;
     }
 
-    public function addTAcReceptionObjsEtiqueter(TAcReceptionObj $tAcReceptionObjsEtiqueter): static
+    public function addObjEtiqueter(TStStockObj $objEtiqueter): static
     {
-        if (!$this->tAcReceptionObjsEtiqueter->contains($tAcReceptionObjsEtiqueter)) {
-            $this->tAcReceptionObjsEtiqueter->add($tAcReceptionObjsEtiqueter);
-            $tAcReceptionObjsEtiqueter->setUserEtiqueter($this);
+        if (!$this->objEtiqueter->contains($objEtiqueter)) {
+            $this->objEtiqueter->add($objEtiqueter);
+            $objEtiqueter->setUserEtiqueter($this);
         }
 
         return $this;
     }
 
-    public function removeTAcReceptionObjsEtiqueter(TAcReceptionObj $tAcReceptionObjsEtiqueter): static
+    public function removeObjEtiqueter(TStStockObj $objEtiqueter): static
     {
-        if ($this->tAcReceptionObjsEtiqueter->removeElement($tAcReceptionObjsEtiqueter)) {
+        if ($this->objEtiqueter->removeElement($objEtiqueter)) {
             // set the owning side to null (unless already changed)
-            if ($tAcReceptionObjsEtiqueter->getUserEtiqueter() === $this) {
-                $tAcReceptionObjsEtiqueter->setUserEtiqueter(null);
+            if ($objEtiqueter->getUserEtiqueter() === $this) {
+                $objEtiqueter->setUserEtiqueter(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsPreparation>
+     */
+    public function getTMsPreparations(): Collection
+    {
+        return $this->tMsPreparations;
+    }
+
+    public function addTMsPreparation(TMsPreparation $tMsPreparation): static
+    {
+        if (!$this->tMsPreparations->contains($tMsPreparation)) {
+            $this->tMsPreparations->add($tMsPreparation);
+            $tMsPreparation->setUserCreated($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsPreparation(TMsPreparation $tMsPreparation): static
+    {
+        if ($this->tMsPreparations->removeElement($tMsPreparation)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsPreparation->getUserCreated() === $this) {
+                $tMsPreparation->setUserCreated(null);
             }
         }
 

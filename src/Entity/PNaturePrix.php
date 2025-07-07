@@ -29,12 +29,12 @@ class PNaturePrix
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $created = null;
 
-    #[ORM\OneToMany(mappedBy: 'naturePrix', targetEntity: TAcReceptionObj::class)]
-    private Collection $tAcReceptionObjs;
+      #[ORM\OneToMany(mappedBy: 'naturePrix', targetEntity: TStStockObj::class)]
+    private Collection $tStStockObjs;
 
     public function __construct()
     {
-        $this->tAcReceptionObjs = new ArrayCollection();
+        $this->tStStockObjs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -91,29 +91,29 @@ class PNaturePrix
     }
 
     /**
-     * @return Collection<int, TAcReceptionObj>
+     * @return Collection<int, TStStockObj>
      */
-    public function getTAcReceptionObjs(): Collection
+    public function getTStStockObjs(): Collection
     {
-        return $this->tAcReceptionObjs;
+        return $this->tStStockObjs;
     }
 
-    public function addTAcReceptionObj(TAcReceptionObj $tAcReceptionObj): static
+    public function addTStStockObj(TStStockObj $tStStockObj): static
     {
-        if (!$this->tAcReceptionObjs->contains($tAcReceptionObj)) {
-            $this->tAcReceptionObjs->add($tAcReceptionObj);
-            $tAcReceptionObj->setNaturePrix($this);
+        if (!$this->tStStockObjs->contains($tStStockObj)) {
+            $this->tStStockObjs->add($tStStockObj);
+            $tStStockObj->setNaturePrix($this);
         }
 
         return $this;
     }
 
-    public function removeTAcReceptionObj(TAcReceptionObj $tAcReceptionObj): static
+    public function removeTStStockObj(TStStockObj $tStStockObj): static
     {
-        if ($this->tAcReceptionObjs->removeElement($tAcReceptionObj)) {
+        if ($this->tStStockObjs->removeElement($tStStockObj)) {
             // set the owning side to null (unless already changed)
-            if ($tAcReceptionObj->getNaturePrix() === $this) {
-                $tAcReceptionObj->setNaturePrix(null);
+            if ($tStStockObj->getNaturePrix() === $this) {
+                $tStStockObj->setNaturePrix(null);
             }
         }
 

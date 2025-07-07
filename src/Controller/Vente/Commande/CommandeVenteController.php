@@ -62,8 +62,8 @@ class CommandeVenteController extends AbstractController
         $magasinsTraitement = $magasinsRepository->findTraitementMagasins($this->getUser());
 
         $commandes = $TMsCommandeRepository->findAllActifWithActiveLg();
-        // dd($commandes);
-        $products = $produitsRepository->findProductsWithTarificationAndSolde();
+        $firstMagasinDemandeur = !empty($magasinsDemandeur) ? $magasinsDemandeur[0] : null;
+        $products = $produitsRepository->findProductsWithTarificationAndSolde(null, $firstMagasinDemandeur?->getId());
 
         $infosPatient = [
             ['ipp' => '1', 'nom' => 'achraf admin', 'dossier' => ['D00001', 'D00002']],

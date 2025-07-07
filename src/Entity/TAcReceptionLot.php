@@ -65,15 +65,15 @@ class TAcReceptionLot
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateSys = null;
 
-    #[ORM\OneToMany(mappedBy: 'lot', targetEntity: TAcReceptionObj::class)]
-    private Collection $tAcReceptionObjs;
+      #[ORM\OneToMany(mappedBy: 'tAcReceptionLot', targetEntity: TStStockObj::class)]
+    private Collection $tStStockObjs;
 
     #[ORM\ManyToOne(inversedBy: 'tAcReceptionLots')]
     private ?PProduits $produit = null;
 
     public function __construct()
     {
-        $this->tAcReceptionObjs = new ArrayCollection();
+        $this->tStStockObjs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -274,29 +274,29 @@ class TAcReceptionLot
     }
 
     /**
-     * @return Collection<int, TAcReceptionObj>
+     * @return Collection<int, TStStockObj>
      */
-    public function getTAcReceptionObjs(): Collection
+    public function getTStStockObjs(): Collection
     {
-        return $this->tAcReceptionObjs;
+        return $this->tStStockObjs;
     }
 
-    public function addTAcReceptionObj(TAcReceptionObj $tAcReceptionObj): static
+    public function addTStStockObj(TStStockObj $tStStockObj): static
     {
-        if (!$this->tAcReceptionObjs->contains($tAcReceptionObj)) {
-            $this->tAcReceptionObjs->add($tAcReceptionObj);
-            $tAcReceptionObj->setLot($this);
+        if (!$this->tStStockObjs->contains($tStStockObj)) {
+            $this->tStStockObjs->add($tStStockObj);
+            $tStStockObj->setTAcReceptionLot($this);
         }
 
         return $this;
     }
 
-    public function removeTAcReceptionObj(TAcReceptionObj $tAcReceptionObj): static
+    public function removeTStStockObj(TStStockObj $tStStockObj): static
     {
-        if ($this->tAcReceptionObjs->removeElement($tAcReceptionObj)) {
+        if ($this->tStStockObjs->removeElement($tStStockObj)) {
             // set the owning side to null (unless already changed)
-            if ($tAcReceptionObj->getLot() === $this) {
-                $tAcReceptionObj->setLot(null);
+            if ($tStStockObj->getTAcReceptionLot() === $this) {
+                $tStStockObj->setTAcReceptionLot(null);
             }
         }
 

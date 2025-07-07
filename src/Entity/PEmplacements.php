@@ -29,8 +29,9 @@ class PEmplacements
     #[ORM\OneToMany(mappedBy: 'pEmplacements', targetEntity: TStStockstatic::class)]
     private Collection $tStStockstatics;
 
-    #[ORM\OneToMany(mappedBy: 'adresse', targetEntity: TAcReceptionObj::class)]
-    private Collection $tAcReceptionObjs;
+     #[ORM\OneToMany(mappedBy: 'adresse', targetEntity: TStStockObj::class)]
+    private Collection $tStStockObjs;
+
     
     #[ORM\ManyToOne(inversedBy: 'pEmplacements')]
     private ?PMagasins $magasin = null;
@@ -39,7 +40,7 @@ class PEmplacements
     {
         $this->tStStockdynas = new ArrayCollection();
         $this->tStStockstatics = new ArrayCollection();
-        $this->tAcReceptionObjs = new ArrayCollection();
+        $this->tStStockObjs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -130,30 +131,30 @@ class PEmplacements
         return $this;
     }
 
-    /**
-     * @return Collection<int, TAcReceptionObj>
+   /**
+     * @return Collection<int, TStStockObj>
      */
-    public function getTAcReceptionObjs(): Collection
+    public function getTStStockObjs(): Collection
     {
-        return $this->tAcReceptionObjs;
+        return $this->tStStockObjs;
     }
 
-    public function addTAcReceptionObj(TAcReceptionObj $tAcReceptionObj): static
+    public function addTStStockObj(TStStockObj $tStStockObj): static
     {
-        if (!$this->tAcReceptionObjs->contains($tAcReceptionObj)) {
-            $this->tAcReceptionObjs->add($tAcReceptionObj);
-            $tAcReceptionObj->setAdresse($this);
+        if (!$this->tStStockObjs->contains($tStStockObj)) {
+            $this->tStStockObjs->add($tStStockObj);
+            $tStStockObj->setAdresse($this);
         }
 
         return $this;
     }
 
-    public function removeTAcReceptionObj(TAcReceptionObj $tAcReceptionObj): static
+    public function removeTStStockObj(TStStockObj $tStStockObj): static
     {
-        if ($this->tAcReceptionObjs->removeElement($tAcReceptionObj)) {
+        if ($this->tStStockObjs->removeElement($tStStockObj)) {
             // set the owning side to null (unless already changed)
-            if ($tAcReceptionObj->getAdresse() === $this) {
-                $tAcReceptionObj->setAdresse(null);
+            if ($tStStockObj->getAdresse() === $this) {
+                $tStStockObj->setAdresse(null);
             }
         }
 

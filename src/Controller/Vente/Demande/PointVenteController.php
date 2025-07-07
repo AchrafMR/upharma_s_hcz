@@ -15,7 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Repository\PProduitsRepository;
-
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\JsonResponse;
 #[Route('/vente')]
 class PointVenteController extends AbstractController
 {
@@ -44,12 +45,15 @@ class PointVenteController extends AbstractController
         if (!$actions) {
             return $this->render('errors/403.html.twig');
         }
+        $magasinSelected = $magasinsRepository->findSelectedMagasin($this->getUser());
+        $products = $produitsRepository->findProductsWithTarificationAndSolde(null, $magasinSelected?->getId());
+        // dd($products);
 
-        $products = $produitsRepository->findProductsWithTarificationAndSolde();
+        // dd($products);
         $categories = array_unique(array_column($products, 'category'));
         $magasinsDemandeur = $magasinsRepository->findDemandeurMagasins($this->getUser());
         $magasinsTraitement = $magasinsRepository->findTraitementMagasins($this->getUser());
-        $magasinSelected = $magasinsRepository->findSelectedMagasin($this->getUser());
+        // $magasinSelected = $magasinsRepository->findSelectedMagasin($this->getUser());
 
         $infosPatient = [
             ['ipp' => '1', 'nom' => 'achraf admin', 'dossier' => ['D00001', 'D00002']],
@@ -73,4 +77,13 @@ class PointVenteController extends AbstractController
         ]);
     }
 
+    #[Route('/api/produits/{magasinId}', name: 'api_vente_produits_by_magasin', methods: ['GET'])]
+    public function getProductsByMagasin(int $magasinId, PProduitsRepository $repo, PMagasinsRepository $magRepo): JsonResponse
+    {
+        $magasin = $magRepo->find($magasinId);
+        // dd($magasin);
+        $products = $repo->findProductsWithTarificationAndSolde(null, $magasinId);
+        // dd($products);
+        return $this->json($products);
+    }
 }

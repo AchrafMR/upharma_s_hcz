@@ -15,7 +15,7 @@ block stylesheets %}
       {# Search Input and select magasim #}
       <div class="search_section flex-grow-1 d-flex justify-content-end">
           <div class="mr-2"  style="min-width: 170px; text-align: center !important;">
-            <select class="form-control shadow-none" >
+            <select id="magasin-select" class="form-control shadow-none" >
               {% for magasin in magasinsDemandeur %}
                 <option value="{{ magasin.id }}"
                   {% if defaultMagasin and magasin.id == defaultMagasin.id %}selected{% endif %}>
