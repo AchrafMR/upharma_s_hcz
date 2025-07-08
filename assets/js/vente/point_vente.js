@@ -486,7 +486,7 @@ $(document).ready(function () {
     return;
   }
   
-  if (typeDemande === "1") {
+  if (typeDemande === "4") {
     const demandeurId = document.getElementById("demandeur_id").value;
     const recepteurId = document.getElementById("recepteur_id").value;
 

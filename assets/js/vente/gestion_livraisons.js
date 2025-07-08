@@ -71,6 +71,7 @@ $(document).ready(function () {
           td.classList.add("force-left-align");
         },
       },
+      { name: "l.typeLivraison", data: "type_livraison_label" },
       {
         name: "total_montant_ttc",
         data: "total_montant_ttc",

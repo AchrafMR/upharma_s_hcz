@@ -93,7 +93,7 @@ class LivraisonController extends AbstractController
         
         $allowedOrderFields = [
             'l.id', 'l.code', 'dem.designationAccess', 'rec.designationAccess',
-            'l.ipp', 'l.nom_patient', 'l.created', 'status.designation'
+            'l.ipp', 'l.nom_patient', 'l.created', 'status.designation','l.typeLivraison'
         ];
         if (!in_array($orderColumn, $allowedOrderFields)) {
             $orderColumn = 'l.id';
@@ -111,7 +111,12 @@ class LivraisonController extends AbstractController
                 SUM(lg.montant_total) AS total_montant_ttc,
                 CASE WHEN l.urgent = true THEN \'Urgent\' ELSE \'Normal\' END AS niveau_urgence,
                 l.created AS date_livraison,
-                status.designation AS lv_status
+                status.designation AS lv_status,
+                CASE 
+                    WHEN l.typeLivraison = 2 THEN \'Consommation\' 
+                    WHEN l.typeLivraison = 4 THEN \'Alimentation\' 
+                    ELSE \'\' 
+                END AS type_livraison_label
             ')
             ->from(TMsLivraison::class, 'l')
             ->leftJoin('l.tMsLivraisonlgs', 'lg')
@@ -120,9 +125,10 @@ class LivraisonController extends AbstractController
             ->leftJoin('l.status', 'status')
             ->where('l.actif = 1')
             ->andWhere('l.pEntite = :entite')
-            ->andWhere('l.typeLivraison = 2')
+            ->andWhere('l.typeLivraison IN (:types)')
+            ->setParameter('types', [2, 4])
             ->setParameter('entite', $dossier)
-            ->groupBy('l.id, l.code,l.description, l.ipp, l.nom_patient, l.created, status.designation, l.urgent, dem.designationAccess, rec.designationAccess');
+            ->groupBy('l.id, l.typeLivraison, l.code,l.description, l.ipp, l.nom_patient, l.created, status.designation, l.urgent, dem.designationAccess, rec.designationAccess');
 
         if (!empty($search)) {
             $searchLower = strtolower($search);
@@ -139,7 +145,9 @@ class LivraisonController extends AbstractController
                 (:search LIKE \'%multiréception%\' AND l.multi_recp = true) OR
                 (:search LIKE \'%monoréception%\' AND l.multi_recp = false) OR
                 (:search LIKE \'%urgent%\' AND l.urgent = true) OR
-                (:search LIKE \'%normal%\' AND l.urgent = false)
+                (:search LIKE \'%normal%\' AND l.urgent = false)OR
+                (:search LIKE \'%Alimentation%\' AND l.typeLivraison = 4) OR
+                (:search LIKE \'%Consommation%\' AND l.typeLivraison = 2)
             ')
             ->setParameter('search', "%$searchLower%");
         }
