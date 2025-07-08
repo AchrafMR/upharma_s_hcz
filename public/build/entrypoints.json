@@ -77,7 +77,7 @@
         "/build/539.80ca3a2e.js",
         "/build/959.a5d20ad0.js",
         "/build/744.29f8edaa.js",
-        "/build/point_vente.3b35ce85.js"
+        "/build/point_vente.62b54029.js"
       ]
     },
     "gestion_demandes": {
@@ -100,7 +100,7 @@
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
-        "/build/gestion_livraisons.2122ef27.js"
+        "/build/gestion_livraisons.a8a2a29e.js"
       ]
     },
     "login": {

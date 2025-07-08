@@ -140,12 +140,12 @@ class DemandeVenteController extends AbstractController
             ->leftJoin('d.recepteur_id', 'rec')
             ->leftJoin('d.status', 'status')
             ->where('d.actif = 1')
-            ->andWhere('d.typeDemande = 1')
-            ->andWhere('
-                (d.ipp IS NULL OR d.ipp = \'\') AND
-                (d.nomPatient IS NULL OR d.nomPatient = \'\') AND
-                (d.dossierPatient IS NULL OR d.dossierPatient = \'\')
-            ')
+            ->andWhere('d.typeDemande = 4')
+            // ->andWhere('
+            //     (d.ipp IS NULL OR d.ipp = \'\') AND
+            //     (d.nomPatient IS NULL OR d.nomPatient = \'\') AND
+            //     (d.dossierPatient IS NULL OR d.dossierPatient = \'\')
+            // ')
             ->andWhere('d.pEntite = :entite')
             ->setParameter('entite', $dossier)
             ->groupBy('d.id, d.code, d.description, d.created, status.designation, d.urgent, dem.designationAccess, rec.designationAccess');
