@@ -120,7 +120,7 @@ class LivraisonController extends AbstractController
             ->leftJoin('l.status', 'status')
             ->where('l.actif = 1')
             ->andWhere('l.pEntite = :entite')
-             ->andWhere('l.typeLivraison = 2')
+            ->andWhere('l.typeLivraison = 2')
             ->setParameter('entite', $dossier)
             ->groupBy('l.id, l.code,l.description, l.ipp, l.nom_patient, l.created, status.designation, l.urgent, dem.designationAccess, rec.designationAccess');
 
