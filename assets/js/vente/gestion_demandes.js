@@ -269,88 +269,197 @@ window.addEventListener("load", () => {
     }
 
     // Handle save full demande (enregistrer button)
-    if (target.classList.contains("btn-save-edit")) {
-      const demandeId = modal.dataset.id;
-      const tableBody = modal.querySelector("tbody");
+  if (target.classList.contains("btn-save-edit")) {
+    const demandeId = modal.dataset.id;
+    const tableBody = modal.querySelector("tbody");
 
-      if (!tableBody) {
-        toastr.error("Erreur interne : tableau introuvable.");
-        return;
+    // Validate required fields
+    const requiredFields = ["description", "demandeur_id", "recepteur_id"];
+    let hasError = false;
+
+    requiredFields.forEach((field) => {
+      const input = modal.querySelector(`[name="${field}"]`);
+      if (!input || !input.value.trim()) {
+        toastr.error(`Le champ "${field.replace('_', ' ')}" est requis.`);
+        hasError = true;
       }
+    });
 
-      const description = modal.querySelector('[name="description"]')?.value;
-      const demandeurId = modal.querySelector('[name="demandeur_id"]')?.value;
-      const recepteurId = modal.querySelector('[name="recepteur_id"]')?.value;
-      const urgent = modal.querySelector('[name="urgent"]')?.checked;
+    // Validate at least one product
+    const rows = tableBody.querySelectorAll("tr");
+    if (rows.length === 0) {
+      toastr.error("Veuillez ajouter au moins un produit.");
+      hasError = true;
+    }
 
-      const editedProduits = [];
-      const newProduits = [];
-
-      tableBody.querySelectorAll("tr").forEach((row) => {
-        const selectElement = row.querySelector(".product-select");
-        const produitId = selectElement?.value;
-        const quantite = row.querySelector(".quantity-input")?.value;
-        const price =
-          parseFloat(
-            selectElement?.selectedOptions[0]?.getAttribute("data-prix")
-          ) || 0;
-        const demandelgId = row.dataset.demandelgId || null;
-
-        if (!produitId || !quantite) return;
-
-        const data = {
-          produit_id: parseInt(produitId),
-          quantite: parseFloat(quantite),
-          price: price,
-        };
-
-        if (demandelgId) {
-          data.demandelg_id = parseInt(demandelgId);
-          editedProduits.push(data);
-        } else {
-          newProduits.push(data);
+    // Check for duplicate products
+    const productIds = [];
+    rows.forEach((row) => {
+      const select = row.querySelector(".product-select");
+      if (select) {
+        const val = select.value;
+        if (productIds.includes(val)) {
+          toastr.error("Un produit est sélectionné plusieurs fois.");
+          hasError = true;
         }
+        productIds.push(val);
+      }
+    });
+
+    if (hasError || !tableBody) return;
+
+    const description = modal.querySelector('[name="description"]')?.value;
+    const demandeurId = modal.querySelector('[name="demandeur_id"]')?.value;
+    const recepteurId = modal.querySelector('[name="recepteur_id"]')?.value;
+    const urgent = modal.querySelector('[name="urgent"]')?.checked;
+
+    const editedProduits = [];
+    const newProduits = [];
+
+    tableBody.querySelectorAll("tr").forEach((row) => {
+      const selectElement = row.querySelector(".product-select");
+      const produitId = selectElement?.value;
+      const quantite = row.querySelector(".quantity-input")?.value;
+      const price = parseFloat(selectElement?.selectedOptions[0]?.getAttribute("data-prix")) || 0;
+      const demandelgId = row.dataset.demandelgId || null;
+
+      if (!produitId || !quantite) return;
+
+      const data = {
+        produit_id: parseInt(produitId),
+        quantite: parseFloat(quantite),
+        price: price,
+      };
+
+      if (demandelgId) {
+        data.demandelg_id = parseInt(demandelgId);
+        editedProduits.push(data);
+      } else {
+        newProduits.push(data);
+      }
+    });
+
+    const deleted = window.getDeletedProduits().filter(d => d.demande_id == demandeId);
+
+    try {
+      const response = await fetch("/vente/edit-demande", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+        body: JSON.stringify({
+          demande_id: parseInt(demandeId),
+          description,
+          demandeur_id: parseInt(demandeurId),
+          recepteur_id: parseInt(recepteurId),
+          urgent,
+          edited: editedProduits,
+          added: newProduits,
+          deleted,
+        }),
       });
 
-      const deleted = window
-        .getDeletedProduits()
-        .filter((d) => d.demande_id == demandeId);
+      const result = await response.json();
+      if (result.status === "success") {
+        toastr.success("Demande sauvegardée avec succès !");
+        // Close the modal and refresh the page
+        $(modal).on("hidden.bs.modal", function () {
+          location.reload();
+        }).modal("hide");
 
-      try {
-        const response = await fetch("/vente/edit-demande", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-          },
-          body: JSON.stringify({
-            demande_id: parseInt(demandeId),
-            description,
-            demandeur_id: parseInt(demandeurId),
-            recepteur_id: parseInt(recepteurId),
-            urgent,
-            edited: editedProduits,
-            added: newProduits,
-            deleted,
-          }),
-        });
-
-        const result = await response.json();
-        if (result.status === "success") {
-          toastr.success("Demande sauvegardée avec succès !");
-          // close the modal
-          $(modal).modal("hide");
-
-          // Reset the deleted products array
-          window.deletedProduits = [];
-        } else {
-          toastr.error(result.message || "Erreur lors de la sauvegarde.");
-        }
-      } catch (err) {
-        console.error("Network error:", err);
-        toastr.error("Erreur réseau lors de la sauvegarde.");
+        window.deletedProduits = [];
+      } else {
+        toastr.error(result.message || "Erreur lors de la sauvegarde.");
       }
+    } catch (err) {
+      console.error("Network error:", err);
+      toastr.error("Erreur réseau lors de la sauvegarde.");
     }
+  }
+
+    // if (target.classList.contains("btn-save-edit")) {
+    //   const demandeId = modal.dataset.id;
+    //   const tableBody = modal.querySelector("tbody");
+
+    //   if (!tableBody) {
+    //     toastr.error("Erreur interne : tableau introuvable.");
+    //     return;
+    //   }
+
+    //   const description = modal.querySelector('[name="description"]')?.value;
+    //   const demandeurId = modal.querySelector('[name="demandeur_id"]')?.value;
+    //   const recepteurId = modal.querySelector('[name="recepteur_id"]')?.value;
+    //   const urgent = modal.querySelector('[name="urgent"]')?.checked;
+
+    //   const editedProduits = [];
+    //   const newProduits = [];
+
+    //   tableBody.querySelectorAll("tr").forEach((row) => {
+    //     const selectElement = row.querySelector(".product-select");
+    //     const produitId = selectElement?.value;
+    //     const quantite = row.querySelector(".quantity-input")?.value;
+    //     const price =
+    //       parseFloat(
+    //         selectElement?.selectedOptions[0]?.getAttribute("data-prix")
+    //       ) || 0;
+    //     const demandelgId = row.dataset.demandelgId || null;
+
+    //     if (!produitId || !quantite) return;
+
+    //     const data = {
+    //       produit_id: parseInt(produitId),
+    //       quantite: parseFloat(quantite),
+    //       price: price,
+    //     };
+
+    //     if (demandelgId) {
+    //       data.demandelg_id = parseInt(demandelgId);
+    //       editedProduits.push(data);
+    //     } else {
+    //       newProduits.push(data);
+    //     }
+    //   });
+
+    //   const deleted = window
+    //     .getDeletedProduits()
+    //     .filter((d) => d.demande_id == demandeId);
+
+    //   try {
+    //     const response = await fetch("/vente/edit-demande", {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         "X-Requested-With": "XMLHttpRequest",
+    //       },
+    //       body: JSON.stringify({
+    //         demande_id: parseInt(demandeId),
+    //         description,
+    //         demandeur_id: parseInt(demandeurId),
+    //         recepteur_id: parseInt(recepteurId),
+    //         urgent,
+    //         edited: editedProduits,
+    //         added: newProduits,
+    //         deleted,
+    //       }),
+    //     });
+
+    //     const result = await response.json();
+    //     if (result.status === "success") {
+    //       toastr.success("Demande sauvegardée avec succès !");
+    //       // close the modal
+    //       $(modal).modal("hide");
+
+    //       // Reset the deleted products array
+    //       window.deletedProduits = [];
+    //     } else {
+    //       toastr.error(result.message || "Erreur lors de la sauvegarde.");
+    //     }
+    //   } catch (err) {
+    //     console.error("Network error:", err);
+    //     toastr.error("Erreur réseau lors de la sauvegarde.");
+    //   }
+    // }
   });
 });
 
