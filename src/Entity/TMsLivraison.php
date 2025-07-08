@@ -35,8 +35,8 @@ class TMsLivraison
     #[ORM\JoinColumn(name: 'recepteur_id', referencedColumnName: 'id', nullable: True)]
     private ?PMagasins $recepteur_id = null;
 
-    #[ORM\Column]
-    private ?int $ipp = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $ipp = null;
 
     #[ORM\Column(length: 255)]
     private ?string $nom_patient = null;
@@ -159,12 +159,12 @@ class TMsLivraison
 
         return $this;
     }
-    public function getIpp(): ?int
+    public function getIpp(): ?string
     {
         return $this->ipp;
     }
 
-    public function setIpp(int $ipp): static
+    public function setIpp(?string $ipp): static
     {
         $this->ipp = $ipp;
 
