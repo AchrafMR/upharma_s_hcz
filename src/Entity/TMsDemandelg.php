@@ -19,7 +19,7 @@ class TMsDemandelg
     #[ORM\Column]
     private ?float $quantite = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?float $prix_unitaire = null;
 
     #[ORM\Column(nullable: true)]

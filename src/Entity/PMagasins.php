@@ -40,7 +40,7 @@ class PMagasins
 
     #[ORM\ManyToOne]
     private ?User $userUpdated = null;
-    
+
     #[ORM\Column(nullable: true)]
     private ?int $dossierUgouvId = null;
 
@@ -49,8 +49,6 @@ class PMagasins
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $accessCode = null;
-    
-
 
 
     #[ORM\Column(nullable: true)]
@@ -70,7 +68,6 @@ class PMagasins
 
     #[ORM\Column(nullable: true)]
     private ?bool $complementaire = null;
-    
 
     public function __construct()
     {
@@ -316,8 +313,6 @@ class PMagasins
 
         return $this;
     }
-
-
 
 
         /**

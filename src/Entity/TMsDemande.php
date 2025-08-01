@@ -57,7 +57,7 @@ class TMsDemande
     #[ORM\Column(type: 'boolean')]
     private bool $actif = true;
 
-    #[ORM\Column(type: 'boolean')]
+    #[ORM\Column(type: 'boolean', nullable: true)]
     private bool $flagSynchronisationLocale = true;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -86,7 +86,7 @@ class TMsDemande
     private ?PTypeOprt $typeDemande = null;
 
     #[ORM\ManyToOne(targetEntity: PMagasins::class)]
-    #[ORM\JoinColumn(name: 'demandeur_id', referencedColumnName: 'id', nullable: false)]
+    #[ORM\JoinColumn(name: 'demandeur_id', referencedColumnName: 'id', nullable: True)]
     private ?PMagasins $demandeur_id = null;
 
     #[ORM\ManyToOne(targetEntity: PMagasins::class)]
@@ -99,7 +99,7 @@ class TMsDemande
 
     #[ORM\OneToMany(mappedBy: 'tMsDemande', targetEntity: TMsDemandelg::class)]
     private Collection $tMsDemandelgs;
-    
+
     #[ORM\ManyToOne(inversedBy: 'tMsDemandes')]
     private ?PEntite $pEntite = null;
 
@@ -425,7 +425,7 @@ class TMsDemande
 
     /**
      * @return Collection<int, TMsDemandelg>
-     */ 
+     */
     public function getTMsDemandelgs(): Collection
     {
         return $this->tMsDemandelgs;
@@ -505,7 +505,7 @@ class TMsDemande
         $this->parent = $parent;
 
         return $this;
-    }  
+    }
 
         public function getStatus(): ?PStatut
     {
@@ -529,5 +529,5 @@ class TMsDemande
         $this->StPositionActuel = $StPositionActuel;
 
         return $this;
-    }  
+    }
 }

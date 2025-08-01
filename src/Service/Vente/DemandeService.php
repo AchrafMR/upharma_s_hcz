@@ -148,8 +148,7 @@ class DemandeService
         $demande->setTypeDemande($typeDemande);
 
         $this->em->persist($demande);
-        $this->em->flush();
-        // Clone commandelg into demandelg
+
         foreach ($commande->getTMsCommandelgs() as $commandelg) {
             $produit = $commandelg->getPProduit();
             $unite = $commandelg->getPPrUnite();

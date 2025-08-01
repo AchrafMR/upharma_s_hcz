@@ -241,18 +241,6 @@ class TAcReception
         return $this;
     }
 
-    public function getMontant(): ?float
-    {
-        return $this->montant;
-    }
-
-    public function setMontant(?float $montant): static
-    {
-        $this->montant = $montant;
-
-        return $this;
-    }
-
     public function getRemise(): ?float
     {
         return $this->remise;

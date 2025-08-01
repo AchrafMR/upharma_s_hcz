@@ -98,11 +98,19 @@ class TStStockObj
     #[ORM\OneToMany(mappedBy: 'tStStockObj', targetEntity: TMsPreparation::class)]
     private Collection $tMsPreparations;
 
+    #[ORM\OneToMany(mappedBy: 'tStStockObj', targetEntity: TMsPreparationLg::class)]
+    private Collection $tMsPreparationLgs;
+
+    #[ORM\OneToMany(mappedBy: 'tStStockObj', targetEntity: TMsPreparationObj::class)]
+    private Collection $tMsPreparationObjs;
+
     public function __construct()
     {
         $this->tStStockObjs = new ArrayCollection();
         $this->tMsLivraisonobjs = new ArrayCollection();
         $this->tMsPreparations = new ArrayCollection();
+        $this->tMsPreparationLgs = new ArrayCollection();
+        $this->tMsPreparationObjs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -482,6 +490,66 @@ class TStStockObj
             // set the owning side to null (unless already changed)
             if ($tMsPreparation->getTStStockObj() === $this) {
                 $tMsPreparation->setTStStockObj(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsPreparationLg>
+     */
+    public function getTMsPreparationLgs(): Collection
+    {
+        return $this->tMsPreparationLgs;
+    }
+
+    public function addTMsPreparationLg(TMsPreparationLg $tMsPreparationLg): static
+    {
+        if (!$this->tMsPreparationLgs->contains($tMsPreparationLg)) {
+            $this->tMsPreparationLgs->add($tMsPreparationLg);
+            $tMsPreparationLg->setTStStockObj($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsPreparationLg(TMsPreparationLg $tMsPreparationLg): static
+    {
+        if ($this->tMsPreparationLgs->removeElement($tMsPreparationLg)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsPreparationLg->getTStStockObj() === $this) {
+                $tMsPreparationLg->setTStStockObj(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsPreparationObj>
+     */
+    public function getTMsPreparationObjs(): Collection
+    {
+        return $this->tMsPreparationObjs;
+    }
+
+    public function addTMsPreparationObj(TMsPreparationObj $tMsPreparationObj): static
+    {
+        if (!$this->tMsPreparationObjs->contains($tMsPreparationObj)) {
+            $this->tMsPreparationObjs->add($tMsPreparationObj);
+            $tMsPreparationObj->setTStStockObj($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsPreparationObj(TMsPreparationObj $tMsPreparationObj): static
+    {
+        if ($this->tMsPreparationObjs->removeElement($tMsPreparationObj)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsPreparationObj->getTStStockObj() === $this) {
+                $tMsPreparationObj->setTStStockObj(null);
             }
         }
 

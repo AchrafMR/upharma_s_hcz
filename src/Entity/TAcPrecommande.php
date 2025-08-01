@@ -128,6 +128,9 @@ class TAcPrecommande
     #[ORM\ManyToOne(inversedBy: 'tAcPrecommandesPos')]
     private ?PStatut $StPositionActuel = null;
 
+    #[ORM\ManyToOne(inversedBy: 'tAcPrecommandes')]
+    private ?TMsCommande $tMsCommande = null;
+
     public function __construct()
     {
         $this->tAcPrecommandeLgs = new ArrayCollection();
@@ -616,6 +619,18 @@ class TAcPrecommande
     public function setStPositionActuel(?PStatut $StPositionActuel): static
     {
         $this->StPositionActuel = $StPositionActuel;
+
+        return $this;
+    }
+
+    public function getTMsCommande(): ?TMsCommande
+    {
+        return $this->tMsCommande;
+    }
+
+    public function setTMsCommande(?TMsCommande $tMsCommande): static
+    {
+        $this->tMsCommande = $tMsCommande;
 
         return $this;
     }

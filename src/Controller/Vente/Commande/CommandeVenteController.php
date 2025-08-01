@@ -343,10 +343,6 @@ class CommandeVenteController extends AbstractController
                 $commande->setStatus($status);
            
                 break;
-
-            // case 'Crée': // dévalider
-            //     $commande->setUserAnnuler($user);
-            //     break;
         }
 
         $em->flush();
@@ -415,7 +411,7 @@ class CommandeVenteController extends AbstractController
 
             $this->em->persist($livraisonLg);
 
-            // Call the service to insert stock dynamique
+            // insert stock dynamique
             $magasinId = $commande->getDemandeurId()->getId();
             $this->stockDynaService->insertStockDynamique(
                 $ligne->getPProduit(),
@@ -481,7 +477,4 @@ class CommandeVenteController extends AbstractController
 
         return new JsonResponse(['status' => 'success', 'message' => 'Livraison enregistrée avec succès.']);
     }
-
-
-
 }

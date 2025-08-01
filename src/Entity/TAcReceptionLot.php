@@ -65,15 +65,19 @@ class TAcReceptionLot
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateSys = null;
 
-      #[ORM\OneToMany(mappedBy: 'tAcReceptionLot', targetEntity: TStStockObj::class)]
-    private Collection $tStStockObjs;
-
     #[ORM\ManyToOne(inversedBy: 'tAcReceptionLots')]
     private ?PProduits $produit = null;
+
+    #[ORM\OneToMany(mappedBy: 'tAcReceptionLot', targetEntity: TStStockObj::class)]
+    private Collection $tStStockObjs;
+
+    #[ORM\OneToMany(mappedBy: 'lot', targetEntity: TMsPreparationLg::class)]
+    private Collection $tMsPreparationLgs;
 
     public function __construct()
     {
         $this->tStStockObjs = new ArrayCollection();
+        $this->tMsPreparationLgs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -273,6 +277,18 @@ class TAcReceptionLot
         return $this;
     }
 
+    public function getProduit(): ?PProduits
+    {
+        return $this->produit;
+    }
+
+    public function setProduit(?PProduits $produit): static
+    {
+        $this->produit = $produit;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, TStStockObj>
      */
@@ -303,14 +319,32 @@ class TAcReceptionLot
         return $this;
     }
 
-    public function getProduit(): ?PProduits
+    /**
+     * @return Collection<int, TMsPreparationLg>
+     */
+    public function getTMsPreparationLgs(): Collection
     {
-        return $this->produit;
+        return $this->tMsPreparationLgs;
     }
 
-    public function setProduit(?PProduits $produit): static
+    public function addTMsPreparationLg(TMsPreparationLg $tMsPreparationLg): static
     {
-        $this->produit = $produit;
+        if (!$this->tMsPreparationLgs->contains($tMsPreparationLg)) {
+            $this->tMsPreparationLgs->add($tMsPreparationLg);
+            $tMsPreparationLg->setLot($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsPreparationLg(TMsPreparationLg $tMsPreparationLg): static
+    {
+        if ($this->tMsPreparationLgs->removeElement($tMsPreparationLg)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsPreparationLg->getLot() === $this) {
+                $tMsPreparationLg->setLot(null);
+            }
+        }
 
         return $this;
     }

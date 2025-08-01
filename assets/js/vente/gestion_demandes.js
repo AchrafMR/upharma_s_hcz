@@ -156,7 +156,6 @@ window.addEventListener("load", () => {
   window.deletedProduits = [];
   window.getDeletedProduits = () => window.deletedProduits;
 
-  // All click events inside the document
   document.body.addEventListener("click", async (e) => {
     const target = e.target.closest("button, .fa-plus");
     if (!target) return;
@@ -241,7 +240,7 @@ window.addEventListener("load", () => {
       tableBody.appendChild(newRow);
     }
 
-    // Save newly added product
+
     if (target.classList.contains("btn-save-new-line")) {
       const productSelect = row.querySelector(".product-select");
       const quantityInput = row.querySelector(".quantity-input");
@@ -268,12 +267,10 @@ window.addEventListener("load", () => {
       toastr.success("Nouveau produit ajouté avec succès.");
     }
 
-    // Handle save full demande (enregistrer button)
   if (target.classList.contains("btn-save-edit")) {
     const demandeId = modal.dataset.id;
     const tableBody = modal.querySelector("tbody");
 
-    // Validate required fields
     const requiredFields = ["description", "demandeur_id", "recepteur_id"];
     let hasError = false;
 
@@ -285,7 +282,6 @@ window.addEventListener("load", () => {
       }
     });
 
-    // Validate at least one product
     const rows = tableBody.querySelectorAll("tr");
     if (rows.length === 0) {
       toastr.error("Veuillez ajouter au moins un produit.");
@@ -363,7 +359,6 @@ window.addEventListener("load", () => {
       const result = await response.json();
       if (result.status === "success") {
         toastr.success("Demande sauvegardée avec succès !");
-        // Close the modal and refresh the page
         $(modal).on("hidden.bs.modal", function () {
           location.reload();
         }).modal("hide");
@@ -377,89 +372,6 @@ window.addEventListener("load", () => {
       toastr.error("Erreur réseau lors de la sauvegarde.");
     }
   }
-
-    // if (target.classList.contains("btn-save-edit")) {
-    //   const demandeId = modal.dataset.id;
-    //   const tableBody = modal.querySelector("tbody");
-
-    //   if (!tableBody) {
-    //     toastr.error("Erreur interne : tableau introuvable.");
-    //     return;
-    //   }
-
-    //   const description = modal.querySelector('[name="description"]')?.value;
-    //   const demandeurId = modal.querySelector('[name="demandeur_id"]')?.value;
-    //   const recepteurId = modal.querySelector('[name="recepteur_id"]')?.value;
-    //   const urgent = modal.querySelector('[name="urgent"]')?.checked;
-
-    //   const editedProduits = [];
-    //   const newProduits = [];
-
-    //   tableBody.querySelectorAll("tr").forEach((row) => {
-    //     const selectElement = row.querySelector(".product-select");
-    //     const produitId = selectElement?.value;
-    //     const quantite = row.querySelector(".quantity-input")?.value;
-    //     const price =
-    //       parseFloat(
-    //         selectElement?.selectedOptions[0]?.getAttribute("data-prix")
-    //       ) || 0;
-    //     const demandelgId = row.dataset.demandelgId || null;
-
-    //     if (!produitId || !quantite) return;
-
-    //     const data = {
-    //       produit_id: parseInt(produitId),
-    //       quantite: parseFloat(quantite),
-    //       price: price,
-    //     };
-
-    //     if (demandelgId) {
-    //       data.demandelg_id = parseInt(demandelgId);
-    //       editedProduits.push(data);
-    //     } else {
-    //       newProduits.push(data);
-    //     }
-    //   });
-
-    //   const deleted = window
-    //     .getDeletedProduits()
-    //     .filter((d) => d.demande_id == demandeId);
-
-    //   try {
-    //     const response = await fetch("/vente/edit-demande", {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         "X-Requested-With": "XMLHttpRequest",
-    //       },
-    //       body: JSON.stringify({
-    //         demande_id: parseInt(demandeId),
-    //         description,
-    //         demandeur_id: parseInt(demandeurId),
-    //         recepteur_id: parseInt(recepteurId),
-    //         urgent,
-    //         edited: editedProduits,
-    //         added: newProduits,
-    //         deleted,
-    //       }),
-    //     });
-
-    //     const result = await response.json();
-    //     if (result.status === "success") {
-    //       toastr.success("Demande sauvegardée avec succès !");
-    //       // close the modal
-    //       $(modal).modal("hide");
-
-    //       // Reset the deleted products array
-    //       window.deletedProduits = [];
-    //     } else {
-    //       toastr.error(result.message || "Erreur lors de la sauvegarde.");
-    //     }
-    //   } catch (err) {
-    //     console.error("Network error:", err);
-    //     toastr.error("Erreur réseau lors de la sauvegarde.");
-    //   }
-    // }
   });
 });
 
@@ -496,7 +408,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // When clicking the "Valider" button
   document.body.addEventListener("click", (e) => {
     const btn = e.target;
     if (btn.classList.contains("btn-valider")) {
@@ -505,7 +416,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Attach a listener to all future modals
   $(document).on("hidden.bs.modal", ".modal", function () {
     if (shouldRefresh) {
       location.reload();

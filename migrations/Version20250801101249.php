@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250702111417 extends AbstractMigration
+final class Version20250801101249 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,9 +20,7 @@ final class Version20250702111417 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql(<<<'SQL'
-            ALTER TABLE p_pv003_module ADD master BIT
-        SQL);
+
     }
 
     public function down(Schema $schema): void
@@ -57,9 +55,6 @@ final class Version20250702111417 extends AbstractMigration
         SQL);
         $this->addSql(<<<'SQL'
             CREATE SCHEMA dbo
-        SQL);
-        $this->addSql(<<<'SQL'
-            ALTER TABLE p_pv003_module DROP COLUMN master
         SQL);
     }
 }

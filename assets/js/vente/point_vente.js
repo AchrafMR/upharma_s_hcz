@@ -160,11 +160,15 @@ window.addEventListener("DOMContentLoaded", () => {
           </button>
           <input type="text" class="form-control form-control-sm text-center border-0 bg-transparent qty-input" value="${
             item.quantity
-          }" readonly style="width: 24px" />
+          }"  style="width: auto; max-width: 36px; padding: 0 4px;"  />
+
           <button class="btn btn-sm p-0 border-0 bg-transparent text-dark btn-increase" style="width: 18px">
             <i class="fa-solid fa-plus"></i>
           </button>
         </div>
+
+        
+
 
         <button class="btn btn-sm btn-remove text-danger bg-transparent border-0" title="Supprimer">
           <i class="fa-solid fa-trash"></i>
@@ -363,16 +367,13 @@ $(document).ready(function () {
     const selectedValue = $typeDemande.val();
 
     if (selectedValue === '2') {
-      // Show patient fields, hide non-patient fields
       $patientFields.show();
       $notPatientFields.hide();
 
-      // Make fields required
       $ipp.prop('required', true);
       $nomPatient.prop('required', true);
       $dossierPatient.prop('required', true);
     } else {
-      // Hide patient fields, show non-patient fields
       $patientFields.hide();
       $notPatientFields.show();
 
@@ -389,9 +390,6 @@ $(document).ready(function () {
   // Toggle on change
   $typeDemande.on('change', togglePatientFields);
 });
-
-
-
 
 
   // Bind change event for Demandeur

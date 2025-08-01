@@ -29,18 +29,21 @@ class PEmplacements
     #[ORM\OneToMany(mappedBy: 'pEmplacements', targetEntity: TStStockstatic::class)]
     private Collection $tStStockstatics;
 
-     #[ORM\OneToMany(mappedBy: 'adresse', targetEntity: TStStockObj::class)]
-    private Collection $tStStockObjs;
-
-    
     #[ORM\ManyToOne(inversedBy: 'pEmplacements')]
     private ?PMagasins $magasin = null;
+
+    #[ORM\OneToMany(mappedBy: 'adresse', targetEntity: TStStockObj::class)]
+    private Collection $tStStockObjs;
+
+    #[ORM\OneToMany(mappedBy: 'adresse', targetEntity: TMsPreparationLg::class)]
+    private Collection $tMsPreparationLgs;
 
     public function __construct()
     {
         $this->tStStockdynas = new ArrayCollection();
         $this->tStStockstatics = new ArrayCollection();
         $this->tStStockObjs = new ArrayCollection();
+        $this->tMsPreparationLgs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -131,7 +134,19 @@ class PEmplacements
         return $this;
     }
 
-   /**
+    public function getMagasin(): ?PMagasins
+    {
+        return $this->magasin;
+    }
+
+    public function setMagasin(?PMagasins $magasin): static
+    {
+        $this->magasin = $magasin;
+
+        return $this;
+    }
+
+    /**
      * @return Collection<int, TStStockObj>
      */
     public function getTStStockObjs(): Collection
@@ -160,15 +175,33 @@ class PEmplacements
 
         return $this;
     }
-    
-    public function getMagasin(): ?PMagasins
+
+    /**
+     * @return Collection<int, TMsPreparationLg>
+     */
+    public function getTMsPreparationLgs(): Collection
     {
-        return $this->magasin;
+        return $this->tMsPreparationLgs;
     }
 
-    public function setMagasin(?PMagasins $magasin): static
+    public function addTMsPreparationLg(TMsPreparationLg $tMsPreparationLg): static
     {
-        $this->magasin = $magasin;
+        if (!$this->tMsPreparationLgs->contains($tMsPreparationLg)) {
+            $this->tMsPreparationLgs->add($tMsPreparationLg);
+            $tMsPreparationLg->setAdresse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsPreparationLg(TMsPreparationLg $tMsPreparationLg): static
+    {
+        if ($this->tMsPreparationLgs->removeElement($tMsPreparationLg)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsPreparationLg->getAdresse() === $this) {
+                $tMsPreparationLg->setAdresse(null);
+            }
+        }
 
         return $this;
     }
