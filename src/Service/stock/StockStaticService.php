@@ -32,7 +32,6 @@ class StockStaticService
             $newSolde = $stock->getSolde() + $quantite;
             $stock->setSolde($newSolde);
         } else {
-            //  Create new stock static row
             $stock = new TStStockstatic();
             $stock->setPProduit($produit);
             $stock->setPPrUnite($unite);

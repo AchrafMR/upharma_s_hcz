@@ -163,7 +163,6 @@ window.addEventListener('load', () => {
   window.deletedProduits = [];
   window.getDeletedProduits = () => window.deletedProduits;
 
-  // All click events inside the document
   document.body.addEventListener('click', async (e) => {
     const target = e.target.closest('button, .fa-plus');
     if (!target) return;
@@ -171,7 +170,6 @@ window.addEventListener('load', () => {
     const row = target.closest('tr');
     const modal = target.closest('.modal');
 
-    // Edit product
     if (target.classList.contains('btn-edit-line')) {
       row.querySelector('.product-select').disabled = false;
       row.querySelector('.quantity-input').disabled = false;
@@ -180,7 +178,6 @@ window.addEventListener('load', () => {
       row.querySelector('.btn-save-line')?.classList.remove('d-none');
     }
 
-    // Save edited product
     if (target.classList.contains('btn-save-line')) {
       row.querySelector('.product-select').disabled = true;
       row.querySelector('.quantity-input').disabled = true;
@@ -269,12 +266,10 @@ window.addEventListener('load', () => {
       toastr.success('Nouveau produit ajouté avec succès.');
     }
 
-    // Handle save full commande (enregistrer button)
     if (target.classList.contains('btn-save-edit')) {
       const commandeId = modal.dataset.id;
       const tableBody = modal.querySelector('tbody');
       
-      // Validate required fields
       const requiredFields = ['description', 'nom_patient', 'dossier_patient', 'ipp'];
       let hasError = false;
 
@@ -286,7 +281,6 @@ window.addEventListener('load', () => {
         }
       });
 
-      // Validate presence of at least 1 product
       const rows = tableBody.querySelectorAll('tr');
       if (rows.length === 0) {
         toastr.error("Veuillez ajouter au moins un produit.");
@@ -396,7 +390,7 @@ window.addEventListener('load', () => {
 
 // Update position of commande
 document.addEventListener("DOMContentLoaded", () => {
-  let positionChanged = false; // Track whether position has changed
+  let positionChanged = false; 
 
   const updatePosition = async (id, position) => {
     try {
@@ -411,15 +405,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await response.json();
       if (data.success) {
-        positionChanged = true; // Mark as changed
+        positionChanged = true; 
         let actionMessage = '';
         switch (position) {
           case 'validée':
             actionMessage = 'La commande a été validée avec succès.';
             break;
-          // case 'Crée':
-          //   actionMessage = 'La commande a été dévalidée avec succès.';
-          //   break;
           case 'Générée':
             actionMessage = 'La commande a été générée avec succès.';
             break;
@@ -471,7 +462,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.body.addEventListener("click", async (e) => {
     const btn = e.target;
 
-    // Handle validation position
+
     if (btn.classList.contains("btn-valider")) {
       updatePosition(btn.dataset.id, 'validée');
 
@@ -547,7 +538,6 @@ $(document).on("keydown", ".ipp", function (e) {
       });
 
       if (dossiers.length === 1) {
-        // Don't disable: just make it "readonly" visually
         $dossier.prop("readonly", true)
                 .css("pointer-events", "none")
                 .css("background-color", "#e9ecef");

@@ -26,7 +26,7 @@ class TMsCommandelg
     #[ORM\Column(nullable: true)]
     private ?float $quantiteReste = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?float $prixUnitaire = null;
 
     #[ORM\Column(nullable: true)]
@@ -35,10 +35,10 @@ class TMsCommandelg
     #[ORM\Column(nullable: true)]
     private ?float $tva = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?float $montantHt = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?float $montantTtc = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -55,7 +55,7 @@ class TMsCommandelg
     private ?TMsCommande $tMsCommande = null;
 
     #[ORM\ManyToOne(inversedBy: 'tMsCommandelgs')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?PProduits $pProduit = null;
 
     #[ORM\ManyToOne(inversedBy: 'tMsCommandelgs')]
@@ -67,9 +67,13 @@ class TMsCommandelg
     #[ORM\OneToMany(mappedBy: 'tMsCommandelg', targetEntity: TMsLivraisonlg::class)]
     private Collection $tMsLivraisonlgs;
 
+    #[ORM\OneToMany(mappedBy: 'tMsCommandeLg', targetEntity: TMsPreparationLg::class)]
+    private Collection $tMsPreparationLgs;
+
     public function __construct()
     {
         $this->tMsLivraisonlgs = new ArrayCollection();
+        $this->tMsPreparationLgs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -281,6 +285,36 @@ class TMsCommandelg
             // set the owning side to null (unless already changed)
             if ($tMsLivraisonlg->getTMsCommandelg() === $this) {
                 $tMsLivraisonlg->setTMsCommandelg(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TMsPreparationLg>
+     */
+    public function getTMsPreparationLgs(): Collection
+    {
+        return $this->tMsPreparationLgs;
+    }
+
+    public function addTMsPreparationLg(TMsPreparationLg $tMsPreparationLg): static
+    {
+        if (!$this->tMsPreparationLgs->contains($tMsPreparationLg)) {
+            $this->tMsPreparationLgs->add($tMsPreparationLg);
+            $tMsPreparationLg->setTMsCommandeLg($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTMsPreparationLg(TMsPreparationLg $tMsPreparationLg): static
+    {
+        if ($this->tMsPreparationLgs->removeElement($tMsPreparationLg)) {
+            // set the owning side to null (unless already changed)
+            if ($tMsPreparationLg->getTMsCommandeLg() === $this) {
+                $tMsPreparationLg->setTMsCommandeLg(null);
             }
         }
 
