@@ -35,7 +35,7 @@ $(document).ready(function () {
           return `
               <button 
                 class="btn btn-sm"
-                style="font-size: 0.6rem; color: #007bff; padding: 0;"
+                style="font-size: 0.6rem; color: #7593ae; padding: 0;"
                 data-toggle="modal" 
                 data-target="#detailsCommande${row.id}">
                 ${data}

@@ -35,7 +35,7 @@ $(document).ready(function () {
           return `
               <button 
                 class="btn btn-sm"
-                style="font-size: 0.6rem; color: #007bff; padding: 0;"
+                style="font-size: 0.6rem; color: #7593ae; padding: 0;"
                 data-toggle="modal" 
                 data-target="#detailsLivraison${row.id}">
                 ${data}
@@ -138,7 +138,7 @@ $(document).on("click", ".details-livraison", function () {
   $(modalSelector).modal("show");
 });
 
-// Handle status update (Valider or Générer)
+// update status
 $(document).on("click", ".btn-valider, .btn-generer", function () {
   const id = $(this).data("id");
   const action = $(this).hasClass("btn-valider") ? "valider" : "generer";
