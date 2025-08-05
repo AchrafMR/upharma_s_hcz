@@ -49,6 +49,7 @@ Encore
   .addEntry("gestion_demandes", "./assets/js/vente/gestion_demandes.js")
   .addEntry("gestion_commandes", "./assets/js/vente/gestion_commandes.js")
   .addEntry("gestion_livraisons", "./assets/js/vente/gestion_livraisons.js")
+  .addEntry("alimentation_stock", "./assets/js/vente/alimentation_stock.js")
   
 
   // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
