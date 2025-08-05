@@ -212,6 +212,7 @@ class DemandeVenteController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
+        // dd($data);
         if (!$data || empty($data['lignes'])) {
             return $this->json(['status' => 'error', 'message' => 'Aucune donnée reçue.'], 400);
         }

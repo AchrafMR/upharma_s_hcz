@@ -137,7 +137,7 @@ class CommandeVenteController extends AbstractController
             ->leftJoin('d.recepteur_id', 'rec')
             ->leftJoin('d.status', 'status')
             ->where('d.actif = 1')
-            ->andWhere('d.typeCommande = 2')
+            ->andWhere('d.typeCommande = 2 or d.typeCommande = 3')
             ->andWhere('d.pEntite = :entite')
             ->setParameter('entite', $dossier)
             ->groupBy('d.id, d.code, d.description, d.ipp, d.nomPatient, d.created, status.designation, d.urgent, dem.designationAccess, rec.designationAccess');

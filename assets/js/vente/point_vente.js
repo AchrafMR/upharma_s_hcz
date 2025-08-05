@@ -278,7 +278,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const magasinId = pendingDemande[0]?.magasin_id;
     const demandeurSelect = document.getElementById("demandeur_id");
     if (demandeurSelect && magasinId) {
-      $(demandeurSelect).val(magasinId).trigger('change'); // 💡 Select2 update
+      $(demandeurSelect).val(magasinId).trigger('change'); 
     }
 
     // Show modal
@@ -290,23 +290,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // const commanderButton = document.querySelector(
-  //   '[data-target="#addCommande"]'
-  // );
-  // commanderButton?.addEventListener("click", (e) => {
-  //   e.preventDefault();
 
-  //   if (cart.length === 0) {
-  //     toastr.error(
-  //       "Votre panier est vide. Ajoutez des produits avant de commander."
-  //     );
-  //     return;
-  //   }
-
-  //   pendingDemande = [...cart.map((item) => ({ ...item }))];
-  //   console.log("Pending Demande:", pendingDemande);
-  //   $("#addCommande").modal("show");
-  // });
 
   // Handle Demandeur and Traitement options
   const defaultTraitementMagasins = window.DEFAULT_TRAITEMENT_IDS || [];
@@ -440,113 +424,71 @@ $(document).ready(function () {
   });
 
   // Handle form submission
-  document.getElementById("submit-demande").addEventListener("click", async () => {
-  const btn = document.getElementById("submit-demande");
+document.getElementById("submit-demande")?.addEventListener("click", async () => {
+    const btn = document.getElementById("submit-demande");
+    btn.disabled = true;
 
-  // Prevent multiple submissions
-  if (btn.disabled) return;
-  btn.disabled = true;
+    const typeDemande = document.getElementById("type_demande").value;
 
-  if (!pendingDemande || pendingDemande.length === 0) {
-    toastr.error("Aucune donnée de panier à envoyer.");
-    btn.disabled = false;
-    btn.innerHTML = 'Commander'; 
-    return;
-  }
-
-  const typeDemande = document.getElementById("type_demande").value;
-
-  const requiredFields = [
-    { id: "demandeur_id", label: "Magasin Demandeur" },
-    { id: "recepteur_id", label: "Magasin de Traitement" },
-  ];
-
-  // Conditionally add fields based on type
-  if (typeDemande === "2") {
-    // Consommation
-    requiredFields.push(
+    const requiredFields = [
+      { id: "demandeur_id", label: "Magasin Demandeur" },
+      { id: "recepteur_id", label: "Magasin de Traitement" },
+      { id: "description_patient", label: "Description" },
       { id: "ipp", label: "IPP" },
-      { id: "nom_patient", label: "Nom du patient" },
-      { id: "dossier_patient", label: "Dossier du patient" },
-      { id: "description_patient", label: "Description" }
-    );
-  } else {
-    // Alimentation
-    requiredFields.push(
-      { id: "description", label: "Description" }
-    );
-  }
+      { id: "nom_patient", label: "Nom Patient" },
+      { id: "dossier_patient", label: "Dossier Patient" }
+    ];
 
-  // Validate
-  if (!validateFormFields(requiredFields)) {
-    btn.disabled = false;
-    btn.innerHTML = 'Commander';
-    return;
-  }
-  
-  if (typeDemande === "4") {
-    const demandeurId = document.getElementById("demandeur_id").value;
-    const recepteurId = document.getElementById("recepteur_id").value;
-
-    if (demandeurId === recepteurId) {
-      toastr.error("Veuillez changer le magasin de traitement car cette demande est de type Alimentation.");
-      btn.disabled = false;
-      btn.innerHTML = 'Commander';
-      return;
+    for (let field of requiredFields) {
+      const el = document.getElementById(field.id);
+      if (!el || !el.value.trim()) {
+        toastr.error(`Champ obligatoire : ${field.label}`);
+        btn.disabled = false;
+        return;
+      }
     }
-  }
 
-  const data = {
-    type_demande: typeDemande,
-    demandeur_id: document.getElementById("demandeur_id").value,
-    recepteur_id: document.getElementById("recepteur_id").value,
-    urgent: document.getElementById("urgent").checked ? 1 : 0,
-    description: typeDemande === "2"
-      ? document.getElementById("description_patient").value
-      : document.getElementById("description").value,
-    ipp: document.getElementById("ipp").value,
-    nom_patient: document.getElementById("nom_patient").value,
-    dossier_patient: document.getElementById("dossier_patient").value,
-    lignes: pendingDemande,
-  };
-  console.log("Submitting data:", data);
+    // if (document.getElementById("demandeur_id").value === document.getElementById("recepteur_id").value) {
+    //   toastr.error("Veuillez changer le magasin de traitement.");
+    //   btn.disabled = false;
+    //   return;
+    // }
 
-  try {
-    const res = await fetch("/vente/save-demande", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-      },
-      body: JSON.stringify(data),
-    });
+    const data = {
+      type_demande: typeDemande,
+      demandeur_id: document.getElementById("demandeur_id").value,
+      recepteur_id: document.getElementById("recepteur_id").value,
+      urgent: document.getElementById("urgent").checked ? 1 : 0,
+      description: document.getElementById("description_patient").value,
+      ipp: document.getElementById("ipp").value,
+      nom_patient: document.getElementById("nom_patient").value,
+      dossier_patient: document.getElementById("dossier_patient").value,
+      lignes: pendingDemande,
+    };
 
-    if (!res.ok) throw new Error("Erreur serveur");
-    await res.json();
-
-    toastr.success("Commande enregistrée avec succès!");
-    $("#addCommande").modal("hide");
-
-    cart = [];
-    pendingDemande = [];
-    renderCart();
-
-    ["demandeur_id", "recepteur_id", "description", "ipp", "nom_patient", "dossier_patient"]
-      .forEach((id) => {
-        const el = document.getElementById(id);
-        if (el) el.value = "";
+    try {
+      const res = await fetch("/vente/save-demande", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest"
+        },
+        body: JSON.stringify(data)
       });
-    document.getElementById("urgent").checked = false;
 
-  } catch (err) {
-    console.error(err);
-    toastr.error("Erreur lors de l'enregistrement de la commande.");
-  } finally {
-    // Always re-enable the button
-    btn.disabled = false;
-    btn.innerHTML = 'Commander';
-  }
-});
+      if (!res.ok) throw new Error();
+      toastr.success("Commande enregistrée avec succès !");
+      $("#addCommande").modal("hide");
+      cart = [];
+      renderCart();
+    } catch (err) {
+      console.error(err);
+      toastr.error("Erreur lors de l'enregistrement de la commande");
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
 
   
 });

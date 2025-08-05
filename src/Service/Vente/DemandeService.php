@@ -30,30 +30,31 @@ class DemandeService
 
         $demande->setCode(null);
         $demande->setDescription($data['description'] ?? null);
-        
-        if (isset($data['type_demande'])) {
-            $typeDemande = (int) $data['type_demande'];
 
-            $position_actuel = $this->em->getRepository(PStatut::class)->find(16);
+        $typeDemandeId = (int) ($data['type_demande'] ?? 0);
+        $typeDemande = $this->em->getRepository(PTypeOprt::class)->find($typeDemandeId);
 
-            if ($typeDemande === 2) {
-                $demande->setPositionActuel('Généré');
-                $status = $this->em->getRepository(PStatut::class)->find(13);
-                $demande->setNomPatient($data['nom_patient'] ?? null);
-                $demande->setDossierPatient($data['dossier_patient'] ?? null);
-                $demande->setIpp((int)($data['ipp'] ?? null));
-            } else {
-                $demande->setPositionActuel('Crée');
-                $status = $this->em->getRepository(PStatut::class)->find(9);
-            }
-
-            $demande->setStatus($status);
-            $demande->setStPositionActuel($position_actuel);
-        }
+        $demande->setTypeDemande($typeDemande);
         $demande->setHistorique(null);
         $demande->setUrgent(!empty($data['urgent']));
-        $demande->setCreated(new DateTime());
+        $demande->setCreated(new \DateTime());
         $demande->setActif(true);
+
+        $positionActuel = $this->em->getRepository(PStatut::class)->find(16);
+        $demande->setStPositionActuel($positionActuel);
+
+        if (in_array($typeDemandeId, [2, 3])) {
+            $demande->setPositionActuel('Généré');
+            $status = $this->em->getRepository(PStatut::class)->find(13);
+            $demande->setNomPatient($data['nom_patient'] ?? null);
+            $demande->setDossierPatient($data['dossier_patient'] ?? null);
+            $demande->setIpp((int)($data['ipp'] ?? null));
+        } else {
+            $demande->setPositionActuel('Crée');
+            $status = $this->em->getRepository(PStatut::class)->find(9);
+        }
+
+        $demande->setStatus($status);
 
         $dossierId = $request->getSession()->get('dossier');
         $dossier = $this->em->getRepository(PEntite::class)->find($dossierId);
@@ -70,10 +71,6 @@ class DemandeService
         $demande->setDemandeurId($demandeur);
         $demande->setRecepteurId($recepteur);
 
-        $typeDemande = $this->em->getRepository(PTypeOprt::class)->find($data['type_demande'] ?? null);
-        // dd($typeDemande);
-        $demande->setTypeDemande($typeDemande);
-
         $this->em->persist($demande);
         $this->em->flush();
 
@@ -84,7 +81,12 @@ class DemandeService
             $unite = $produit->getPPrUnite();
             $remise = $ligne['remise'] ?? 0;
             $tva = $ligne['tva'] ?? 0;
-            $quantite = (float) $ligne['quantity'];
+
+            $quantite = abs((float) $ligne['quantity']);
+            if ($typeDemandeId === 3) {
+                $quantite *= -1;
+            }
+
             $prixUnitaire = (float) $ligne['price'];
             $montantHt = ($prixUnitaire * $quantite) - $remise;
             $montantTtc = $montantHt + ($montantHt * $tva / 100);
@@ -108,12 +110,13 @@ class DemandeService
 
         $this->em->flush();
 
-        if (isset($data['type_demande']) && (int)$data['type_demande'] === 2) {
+        if (in_array($typeDemandeId, [2, 3])) {
             $this->commandeService->createFromDemande($demande);
         }
 
         return $demande;
     }
+
     public function createDemandeAlimentationFromCommande(TMsCommande $commande): ?TMsDemande
     {
         $demandeur = $commande->getDemandeurId();
