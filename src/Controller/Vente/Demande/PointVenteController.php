@@ -77,9 +77,7 @@ class PointVenteController extends AbstractController
     public function getProductsByMagasin(int $magasinId, PProduitsRepository $repo, PMagasinsRepository $magRepo): JsonResponse
     {
         $magasin = $magRepo->find($magasinId);
-        // dd($magasin);
         $products = $repo->findProductsWithTarificationAndSolde(null, $magasinId);
-        // dd($products);
         return $this->json($products);
     }
 }
