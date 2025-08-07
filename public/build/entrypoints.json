@@ -4,11 +4,12 @@
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
-        "/build/525.876cb947.js",
-        "/build/app.ba15c848.js"
+        "/build/332.91bd8c66.js",
+        "/build/951.8c023f67.js",
+        "/build/app.2b29606d.js"
       ],
       "css": [
-        "/build/525.4d445ace.css",
+        "/build/951.4d445ace.css",
         "/build/app.8c62f53e.css"
       ]
     },
@@ -16,7 +17,7 @@
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
-        "/build/setting_user.efa4e188.js"
+        "/build/setting_user.7a4699fe.js"
       ]
     },
     "setting_module": {
@@ -24,7 +25,7 @@
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
         "/build/959.a5d20ad0.js",
-        "/build/setting_module.66cdca75.js"
+        "/build/setting_module.d67675b3.js"
       ]
     },
     "setting_sub_module": {
@@ -32,14 +33,14 @@
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
         "/build/959.a5d20ad0.js",
-        "/build/setting_sub_module.52c5d4a4.js"
+        "/build/setting_sub_module.5f23db17.js"
       ]
     },
     "setting_action": {
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
-        "/build/setting_action.95a5d0a5.js"
+        "/build/setting_action.c153ce93.js"
       ]
     },
     "setting_user_affectation": {
@@ -47,28 +48,28 @@
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
         "/build/432.53aa553b.js",
-        "/build/setting_user_affectation.fdf73d10.js"
+        "/build/setting_user_affectation.2dcdd571.js"
       ]
     },
     "setting_profile": {
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
-        "/build/setting_profile.89bda8aa.js"
+        "/build/setting_profile.21a7260f.js"
       ]
     },
     "setting_site": {
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
-        "/build/setting_site.cda05636.js"
+        "/build/setting_site.9e0e5706.js"
       ]
     },
     "sidebar": {
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
-        "/build/sidebar.88fb69e5.js"
+        "/build/sidebar.61ece16e.js"
       ]
     },
     "point_vente": {
@@ -77,7 +78,7 @@
         "/build/539.80ca3a2e.js",
         "/build/959.a5d20ad0.js",
         "/build/744.29f8edaa.js",
-        "/build/point_vente.08071cb3.js"
+        "/build/point_vente.49d2758b.js"
       ]
     },
     "gestion_demandes": {
@@ -85,7 +86,7 @@
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
         "/build/959.a5d20ad0.js",
-        "/build/gestion_demandes.4b4e19f5.js"
+        "/build/gestion_demandes.e17199f8.js"
       ]
     },
     "gestion_commandes": {
@@ -93,14 +94,14 @@
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
         "/build/959.a5d20ad0.js",
-        "/build/gestion_commandes.5e925a70.js"
+        "/build/gestion_commandes.1a5196ba.js"
       ]
     },
     "gestion_livraisons": {
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
-        "/build/gestion_livraisons.1d1eebc2.js"
+        "/build/gestion_livraisons.e3379b12.js"
       ]
     },
     "alimentation_stock": {
@@ -108,7 +109,16 @@
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
         "/build/959.a5d20ad0.js",
-        "/build/alimentation_stock.d90c108b.js"
+        "/build/332.91bd8c66.js",
+        "/build/alimentation_stock.b4aa1a82.js"
+      ]
+    },
+    "stock_suivi": {
+      "js": [
+        "/build/runtime.6c30001d.js",
+        "/build/539.80ca3a2e.js",
+        "/build/959.a5d20ad0.js",
+        "/build/stock_suivi.ad244042.js"
       ]
     },
     "login": {

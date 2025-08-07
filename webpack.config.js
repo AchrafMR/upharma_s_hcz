@@ -45,12 +45,17 @@ Encore
   .addEntry("setting_profile", "./assets/js/settings/profile.js")
   .addEntry("setting_site", "./assets/js/settings/site.js")
   .addEntry("sidebar", "./assets/js/plugins/sidebar.js")
+
+  //module mouvement
   .addEntry("point_vente", "./assets/js/vente/point_vente.js")
   .addEntry("gestion_demandes", "./assets/js/vente/gestion_demandes.js")
   .addEntry("gestion_commandes", "./assets/js/vente/gestion_commandes.js")
   .addEntry("gestion_livraisons", "./assets/js/vente/gestion_livraisons.js")
   .addEntry("alimentation_stock", "./assets/js/vente/alimentation_stock.js")
-  
+
+  // module Stock
+  .addEntry("stock_suivi", "./assets/js/stock/suivi.js")
+
 
   // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
   .enableStimulusBridge("./assets/controllers.json")

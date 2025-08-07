@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Suivi Stock{% endblock %}
+
+
+{% block body %}
+    <div class="conatiner">
+        <div class="row">
+            <div class="col-md-12 mt-3 ">
+                <div class="row no-gutters mb-2">
+                    <div class="col-md-6 d-flex justify-content-end align-items-center ml-auto">
+
+                        <div class="col-md-3 d-flex justify-content-start align-items-center">
+                            <input name="scanProduitInput" value="" id="scanProduitInput" type="text" class="form-control" placeholder="code produit">
+                        </div>
+
+                        <div class="col-md-4 d-flex justify-content-start align-items-center">
+                            <select class="magasin form-control w-30" name="magasin" id="magasin">
+                                {% for magasin in magasins %}
+                                    <option value="{{magasin.id}}" {% if magasin.id == magasinDefaut.id %}
+                                        selected
+                                    {% endif %}>{{magasin.designationAccess}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        {# {% set current_route = app.request.get('_route') %}
+
+                        {% for action in actions %}
+                            {% if action.horizontal and action.principal %}
+                                <button type="button" class="{{action.className}}" id="{{action.idName}}"><i class="{{action.icon}}"></i></button>
+                            {% endif %}
+
+                        {% endfor %} #}
+
+                        {# <div class="dropdown ml-2">
+                            <i class="menuActions menu_options_dots fa-solid fa-ellipsis-vertical" id="Actions"></i>
+                            <div class="dropdown-menu dropdown-content divMenu" id="divMenuActions">
+                                {% for action in actions %}
+                                    {% if action.horizontal and not action.principal %}
+                                        <button class="dropdown-item {{action.className}}" data-toggle="modal" data-target="#{{action.idName}}"><i class="{{action.icon}}"></i> {{action.nom}}</button>
+                                    {% endif %}
+
+                                {% endfor %}
+                            </div>
+                        </div> #}
+
+                    </div>
+                </div>
+                <table id="ProduitsTable" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th width="5%">#</th>
+                            <th width="10%">CODE</th>
+                            <th>TITRE</th>
+                            <th width="10%">QTE</th>
+                            <th width="1%">ACT</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listProduits">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% include 'stock/suivi_stock/modals/detailsProduit.html.twig' %}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('stock_suivi') }}
+{% endblock %}

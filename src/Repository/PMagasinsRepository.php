@@ -77,72 +77,48 @@ class PMagasinsRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getOneOrNullResult();
     }
+        public function findMagasinParDefaut($user): ?PMagasins
+    {
+        return $this->createQueryBuilder('m')
+            ->join('m.pAffectationMagasins', 'a')
+            ->join('a.userr', 'user')
+            ->where('m.defaut = 1')
+            // ->andWhere('d.defaut = 1') //if it should be the default depot
+            ->andWhere('user = :user')
+            ->setParameter('user', $user)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findMagasinComplementaire($user): ?PMagasins
+    {
+        return $this->createQueryBuilder('m')
+            ->join('m.pAffectationMagasins', 'a')
+            ->join('a.userr', 'user')
+            ->where('m.complementaire = 1')
+            // ->andWhere('d.defaut = 1') //if it should be the default depot
+            ->andWhere('user = :user')
+            ->setParameter('user', $user)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findMagasinByUser($user)
+    {
+        return $this->createQueryBuilder('m')
+            ->join('m.pAffectationMagasins', 'a')
+            ->join('a.userr', 'user')
+            // ->andWhere('d.defaut = 1') //if it should be the default depot
+            ->andWhere('user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
 
 
 
 
-// src/Repository/PMagasinsRepository.php
 
-    // public function findDefaultMagasinForUser(User $user, PEntiteRepository $entiteRepo): ?PMagasins
-    // {
-    //     $sites = in_array('ROLE_ADMIN', $user->getRoles())
-    //         ? $entiteRepo->findBy(['active' => true])
-    //         : $entiteRepo->findSites($user);
-
-    //     if (empty($sites)) return null;
-
-    //     $siteIds = array_map(fn($s) => $s->getId(), $sites);
-
-    //     return $this->createQueryBuilder('m')
-    //         ->innerJoin('m.depot', 'd')
-    //         ->innerJoin('d.entite', 'e')
-    //         ->where('m.defaut = 1')
-    //         ->andWhere('e.id IN (:entites)')
-    //         ->setParameter('entites', $siteIds)
-    //         ->setMaxResults(1)
-    //         ->getQuery()
-    //         ->getOneOrNullResult();
-    // }
-
-    // public function findMagasinsByUserEntite(User $user, PEntiteRepository $entiteRepo): array
-    // {
-    //     $sites = in_array('ROLE_ADMIN', $user->getRoles())
-    //         ? $entiteRepo->findBy(['active' => true])
-    //         : $entiteRepo->findSites($user);
-
-    //     if (empty($sites)) return [];
-
-    //     $siteIds = array_map(fn($s) => $s->getId(), $sites);
-
-    //     return $this->createQueryBuilder('m')
-    //         ->innerJoin('m.depot', 'd')
-    //         ->innerJoin('d.entite', 'e')
-    //         ->where('e.id IN (:entites)')
-    //         ->setParameter('entites', $siteIds)
-    //         ->orderBy('m.designation', 'ASC')
-    //         ->getQuery()
-    //         ->getResult();
-    // }
-
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?PMagasins
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

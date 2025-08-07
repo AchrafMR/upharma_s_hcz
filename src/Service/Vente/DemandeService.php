@@ -83,7 +83,7 @@ class DemandeService
             $tva = $ligne['tva'] ?? 0;
 
             $quantite = abs((float) $ligne['quantity']);
-            if ($typeDemandeId === 3) {
+            if ($typeDemandeId === 3 or $typeDemandeId === 5) {
                 $quantite *= -1;
             }
 

@@ -461,8 +461,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.body.addEventListener("click", async (e) => {
     const btn = e.target;
-
-
     if (btn.classList.contains("btn-valider")) {
       updatePosition(btn.dataset.id, 'validée');
 

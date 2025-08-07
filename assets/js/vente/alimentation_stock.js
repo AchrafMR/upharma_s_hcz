@@ -1,3 +1,4 @@
+import { type } from "jquery";
 import facke_img_product from "../../images/facke_img_product.png";
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -302,6 +303,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const demandeurId = document.getElementById("demandeur_id").value;
     const recepteurId = document.getElementById("recepteur_id").value;
+    const typeDemande = document.getElementById("type_demande").value;
+
 
     if (demandeurId === recepteurId) {
       toastr.error("Veuillez changer le magasin de traitement car cette demande est de type Alimentation.");
@@ -311,7 +314,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     const data = {
-      type_demande: 4,
+      type_demande: typeDemande,
       demandeur_id: demandeurId,
       recepteur_id: recepteurId,
       urgent: document.getElementById("urgent").checked ? 1 : 0,
