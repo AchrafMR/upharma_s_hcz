@@ -127,7 +127,7 @@ class LivraisonController extends AbstractController
             ->where('l.actif = 1')
             ->andWhere('l.pEntite = :entite')
             ->andWhere('l.typeLivraison IN (:types)')
-            ->setParameter('types', [2, 4])
+            ->setParameter('types', [2, 4, 3 ])
             ->setParameter('entite', $dossier)
             ->groupBy('l.id, l.typeLivraison, l.code,l.description, l.ipp, l.nom_patient, l.created, status.designation, l.urgent, dem.designationAccess, rec.designationAccess');
 
