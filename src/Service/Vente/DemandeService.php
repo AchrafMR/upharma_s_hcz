@@ -147,8 +147,14 @@ class DemandeService
         $demande->setUserCreated($this->security->getUser());
         $demande->setParent($commande);
 
-        $typeDemande = $this->em->getRepository(PTypeOprt::class)->find(1); // Type = 1 = Alimentation
-        $demande->setTypeDemande($typeDemande);
+        $typeCommande= $commande->getTypeCommande()->getId();
+        if($typeCommande == 2 ){
+            $typeDemande = $this->em->getRepository(PTypeOprt::class)->find(1); 
+            $demande->setTypeDemande($typeDemande);
+        }else {
+            $typeDemande = $this->em->getRepository(PTypeOprt::class)->find(3); 
+            $demande->setTypeDemande($typeDemande);
+        }
 
         $this->em->persist($demande);
 

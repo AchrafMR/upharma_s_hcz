@@ -47,15 +47,14 @@ Encore
   .addEntry("sidebar", "./assets/js/plugins/sidebar.js")
 
   //module mouvement
-  .addEntry("point_vente", "./assets/js/vente/point_vente.js")
-  .addEntry("gestion_demandes", "./assets/js/vente/gestion_demandes.js")
-  .addEntry("gestion_commandes", "./assets/js/vente/gestion_commandes.js")
-  .addEntry("gestion_livraisons", "./assets/js/vente/gestion_livraisons.js")
-  .addEntry("alimentation_stock", "./assets/js/vente/alimentation_stock.js")
+  .addEntry("point_vente", "./assets/js/mouvement/point_vente.js")
+  .addEntry("gestion_demandes", "./assets/js/mouvement/gestion_demandes.js")
+  .addEntry("gestion_commandes", "./assets/js/mouvement/gestion_commandes.js")
+  .addEntry("gestion_livraisons", "./assets/js/mouvement/gestion_livraisons.js")
+  .addEntry("alimentation_stock", "./assets/js/mouvement/alimentation_stock.js")
 
   // module Stock
   .addEntry("stock_suivi", "./assets/js/stock/suivi.js")
-
 
   // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
   .enableStimulusBridge("./assets/controllers.json")
