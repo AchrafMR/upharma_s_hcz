@@ -338,11 +338,11 @@ class CommandeVenteController extends AbstractController
                     ]);
                 }
                 break;
+
             case 'Générée':
                 $commande->setUserGenerer($user);
                 $status = $em->getRepository(PStatut::class)->find(13);
                 $commande->setStatus($status);
-           
                 break;
         }
 
@@ -356,12 +356,14 @@ class CommandeVenteController extends AbstractController
     {
         $commandeId = $request->request->get('commande_id');
         $quantites = $request->request->all('quantites');
+        // dd($quantites);
 
         if (!$commandeId || empty($quantites)) {
             return new JsonResponse(['status' => 'error', 'message' => 'Données incomplètes.']);
         }
 
         $commande = $this->em->getRepository(TMsCommande::class)->find($commandeId);
+        // dd($commande);
         if (!$commande) {
             return new JsonResponse(['status' => 'error', 'message' => 'Commande introuvable.']);
         }
@@ -383,23 +385,22 @@ class CommandeVenteController extends AbstractController
         $position_actuel=$em->getRepository(PStatut::class)->find(21);
         $livraison->setStatus($status);
         $livraison->setStPositionActuel($position_actuel);
-        $livraison->setTypeLivraison($commande->getTypeCommande());
-
+        $typeCommande = $commande->getTypeCommande();
+        $livraison->setTypeLivraison($typeCommande);
         $allDelivered = true;
         $ligneProcessed = 0;
 
         foreach ($quantites as $ligneId => $qtyLivree) {
             $ligne = $this->em->getRepository(TMsCommandelg::class)->find($ligneId);
-
-            if (!$ligne || $qtyLivree <= 0) {
-                continue;
-            }
+            // dd($ligne);
+            // if (!$ligne || $qtyLivree <= 0) {
+            //     continue;
+            // }
 
             $ligneProcessed++;
             $qtyLivree = min($qtyLivree, $ligne->getQuantiteReste());
             $newServie = $ligne->getQuantiteServie() + $qtyLivree;
             $newReste = max(0, $ligne->getQuantiteCommandee() - $newServie);
-
             $livraisonLg = new TMsLivraisonlg();
             $livraisonLg->setTMsLivraison($livraison);
             $livraisonLg->setPProduit($ligne->getPProduit());
@@ -412,30 +413,37 @@ class CommandeVenteController extends AbstractController
 
             $this->em->persist($livraisonLg);
 
-            // insert stock dynamique
-            $magasinId = $commande->getDemandeurId()->getId();
-            $this->stockDynaService->insertStockDynamique(
-                $ligne->getPProduit(),
-                $ligne->getPPrUnite(),
-                $qtyLivree,
-                $magasinId,
-                'sortie',
-            );
+           
+            $absQty = abs($qtyLivree);
 
-           for ($i = 0; $i < $qtyLivree; $i++) {
+            for ($i = 0; $i < $absQty; $i++) {
                 $livraisonObj = new TMsLivraisonobj();
                 $livraisonObj->setTMsLivraisonLg($livraisonLg);
                 $livraisonObj->setLot('DEFAULT');
                 $livraisonObj->setDatePeremption(null);
-                $livraisonObj->setQuantitieLivree(1); 
-                $livraisonObj->setPrixTtc($ligne->getPrixUnitaire());
-                $livraisonObj->setTotalTtc($ligne->getPrixUnitaire()); // 1 * unit price
+                $quantite = $qtyLivree < 0 ? -1 : 1;
+                $livraisonObj->setQuantitieLivree($quantite);
+                $prixUnitaire = $ligne->getPrixUnitaire();
+                $livraisonObj->setPrixTtc($prixUnitaire);
+                $livraisonObj->setTotalTtc($quantite * $prixUnitaire);
+
                 $livraisonObj->setCreated(new \DateTime());
                 $livraisonObj->setFlagSynchronisationLocale(false);
 
                 $this->em->persist($livraisonObj);
             }
 
+            $magasinId = $commande->getDemandeurId()->getId();
+            $operation = ($typeCommande->getId() == 2) ? 'sortie' : 'entree';
+
+            $this->stockDynaService->insertStockDynamique(
+                $ligne->getPProduit(),
+                $ligne->getPPrUnite(),
+                $qtyLivree,
+                $magasinId,
+                $operation
+            );
+             
 
             $ligne->setQuantiteServie($newServie);
             $ligne->setQuantiteReste($newReste);

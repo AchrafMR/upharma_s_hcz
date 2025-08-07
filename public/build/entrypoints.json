@@ -78,7 +78,7 @@
         "/build/539.80ca3a2e.js",
         "/build/959.a5d20ad0.js",
         "/build/744.29f8edaa.js",
-        "/build/point_vente.49d2758b.js"
+        "/build/point_vente.06a67776.js"
       ]
     },
     "gestion_demandes": {
@@ -86,7 +86,7 @@
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
         "/build/959.a5d20ad0.js",
-        "/build/gestion_demandes.e17199f8.js"
+        "/build/gestion_demandes.2e011e54.js"
       ]
     },
     "gestion_commandes": {
@@ -94,14 +94,14 @@
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
         "/build/959.a5d20ad0.js",
-        "/build/gestion_commandes.1a5196ba.js"
+        "/build/gestion_commandes.1b2ed140.js"
       ]
     },
     "gestion_livraisons": {
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/539.80ca3a2e.js",
-        "/build/gestion_livraisons.e3379b12.js"
+        "/build/gestion_livraisons.11d35aa3.js"
       ]
     },
     "alimentation_stock": {
@@ -110,7 +110,7 @@
         "/build/539.80ca3a2e.js",
         "/build/959.a5d20ad0.js",
         "/build/332.91bd8c66.js",
-        "/build/alimentation_stock.b4aa1a82.js"
+        "/build/alimentation_stock.56e2cd7f.js"
       ]
     },
     "stock_suivi": {
