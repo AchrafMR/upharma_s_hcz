@@ -443,7 +443,7 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
       }
       try {
-          const url = Routing.generate('app_exports_demande_sortie_stock') + '?id=' + id;
+          const url = Routing.generate('app_exports_demande_exports') + '?id=' + id;
           window.open(url, '_blank');
       } catch (err) {
           console.error("Route non trouvée dans Routing.js :", err);
