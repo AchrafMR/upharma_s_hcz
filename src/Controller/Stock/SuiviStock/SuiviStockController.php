@@ -169,24 +169,30 @@ class SuiviStockController extends AbstractController
             }
             // dd($produit);
 
-            $quantites = $this->em->createQueryBuilder()
-                ->select('mag.designation AS magasin', 'COUNT(obj.id) AS quantite')
+            $detailsProduits = $this->em->createQueryBuilder()
+                ->select('mag.designationAccess AS magasin')
+                ->addSelect('SUM(obj.quantite) AS quantite')
+                ->addSelect('IDENTITY(obj.produit) AS produitID')
+                ->addSelect('obj.numeroLot AS numlot')
+                ->addSelect('obj.datePeremption AS dateperemption')
                 ->from(TStStockObj::class, 'obj')
                 ->innerJoin('obj.adresse', 'adresse')
                 ->innerJoin('adresse.magasin', 'mag')
                 ->where('obj.produit = :produit')
                 ->andWhere('obj.active = 1')
-                ->groupBy('mag.id, mag.designation')
+                ->groupBy('mag.id, mag.designationAccess, obj.numeroLot, obj.datePeremption, obj.produit')
                 ->setParameter('produit', $produit)
                 ->getQuery()
                 ->getResult();
 
+
+            
             $actions = $this->userOperation->getOperations($this->getUser(), 'app_stock_suivi_stock_index', $request);
 
 
             $detailProduit = $this->render("stock/suivi_stock/pages/detailsProduit.html.twig", [
                 'produit' => $produit,
-                'quantites' => $quantites,
+                'detailsProduits' => $detailsProduits,
             ])->getContent();
 
             // dd($detailProduit);
