@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 #[Route('/exports/mouvement')]
-class DemandeSortieStockExportsController extends AbstractController
+class DemandeExportsController extends AbstractController
 {
     private $em;
     public function __construct(EntityManagerInterface $em)
@@ -21,7 +21,7 @@ class DemandeSortieStockExportsController extends AbstractController
        $this->em = $em;
     }
 
-    #[Route('/demande_sortie_stock_pdf', name: 'app_exports_demande_sortie_stock', options: ['expose' => true])]
+    #[Route('/demande_pdf', name: 'app_exports_demande_exports', options: ['expose' => true])]
     public function generateDemandeSStockPdf(Request $request): Response
     {
         $idDemande = $request->query->get('id');
@@ -31,12 +31,11 @@ class DemandeSortieStockExportsController extends AbstractController
         }
 
         $demande = $this->em->getRepository(TMsDemande::class)->findWithActiveLignes($idDemande);
-        // dd($demande);
         if (!$demande) {
             return new JsonResponse(['error' => 'demande sortie stock introuvable.'], 404);
         }
 
-        $logoPath = $this->getParameter('kernel.project_dir') . '/public/build/images/parametrage/dossiers/56.png';
+        $logoPath = $this->getParameter('kernel.project_dir') . '/public/images/parametrage/dossiers/56.png';
 
         $totalHt = 0;
         $totalTva = 0;
@@ -63,7 +62,7 @@ class DemandeSortieStockExportsController extends AbstractController
         $dossier = $this->em->getRepository(PEntite::class)->find($dossierId);
 
 
-        $html = $this->render('exports/mouvement/demande_sortie_stock_exports/index.html.twig', [
+        $html = $this->render('exports/mouvement/demande_exports/index.html.twig', [
             'demande' => $demande,
             'logoPath' => $logoPath,
             'totalHt' => $totalHt,
