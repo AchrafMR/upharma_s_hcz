@@ -458,39 +458,39 @@ document.addEventListener("DOMContentLoaded", () => {
   //   footer.innerHTML = buttonsHTML;
   // };
 
-const updateFooterButtons = (id, newPosition) => {
-  const modal = document.getElementById(`detailsCommande${id}`);
-  const footer = modal.querySelector('.modal-footer');
-  if (!footer) return;
+  const updateFooterButtons = (id, newPosition) => {
+    const modal = document.getElementById(`detailsCommande${id}`);
+    const footer = modal.querySelector('.modal-footer');
+    if (!footer) return;
 
-  const demandeurSelect = modal.querySelector('[name="demandeur_id"]');
-  const recepteurSelect = modal.querySelector('[name="recepteur_id"]');
-  const typeCommandeHidden = modal.querySelector('[name="type_commande_id_hidden"]');
+    const demandeurSelect = modal.querySelector('[name="demandeur_id"]');
+    const recepteurSelect = modal.querySelector('[name="recepteur_id"]');
+    const typeCommandeHidden = modal.querySelector('[name="type_commande_id_hidden"]');
 
-  const demandeurId = demandeurSelect?.value?.trim();
-  const recepteurId = recepteurSelect?.value?.trim();
-  const typeCommandeId = typeCommandeHidden?.value?.trim() ?? '';
+    const demandeurId = demandeurSelect?.value?.trim();
+    const recepteurId = recepteurSelect?.value?.trim();
+    const typeCommandeId = typeCommandeHidden?.value?.trim() ?? '';
 
-  let buttonsHTML = '';
+    let buttonsHTML = '';
 
-  if (newPosition === 'validée' && demandeurId && recepteurId && demandeurId === recepteurId) {
-    buttonsHTML = `
-      <button type="button" class="btn btn-primary btn-generer"
-              data-id="${id}"
-              data-type="${typeCommandeId}">
-        Générer
-      </button>
-    `;
-  } else if (newPosition === 'Crée') {
-    buttonsHTML = `
-      <button type="button" class="btn btn-success btn-valider" data-id="${id}">
-        Valider
-      </button>
-    `;
-  }
+    if (newPosition === 'validée' && demandeurId && recepteurId && demandeurId === recepteurId) {
+      buttonsHTML = `
+        <button type="button" class="btn btn-primary btn-generer"
+                data-id="${id}"
+                data-type="${typeCommandeId}">
+          Générer
+        </button>
+      `;
+    } else if (newPosition === 'Crée') {
+      buttonsHTML = `
+        <button type="button" class="btn btn-success btn-valider" data-id="${id}">
+          Valider
+        </button>
+      `;
+    }
 
-  footer.innerHTML = buttonsHTML;
-};
+    footer.innerHTML = buttonsHTML;
+  };
 
 
   document.addEventListener("click", async (e) => {
@@ -560,7 +560,7 @@ const updateFooterButtons = (id, newPosition) => {
 });
 
 
-  $('.modal').on('hidden.bs.modal', function () {
+$('.modal').on('hidden.bs.modal', function () {
     if (positionChanged) {
       location.reload();
     }
@@ -609,4 +609,50 @@ $(document).on("keydown", ".ipp", function (e) {
       toastr.error("Aucun patient trouvé avec cet IPP");
     }
   }
+});
+document.addEventListener("DOMContentLoaded", () => {
+  $(document).on('click', function (e) {
+      const $popup = $('#impressionPopup');
+      const $toggle = $('.toggleImpressionPopup');
+
+      if ($(e.target).closest($toggle).length) {
+          $popup.fadeToggle(150);
+      }
+
+      else if (!$(e.target).closest($popup).length) {
+          $popup.fadeOut(150);
+      }
+  });
+  $('body').on('click', '.genererPdfCommandeSortieStock', function (e) {
+      e.preventDefault();
+
+      const id = $(this).data('id');
+      if (!id) {
+          toastr.warning("ID de commande ortie Stock manquant.");
+          return;
+      }
+      try {
+          const url = Routing.generate('app_exports_commande_sortie_stock_exports') + '?id=' + id;
+          window.open(url, '_blank');
+      } catch (err) {
+          console.error("Route non trouvée dans Routing.js :", err);
+          toastr.error("Route introuvable. Avez-vous bien dumpé les routes JS ?");
+      }
+  });
+  $('body').on('click', '.genererPdfDemandeSortieStock', function (e) {
+      e.preventDefault();
+
+      const id = $(this).data('id');
+      if (!id) {
+          toastr.warning("ID de Demande ortie Stock manquant.");
+          return;
+      }
+      try {
+          const url = Routing.generate('app_exports_demande_sortie_stock') + '?id=' + id;
+          window.open(url, '_blank');
+      } catch (err) {
+          console.error("Route non trouvée dans Routing.js :", err);
+          toastr.error("Route introuvable. Avez-vous bien dumpé les routes JS ?");
+      }
+  });
 });

@@ -17,6 +17,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Repository\PProduitsRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+
 #[Route('/vente')]
 class PointVenteController extends AbstractController
 {
@@ -26,12 +28,14 @@ class PointVenteController extends AbstractController
     private $security;
     private $userOperation;
     private $em;
+    private $client;
 
-    public function __construct(Security $security, UserOperation $userOperation, EntityManagerInterface $em)
+    public function __construct(Security $security, HttpClientInterface $client, UserOperation $userOperation, EntityManagerInterface $em)
     {
-       $this->security = $security;
-       $this->userOperation = $userOperation;
-       $this->em = $em;
+        $this->security = $security;
+        $this->userOperation = $userOperation;
+        $this->em = $em;
+        $this->client = $client;
     }
 
     #[Route('/point-vente', name: 'app_vente_demande_vente')]
@@ -79,5 +83,32 @@ class PointVenteController extends AbstractController
         $magasin = $magRepo->find($magasinId);
         $products = $repo->findProductsWithTarificationAndSolde(null, $magasinId);
         return $this->json($products);
+    }
+    
+    #[Route('/hosix/dossiers/imputations/{ipp}', name: 'app_fetch_hosix_dossiers_imputations', methods: ['GET'], options: ['expose' => true])]
+    public function app_fetch_hosix_dossiers_imputations($ipp, Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        if(!$ipp){
+            return new JsonResponse("please insert ipp",500 ,  [], JSON_UNESCAPED_UNICODE);
+        }
+
+        $url = "http://172.20.0.240/api/hosix/dossiers/imputations/".$ipp;
+
+        // dd($url);
+        try {
+            $response = $this->client->request('GET', $url);
+
+            $statusCode = $response->getStatusCode();
+            $content = $response->toArray();
+
+            return new JsonResponse([
+                'status' => $statusCode,
+                'data' => $content,
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

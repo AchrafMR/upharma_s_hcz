@@ -25,6 +25,20 @@ class TMsDemandeRepository extends ServiceEntityRepository
 //     * @return TMsDemande[] Returns an array of TMsDemande objects
 //     */
 
+
+
+
+        public function findWithActiveLignes(int $idDemande): ?TMsDemande
+        {
+            return $this->createQueryBuilder('d')
+                ->leftJoin('d.tMsDemandelgs', 'lg')
+                ->addSelect('lg')
+                ->where('d.id = :id')
+                ->andWhere('lg.actif = 1')
+                ->setParameter('id', $idDemande)
+                ->getQuery()
+                ->getOneOrNullResult();
+        }
         public function findAllActifWithActiveLg(): array
         {
             return $this->createQueryBuilder('d')

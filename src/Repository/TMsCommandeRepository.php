@@ -25,6 +25,17 @@ class TMsCommandeRepository extends ServiceEntityRepository
 //     * @return TMsCommande[] Returns an array of TMsCommande objects
 //     */
 
+        public function findWithActiveLignes(int $idCommande): ?TMsCommande
+        {
+            return $this->createQueryBuilder('c')
+                ->leftJoin('c.tMsCommandelgs', 'lg')
+                ->addSelect('lg')
+                ->where('c.id = :id')
+                ->andWhere('lg.actif = 1')
+                ->setParameter('id', $idCommande)
+                ->getQuery()
+                ->getOneOrNullResult();
+        }
         public function findAllActifWithActiveLg(): array
         {
             return $this->createQueryBuilder('d')
