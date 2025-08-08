@@ -167,3 +167,72 @@ $(document).on("click", ".btn-valider, .btn-generer", function () {
     },
   });
 });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  $("body").on('click', function (e) {
+          const $popup = $('#impressionPopup');
+          const $toggle = $('.toggleImpressionPopup');
+
+          if ($(e.target).closest($toggle).length) {
+              $popup.fadeToggle(150);
+          }
+
+          else if (!$(e.target).closest($popup).length) {
+              $popup.fadeOut(150);
+          }
+      });
+  $('body').on('click', '.genererPdfLivraisonSortieStock', function (e) {
+      e.preventDefault();
+
+      const id = $(this).data('id');
+      if (!id) {
+          toastr.warning("ID de livraison sortie Stock manquant.");
+          return;
+      }
+      try {
+          const url = Routing.generate('app_exports_bon_livraison_exports',{
+                  idLivraison: id
+              })
+          window.open(url, '_blank');
+      } catch (err) {
+          console.error("Route non trouvée dans Routing.js :", err);
+          toastr.error("Route introuvable. Avez-vous bien dumpé les routes JS ?");
+      }
+  });
+
+  $('body').on('click', '.genererPdfCommandeSortieStock', function (e) {
+      e.preventDefault();
+
+      const id = $(this).data('id');
+      if (!id) {
+          toastr.warning("ID de commande ortie Stock manquant.");
+          return;
+      }
+      try {
+          const url = Routing.generate('app_exports_commande_sortie_stock_exports') + '?id=' + id;
+          window.open(url, '_blank');
+      } catch (err) {
+          console.error("Route non trouvée dans Routing.js :", err);
+          toastr.error("Route introuvable. Avez-vous bien dumpé les routes JS ?");
+      }
+  });
+
+  $('body').on('click', '.genererPdfDemandeSortieStock', function (e) {
+      e.preventDefault();
+
+      const id = $(this).data('id');
+      if (!id) {
+          toastr.warning("ID de Demande ortie Stock manquant.");
+          return;
+      }
+      try {
+          const url = Routing.generate('app_exports_demande_sortie_stock') + '?id=' + id;
+          window.open(url, '_blank');
+      } catch (err) {
+          console.error("Route non trouvée dans Routing.js :", err);
+          toastr.error("Route introuvable. Avez-vous bien dumpé les routes JS ?");
+      }
+  });
+});
+

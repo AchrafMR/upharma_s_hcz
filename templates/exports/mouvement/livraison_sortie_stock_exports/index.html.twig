@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ livraison.code }}</title>
+    <style>
+      @page {
+        footer: myFooter;
+        margin-bottom: 60px;
+      }
+      .signature {
+        margin-bottom: 160px;
+      }
+
+      *,
+      body {
+        font-family: "courierprime";
+        font-size: 9px;
+        text-transform: uppercase;
+      }
+
+      .logo {
+        width: 165px;
+        height: auto;
+      }
+
+      .header-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+
+      .header-left {
+        vertical-align: top;
+        text-align: left;
+      }
+
+      .header-right {
+        width: 35%;
+        vertical-align: top;
+        text-align: right;
+      }
+
+      .ref-date-table {
+        font-size: 10px;
+        text-align: left;
+        margin-top: 5px;
+        margin-right: 17.7%;
+      }
+
+      .section-divider {
+        margin-top: 15px;
+        border-top: 1px solid #000;
+      }
+      .section-title {
+        font-weight: bold;
+        font-size: 11px;
+        margin-top: 10px;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+      }
+
+      .fournisseur-table {
+        width: 100%;
+        font-size: 10px;
+        line-height: 1.5;
+        border-collapse: collapse;
+      }
+
+      .fournisseur-table td {
+        vertical-align: top;
+        padding: 2px 4px;
+      }
+
+      .detail-title {
+        font-weight: bold;
+        font-size: 11px;
+        margin-top: 10px;
+        text-transform: uppercase;
+      }
+      .titlePdf {
+        width: 80%;
+        font-size: 30px;
+        font-weight: bold;
+        margin-top: -20px;
+        margin-bottom: 35px;
+      }
+      .title_site {
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body style="display: flex; flex-direction: column; min-height: 100vh">
+    <!-- HEADER BLOCK  information site-->
+    <table
+      style="width: 100%; margin: 20px 0px; padding-bottom: -14px"
+      align="center"
+      cellspacing="0"
+    >
+      <tr>
+        <td style="width: 35%; text-align: left">
+          <div style="line-height: 15px">
+            <span
+              style="
+                font-size: 11px;
+                text-transform: uppercase;
+                font-weight: bold;
+              "
+            >
+              {{ dossier.title | upper }} </span
+            ><br />
+            <span style="font-size: 9px"
+              >{{ dossier.address}}</span
+            ><br />
+            <span style="font-size: 9px"
+              >Tel :{{ dossier.tel }}</span
+            ><br />
+            <span style="font-size: 9px"
+              >Fax :{{ dossier.fax }}</span
+            ><br />
+          </div>
+        </td>
+        <td style="width: 65%; text-align: right">
+          <img src="{{ logoPath }}" class="logo" alt="Logo" />
+        </td>
+      </tr>
+    </table>
+
+    <table class="header-table-fixed">
+      <tr>
+        <td class="header-right">
+          <div class="div_barcode">
+            <barcode
+              class="barcode"
+              code="{{ livraison.code }}"
+              type="C128A"
+              size="0.8"
+            />
+          </div>
+          <table class="ref-date-table">
+            <tr>
+              <td><b>REF </b></td>
+              <td>:</td>
+              <td>{{ livraison.code }}</td>
+            </tr>
+            <tr>
+              <td><b>DATE </b></td>
+              <td>:</td>
+              <td>{{ livraison.created|date('d/m/Y') }}</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <!-- TITLE -->
+    <div class="titlePdf">
+      {% if livraison.typeLivraison.id == 3 %}
+        {{ "RETOUR LIVRAISON"|upper }}
+      {% elseif livraison.typeLivraison.id == 2 %}
+        {{ "BON LIVRAISON"|upper }}
+      {% elseif livraison.typeLivraison.id == 5 %}
+        {{ "RETOUR LIVRAISON "|upper }}
+      {% elseif livraison.typeLivraison.id == 4 %}
+        {{ "BON LIVRAISON"|upper }}
+      {% else %}
+        {{ "COMMANDE"|upper }}
+      {% endif %}
+    </div>
+
+    <div
+      style="
+        position: relative;
+        width: 98%;
+        border-top: 0.3px solid #000;
+        text-align: center;
+        font-size: 11px;
+      "
+    ></div>
+
+    <!-- PATIENT SECTION -->
+    <div class="section-title">INFORMATIONS LIVRAISON</div>
+    <table class="fournisseur-table">
+      <tr>
+        <td style="width: 18%"><b>TYPE LIVRAISON </b></td>
+        <td style="width: 3%">:</td>
+        <td>{{ livraison.typeLivraison.id == 4 ? 'ALIMENTATION' : 'CONSOMMATION' }}</td>
+        {% if livraison.typeLivraison.id != 4 %}
+          <td style="width: 14%">IPP</td>
+          <td style="width: 3%">:</td>
+          <td>{{livraison.ipp}}</td>
+        {% endif %}
+      </tr>
+      <tr>
+        <td>MAGASIN DEMANDEUR</td>
+        <td>:</td>
+        <td>{{ livraison.demandeurId.designationAccess}}</td>
+        {% if livraison.typeLivraison.id != 4 %}
+        <td>NOM PATIENT</td>
+        <td>:</td>
+        <td>{{livraison.nomPatient}}</td>
+        {% endif %}
+      </tr>
+      <tr>
+        <td>MAGASIN DE TRAITEMENT</td>
+        <td>:</td>
+        <td>{{ livraison.recepteurId.designationAccess }}</td>
+        {% if livraison.typeLivraison.id != 4 %}
+        <td>DOSSIER PATIENT</td>
+        <td>:</td>
+        <td>{{livraison.dossierPatient}}</td>
+        {% endif %}
+      </tr>
+      <tr>
+        <td>NIVEAU DURGANCE</td>
+        <td>:</td>
+        <td>{{ livraison.urgent == 1 ? 'URGENT' : 'NON URGENT' }}</td>
+      </tr>
+      <tr>
+        <td>TYPE RECEPTION</td>
+        <td>:</td>
+        <td>{{ livraison.multiRecp == 1 ? 'PARTIELLE' : 'COMPLÈTE' }}</td>
+      </tr>
+    </table>
+
+    <!-- DETAIL Title -->
+    <div class="detail-title">DETAIL : {{ livraison.description }}</div>
+
+    <!-- TABLE DES PRODUITS -->
+    <table style="width: 100%; margin-top: 30px" cellspacing="0">
+      <thead>
+        <tr style="background-color: #bebebe; color: black">
+          <th
+            style="width: 5%; padding: 3px; font-size: 10px; text-align: left"
+          >
+            ORD
+          </th>
+          <th
+            style="width: 10%; padding: 3px; font-size: 10px; text-align: left"
+          >
+            REFERENCE
+          </th>
+          <th
+            style="width: 50%; padding: 3px; font-size: 10px; text-align: left"
+          >
+            DESIGNATION
+          </th>
+          <th
+            style="
+              width: 10%;
+              padding: 3px;
+              font-size: 10px;
+              text-align: center;
+            "
+          >
+            UNITE
+          </th>
+          <th
+            style="
+              width: 10%;
+              padding: 3px;
+              font-size: 10px;
+              text-align: center;
+            "
+          >
+            QNT
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% set details = livraison.tMsLivraisonlgs %} {% for key, detail in
+        details %}
+        <tr>
+          <td style="padding: 3px; font-size: 10px; text-align: left">
+            {{ loop.index }}
+          </td>
+          <td style="padding: 3px; font-size: 10px">
+            {{ detail.pProduit ? detail.pProduit.code|upper }}
+          </td>
+          <td style="padding: 3px; font-size: 10px">
+            {{ detail.pProduit ? detail.pProduit.titre|upper }}
+            {% if detail.observation %}
+            <br /><small>{{ detail.observation | upper }}</small>
+            {% endif %}
+          </td>
+          <td style="padding: 3px; font-size: 10px; text-align: center">
+            {{ detail.pPrUnite ? detail.pPrUnite.code|upper }}
+          </td>
+          <td style="padding: 3px; font-size: 10px; text-align: center">
+            {{ detail.quantiteLivree }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <htmlpagefooter name="myFooter">
+
+      <!-- SIGNATURE BLOCK FIXED ABOVE FOOTER -->
+      <div
+        style="width: 98%; margin: auto; border-collapse: separate; border-spacing: 4px; font-size: 9px;"
+      >
+        <table
+          style="
+            width: 98%;
+            border-collapse: separate;
+            border-spacing: 4px;
+          "
+          cellspacing="0"
+        >
+          <thead>
+            <tr style="background-color: #bebebe; font-size: 9px">
+              <th
+                colspan="2"
+                style="width: 50%; padding: 5px; text-align: center"
+              >
+                BESOIN
+              </th>
+              <th
+                colspan="2"
+                style="width: 50%; padding: 5px; text-align: center"
+              >
+                VALIDATION
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td
+                style="
+                  width: 25%;
+                  font-size: 10px;
+                  text-align: center;
+                  background-color: #e5e5e5;
+                  padding: 1px 6px;
+                "
+              >
+                ACHETEUR SITE
+              </td>
+              <td
+                style="
+                  width: 25%;
+                  font-size: 10px;
+                  text-align: center;
+                  background-color: #e5e5e5;
+                  padding: 1px 6px;
+                "
+              >
+                RESPONSABLE SITE
+              </td>
+              <td
+                style="
+                  width: 25%;
+                  font-size: 10px;
+                  text-align: center;
+                  background-color: #e5e5e5;
+                  padding: 1px 6px;
+                "
+              >
+                DAS
+              </td>
+              <td
+                style="
+                  width: 25%;
+                  font-size: 10px;
+                  text-align: center;
+                  background-color: #e5e5e5;
+                  padding: 1px 6px;
+                "
+              >
+                DIRECTION DÉLÉGUÉE
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+       <br><br><br><br><br><br><br><br>
+
+      <!-- ADDRESS LINE -->
+      <div
+        style="
+          position: relative;
+          width: 98%;
+          border-top: 0.3px solid #000;
+          padding: 5px;
+          text-align: center;
+          font-size: 11px;
+        "
+      >
+        {{ dossier.address }}
+      </div>
+
+      <!-- PAGE FOOTER / DATE -->
+      <table style="width: 100%; font-size: 8px; margin-top: 10px">
+        <tr>
+          <td style="text-align: left; padding-left: 20px; color: #636363">
+            {{ "now"|date("d/m/Y") }}
+          </td>
+          <td style="text-align: right; padding-right: 20px; color: #636363">
+            {PAGENO} of {nbpg}
+          </td>
+        </tr>
+      </table>
+    </htmlpagefooter>
+  </body>
+</html>
