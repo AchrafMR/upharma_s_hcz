@@ -1,24 +1,30 @@
 <table id="produitMagasinsTable" class="table table-striped">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Code</th>
-            <th>Titre</th>
-            <th>Magasin</th>
-            <th>Quantité</th>
-        </tr>
-    </thead>
-    <tbody id="produitMagasinsTableBody">
-        {% set ord = 1 %}
-        {% for quantite in quantites %}
-            <tr>
-                <td>{{ord}}</td>
-                <td>{{produit.code}}</td>
-                <td>{{produit.titre}}</td>
-                <td>{{quantite.magasin}}</td>
-                <td>{{quantite.quantite}}</td>
-            </tr>
-            {% set ord = ord + 1 %}
-        {% endfor %}
-    </tbody>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Code</th>
+      <th>Titre</th>
+      <th>Magasin</th>
+      <th>Quantité</th>
+      <th>Lot</th>
+      <th>Date de péremption</th>
+    </tr>
+  </thead>
+  <tbody id="produitMagasinsTableBody">
+    {% set ord = 1 %}
+    {% for detailProduit in detailsProduits %}
+      <tr>
+        <td>{{ ord }}</td>
+        <td>{{ produit.code }}</td>
+        <td>{{ produit.titre }}</td>
+        <td>{{ detailProduit.magasin }}</td>
+        <td>{{ detailProduit.quantite }}</td>
+        <td>{{ detailProduit.numlot }}</td>
+        <td>
+          {{ detailProduit.dateperemption ? detailProduit.dateperemption|date('d/m/Y') : '' }}
+        </td>
+      </tr>
+      {% set ord = ord + 1 %}
+    {% endfor %}
+  </tbody>
 </table>
