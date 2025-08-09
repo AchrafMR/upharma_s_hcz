@@ -116,6 +116,8 @@ class LivraisonController extends AbstractController
                 CASE 
                     WHEN l.typeLivraison = 2 THEN \'Consommation\' 
                     WHEN l.typeLivraison = 4 THEN \'Alimentation\' 
+                    WHEN l.typeLivraison = 3 THEN \'Retour Patient\' 
+                    WHEN l.typeLivraison = 5 THEN \'Retour Alimentation\' 
                     ELSE \'\' 
                 END AS type_livraison_label
             ')
@@ -148,7 +150,9 @@ class LivraisonController extends AbstractController
                 (:search LIKE \'%urgent%\' AND l.urgent = true) OR
                 (:search LIKE \'%normal%\' AND l.urgent = false)OR
                 (:search LIKE \'%Alimentation%\' AND l.typeLivraison = 4) OR
-                (:search LIKE \'%Consommation%\' AND l.typeLivraison = 2)
+                (:search LIKE \'%Consommation%\' AND l.typeLivraison = 2) OR
+                (:search LIKE \'%Retour Patient%\' AND l.typeLivraison = 3) OR
+                (:search LIKE \'%Retour Alimentation%\' AND l.typeLivraison = 2)
             ')
             ->setParameter('search', "%$searchLower%");
         }
