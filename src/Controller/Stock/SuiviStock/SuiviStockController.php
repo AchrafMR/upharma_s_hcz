@@ -49,7 +49,7 @@ class SuiviStockController extends AbstractController
 
         $magasins = $this->em->getRepository(PMagasins::class)->findMagasinByUser($this->getUser());
         $magasinDefaut = $this->em->getRepository(PMagasins::class)->findMagasinParDefaut($this->getUser());
-
+// dd($magasinDefaut);
         // dd($magasins, $magasinDefaut);
 
         if(!$actions){

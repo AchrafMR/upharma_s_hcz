@@ -156,11 +156,11 @@
      <!-- TITLE -->
     <div class="titlePdf">
       {% if commande.typeCommande.id == 3 %}
-        {{ "COMMANDE RETOUR"|upper }}
+        {{ "RETOUR PATIENT"|upper }}
       {% elseif commande.typeCommande.id == 2 %}
-        {{ "COMMANDE CONSOMMATION"|upper }}
+        {{ "BON DE COMMANDE"|upper }}
       {% elseif commande.typeCommande.id == 5 %}
-        {{ "COMMANDE RETOUR "|upper }}
+        {{ "RETOUR ALIMENTATION"|upper }}
       {% elseif commande.typeCommande.id == 4 %}
         {{ "COMMANDE ALIMENTATION"|upper }}
       {% else %}
