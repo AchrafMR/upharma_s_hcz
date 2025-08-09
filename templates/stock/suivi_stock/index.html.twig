@@ -23,28 +23,6 @@
                                 {% endfor %}
                             </select>
                         </div>
-
-                        {# {% set current_route = app.request.get('_route') %}
-
-                        {% for action in actions %}
-                            {% if action.horizontal and action.principal %}
-                                <button type="button" class="{{action.className}}" id="{{action.idName}}"><i class="{{action.icon}}"></i></button>
-                            {% endif %}
-
-                        {% endfor %} #}
-
-                        {# <div class="dropdown ml-2">
-                            <i class="menuActions menu_options_dots fa-solid fa-ellipsis-vertical" id="Actions"></i>
-                            <div class="dropdown-menu dropdown-content divMenu" id="divMenuActions">
-                                {% for action in actions %}
-                                    {% if action.horizontal and not action.principal %}
-                                        <button class="dropdown-item {{action.className}}" data-toggle="modal" data-target="#{{action.idName}}"><i class="{{action.icon}}"></i> {{action.nom}}</button>
-                                    {% endif %}
-
-                                {% endfor %}
-                            </div>
-                        </div> #}
-
                     </div>
                 </div>
                 <table id="ProduitsTable" class="table table-striped">

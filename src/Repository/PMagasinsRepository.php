@@ -83,7 +83,7 @@ class PMagasinsRepository extends ServiceEntityRepository
             ->join('m.pAffectationMagasins', 'a')
             ->join('a.userr', 'user')
             ->where('m.defaut = 1')
-            // ->andWhere('d.defaut = 1') //if it should be the default depot
+            ->andWhere('a.defaut = 1') 
             ->andWhere('user = :user')
             ->setParameter('user', $user)
             ->setMaxResults(1)
@@ -110,7 +110,7 @@ class PMagasinsRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('m')
             ->join('m.pAffectationMagasins', 'a')
             ->join('a.userr', 'user')
-            // ->andWhere('d.defaut = 1') //if it should be the default depot
+            ->andWhere('a.defaut = 1') 
             ->andWhere('user = :user')
             ->setParameter('user', $user)
             ->getQuery()
