@@ -2,9 +2,6 @@
 
 namespace App\Controller\Stock\SuiviStock;
 
-use DateTime;
-use App\Entity\PDevise;
-use App\Entity\PEntite;
 use App\Entity\PMagasins;
 use App\Entity\PProduits;
 use App\Entity\PPrUnites;
@@ -49,8 +46,6 @@ class SuiviStockController extends AbstractController
 
         $magasins = $this->em->getRepository(PMagasins::class)->findMagasinByUser($this->getUser());
         $magasinDefaut = $this->em->getRepository(PMagasins::class)->findMagasinParDefaut($this->getUser());
-// dd($magasinDefaut);
-        // dd($magasins, $magasinDefaut);
 
         if(!$actions){
             return $this->render('errors/403.html.twig');

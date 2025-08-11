@@ -338,7 +338,7 @@ window.addEventListener("load", () => {
     const deleted = window.getDeletedProduits().filter(d => d.demande_id == demandeId);
 
     try {
-      const response = await fetch("/vente/edit-demande", {
+      const response = await fetch("/mouvement/edit-demande", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -381,7 +381,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const updatePosition = async (id, position, button) => {
     try {
-      const response = await fetch("/vente/update-position-demande", {
+      const response = await fetch("/mouvement/update-position-demande", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

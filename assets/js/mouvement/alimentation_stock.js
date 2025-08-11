@@ -43,7 +43,7 @@ window.addEventListener("DOMContentLoaded", () => {
     productGrid.innerHTML = `<p class="text-center text-muted">Chargement...</p>`;
 
     try {
-      const res = await fetch(`/vente/api/produits/${selectedMagasinId}`);
+      const res = await fetch(`/mouvement/api/produits/${selectedMagasinId}`);
       const data = await res.json();
 
       window.PRODUCTS = data;
@@ -323,7 +323,7 @@ window.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      const res = await fetch("/vente/save-demande", {
+      const res = await fetch("/mouvement/save-demande", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

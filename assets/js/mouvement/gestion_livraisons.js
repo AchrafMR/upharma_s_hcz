@@ -144,7 +144,7 @@ $(document).on("click", ".btn-valider, .btn-generer", function () {
   const action = $(this).hasClass("btn-valider") ? "valider" : "generer";
 
   $.ajax({
-    url: `/vente/update-status`,
+    url: `/mouvement/update-status`,
     method: "POST",
     data: {
       id,

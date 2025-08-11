@@ -346,7 +346,7 @@ window.addEventListener('load', () => {
       const deleted = window.getDeletedProduits().filter(d => d.commande_id == commandeId);
 
       try {
-        const response = await fetch('/vente/edit-commande', {
+        const response = await fetch('/mouvement/edit-commande', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -394,7 +394,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const updatePosition = async (id, position) => {
     try {
-      const response = await fetch('/vente/update-position-commande', {
+      const response = await fetch('/mouvement/update-position-commande', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -513,7 +513,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const formData = new FormData(form);
 
         try {
-          const res = await fetch("/vente/save-livraison", {
+          const res = await fetch("/mouvement/save-livraison", {
             method: "POST",
             body: formData,
           });
@@ -544,7 +544,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const formData = new FormData(form);
 
       try {
-        const res = await fetch("/vente/save-livraison", {
+        const res = await fetch("/mouvement/save-livraison", {
           method: "POST",
           body: formData,
         });
