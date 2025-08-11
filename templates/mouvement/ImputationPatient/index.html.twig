@@ -1,0 +1,139 @@
+{% extends 'base.html.twig' %} {% block title %}Point de Vente{% endblock %} {%
+block stylesheets %}
+{{ parent() }}
+
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  rel="stylesheet"
+/>
+
+{% endblock %} {% block body %}
+
+<!-- Main Grid -->
+<div class="container-fluid px-0">
+  <div class="row gx-0 px-2">
+      {# Search Input and select magasim #}
+      <div class="search_section flex-grow-1 d-flex justify-content-end">
+          <div class="mr-2"  style="min-width: 170px; text-align: center !important;">
+            <select id="magasin-select" class="form-control shadow-none" >
+              {% for magasin in magasinsDemandeur %}
+                <option value="{{ magasin.id }}"
+                  {% if defaultMagasin and magasin.id == defaultMagasin.id %}selected{% endif %}>
+                  {{ magasin.designationAccess }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div
+            class="search_input"
+            style="min-width: 195px"
+          >
+            <input
+              type="text"
+              class="form-control form-control-sm w-100"
+              placeholder="Rechercher des produits..."
+              id="product-search"
+            />
+          </div>
+      </div>
+
+    <div class="col-lg-8 px-0">
+      <div class="h-100 border rounded shadow-sm bg-white py-1 pt-1 pr-2 pl-2">
+        <div class="d-flex">
+          <div
+            class="d-flex flex-column align-items-center py-3 pr-2 gap-2 pe-2 border-end"
+          >
+            <button class="category-nav-btn mb-1 active" data-category="all">
+              Tous
+            </button>
+            {% for category in categories %}
+              <button
+                class="category-nav-btn mx-1 overflow-hidden position-relative"
+                data-category="{{ category.category }}"
+              >
+                <span class="short-text">
+                  {{ category.category|length > 7 ? category.category|slice(0,7) ~ '...' : category.category }}
+                </span>
+                <span class="full-text">
+                  {{ category.category }}
+                </span>
+              </button>
+            {% endfor %}
+          </div>
+
+          <!-- PRODUCT GRID -->
+          <div class="flex-grow-1 px-3 product-area-scroll">
+            <div class="row gx-3 gy-4" id="product-list">
+              <p class="text-center text-muted">Chargement des produits...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart -->
+    <div class="col-md-4 ps-0 pe-0">
+      <div class="card cart shadow-sm rounded-4 border-0 mb-4 me-2">
+        <div
+          class="card-header bg-light d-flex justify-content-between align-items-center"
+        >
+          <h6 class="mb-0 fw-bold text-uppercase">Panier</h6>
+          <i class="fa-solid fa-cart-shopping"></i>
+        </div>
+
+        <div class="card-body cart-scroll" id="cart-items-container">
+          <!-- JS will inject cart items here -->
+        </div>
+
+        <div class="px-4 pb-4 border-top pt-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0 fw-bold">Total</h5>
+            <h4 class="mb-0 text-success fw-bold" id="cart-subtotal">
+              0.00 DH
+            </h4>
+          </div>
+
+          {% for action in actions %} {% if action.horizontal and
+          action.principal %}
+          <button
+            class="btn btn-primary btn-lg w-100 {{ action.className }}"
+            id="commander-button"
+            data-target="#{{ action.idName }}"
+          >
+            <i class="{{ action.icon }}"></i> {{ action.nom }}
+          </button>
+          {% endif %} {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    {% include 'mouvement/ImputationPatient/inc/modal_add_commande.html.twig' %}
+  </div>
+</div>
+<script>
+  window.DEFAULT_TRAITEMENT_IDS = [
+    {% for magasin in magasinsDemandeur %}
+      {{ magasin.id }}{{ not loop.last ? ',' }}
+    {% endfor %}
+  ];
+  document.addEventListener("DOMContentLoaded", () => {
+    const categoryButtons = document.querySelectorAll('.category-nav-btn');
+
+    categoryButtons.forEach(btn => {
+      btn.addEventListener('click', function () {
+        categoryButtons.forEach(b => b.classList.remove('active'));
+
+        this.classList.add('active');
+
+        const category = this.dataset.category;
+        console.log("Selected category:", category);
+      });
+    });
+  });
+  window.PRODUCTS = {{ products|json_encode|raw }};
+  window.infos_patient = {{ infosPatient|json_encode|raw }};
+</script>
+{% block javascripts %}
+{{ parent() }}
+{{ encore_entry_script_tags("imputation_patient") }}
+{% endblock %} {% endblock %}
