@@ -9,8 +9,20 @@
 {% endblock %} {% block body %}
 <div class="main">
   <div class="container">
+    <div
+      class="col-md-6 mt-2 d-flex justify-content-end align-items-center ml-auto"
+    >
+      {% for action in actions %} {% if action.horizontal and action.principal %}
+          <button
+            class=" {{ action.className }}"
+            data-target="#{{ action.idName }}"
+          >
+            <i class="{{ action.icon }}"></i>
+          </button>
+          {% endif %} {% endfor %}
+    </div>
     <div class="row">
-      <div class="col-md-12 mt-4">
+      <div class="col-md-12 mt-2">
         <table id="salesTable" class="table table-striped">
           <thead>
             <tr>
@@ -19,9 +31,9 @@
               <th>DATE</th>
               <th>DESCRIPTION</th>
               <th>MAGASIN DEMANDEUR</th>
-              <th style="width: 15%;">MAGASIN DE TRAITEMENT</th>
+              <th style="width: 15%">MAGASIN DE TRAITEMENT</th>
               <th>TOTAL (MAD)</th>
-              <th>URGENCE</th>   
+              <th>URGENCE</th>
               <th>POSITION</th>
               <th>ACT</th>
             </tr>
@@ -33,6 +45,7 @@
   </div>
 
   {% include 'stock/GestionTransfert/inc/edit_demande_modal.html.twig' %} 
+  {% include 'stock/GestionTransfert/inc/ajouter_transfert_modal.html.twig' %} 
   {% include 'stock/GestionTransfert/inc/detail_demande_modal.html.twig' %}
 </div>
 {% endblock %} {% block javascripts %}
@@ -42,5 +55,5 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 {{ parent() }}
-{{ encore_entry_script_tags("gestion_demandes") }}
+{{ encore_entry_script_tags("gestion_transfert") }}
 {% endblock %}
