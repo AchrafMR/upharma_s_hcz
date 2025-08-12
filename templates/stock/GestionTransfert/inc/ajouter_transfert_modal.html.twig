@@ -1,0 +1,85 @@
+    <!-- Modal Commander -->
+    <div
+      class="modal right fade"
+      id="ajouterTransfert"
+      role="dialog"
+      aria-labelledby="ajouterTransfert"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" style="width: 50%" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">INFORMATIONS DE LA COMMANDE</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <div class="form-row">
+              <!-- Magasin Demandeur -->
+              {# <div class="form-group col-md-6">
+                <label for="demandeur_id">Magasin Demandeur</label>
+                <select id="demandeur_id" class="form-control select2" data-live-search="true" disabled>
+                  {% for magasin in magasinsDemandeur %}
+                    <option value="{{ magasin.id }}"
+                      {% if defaultMagasin and magasin.id == defaultMagasin.id %}selected{% endif %}>
+                      {{ magasin.designationAccess }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Magasin de Traitement -->
+              <div class="form-group col-md-6">
+                <label for="recepteur_id">Magasin de Traitement</label>
+                <select id="recepteur_id" class="form-control select2" data-live-search="true">
+                    {% for magasin in magasinsTraitement %}
+                      <option value="{{ magasin.id }}"
+                        {% if defaultMagasin and magasin.id == defaultMagasin.id %}selected{% endif %}>
+                        {{ magasin.designationAccess }}
+                      </option>
+                    {% endfor %}
+                </select>
+              </div>
+            </div> #}
+            <!-- Type de Demande -->
+            <div class="form-row"> 
+              <div class="form-group col-md-6">
+                <label for="type_demande">Type d’opération</label>
+                <select id="type_demande" class="form-control select2" data-live-search="true">
+                  <option value="4" selected>Demande</option>
+                  <option value="5">Retour</option>
+                </select>
+              </div>
+              
+              <!-- Urgent -->
+              <div class="urgent-check-wrapper">
+                <label class="form-check-label " for="urgent">Urgent</label>
+                <input class="form-check-input" type="checkbox" id="urgent" />
+              </div>
+              
+            </div>            
+            <div class="form-row" id="not-patient-fields">
+              <div class="form-group col-md-6">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" class="form-control" required placeholder="Description..." />
+              </div>
+            </div>
+
+            
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" id="submit-demande" class="btn btn-primary">
+              <i class="fa-regular fa-paper-plane"></i> Commander
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>

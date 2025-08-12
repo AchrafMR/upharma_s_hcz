@@ -55,6 +55,7 @@ Encore
 
   // module Stock
   .addEntry("stock_suivi", "./assets/js/stock/suivi.js")
+  .addEntry("gestion_transfert", "./assets/js/stock/transfert.js")
 
   // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
   .enableStimulusBridge("./assets/controllers.json")

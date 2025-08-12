@@ -138,7 +138,7 @@ class TransfertController extends AbstractController
             ->leftJoin('d.recepteur_id', 'rec')
             ->leftJoin('d.status', 'status')
             ->where('d.actif = 1')
-            ->andWhere('d.typeDemande = 4  or d.typeDemande = 5')
+            ->andWhere('d.typeDemande = 5')
             ->andWhere('d.pEntite = :entite')
             ->setParameter('entite', $dossier)
             ->groupBy('d.id, d.code, d.description, d.created, status.designation, d.urgent, dem.designationAccess, rec.designationAccess');
