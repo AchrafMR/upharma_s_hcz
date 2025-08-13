@@ -1,0 +1,91 @@
+<div class="modal right fade" id="ajouterDemandePatient" role="dialog" aria-labelledby="ajouterDemandePatient" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width:65%">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" >Panier demande patient</h5>
+            <button type="button" class="close" data-dismiss="modal" id="closeDemandeAchat" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="demandeur_id">Magasin Demandeur</label>
+                    <select id="demandeur_id" class="form-control select2" data-live-search="true">
+                    {% for magasin in magasinsDemandeur %}
+                        <option value="{{ magasin.id }}"
+                        {% if defaultMagasin and magasin.id == defaultMagasin.id %}selected{% endif %}>
+                        {{ magasin.designationAccess }}
+                        </option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="type_demande">Type d’opération</label>
+                    <select id="type_demande" class="form-control select2" data-live-search="true" disabled>
+                    <option value="2" selected>Demande</option>
+                    <option value="5">Retour</option>
+                    </select>
+                </div>
+             
+            </div>
+            <!-- Type de Demande -->
+            <div class="form-row"> 
+               <div class="form-group col-md-6">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" class="form-control" required placeholder="Description..." />
+              </div>
+              
+              <!-- Urgent -->
+              <div class="urgent-check-wrapper">
+                <label class="form-check-label " for="urgent">Urgent</label>
+                <input class="form-check-input" type="checkbox" id="urgent" />
+              </div>
+              
+            </div>            
+          
+
+            <hr/>
+
+            <table id="articlesTable" style="table-layout: fixed; width: 100%;" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th width="1%">#</th>
+                        <th width="33%">Article</th>
+                        <th width="5%">QTE</th>
+                        <th width="3%">ACT</th>
+                    </tr>
+                </thead>
+                <tbody id="articlesTableBody">
+                    <tr>
+                        <td class="newArticleTd"></td>
+                        <td class="newArticleTd " width="20%">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <select class="articleSelect form-control" name="articleSelectAjout" id="articleSelectAjout" style="flex: 1;">
+                                    <option value="" disabled selected>CHOIX DE ARTICLES</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td class="newArticleTd" width="10%"><input name="quantite" id="quantite" type="number" class="quantite form-control no-spinner" placeholder="0.00" min="0"></td>
+                        <td class="newArticleTd">
+                            <a href="#" id="addArticleAjout" class="addArticle" style="background: transparent; border: none; padding: 0;">
+                                <span class="ladda-label">
+                                <i class="fa-solid fa-circle-plus" style="color: #71c6ad;font-size: 15px !important;"></i>
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer m-2">
+                <button type="submit" class="btn-sm btn btn-primary saveDemandePatient ladda-button" data-spinner-size="18" data-style="zoom-out">
+                    <span class="ladda-label">
+                    <i class="fa-regular fa-floppy-disk"></i> Enregistrer
+                    </span>
+                </button>
+        </div>
+        </div>
+    </div>
+</div>

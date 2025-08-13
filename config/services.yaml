@@ -25,6 +25,12 @@ services:
         class: App\Service\UserOperation
         arguments: ['@doctrine.orm.entity_manager']
 
+    App\Service\Hosix\HosixHczService:
+        arguments:
+            $connection: '@doctrine.dbal.hosix_hcz_connection' 
+        public: true
+
+    hosix_hcz: '@App\Service\Hosix\HosixHczService'
 
     # App\Security\ApiKeyAuthenticator:
     #     arguments:

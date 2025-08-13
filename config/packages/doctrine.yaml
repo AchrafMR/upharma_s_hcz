@@ -7,9 +7,17 @@ doctrine:
                 charset: UTF-8
                 options:
                     TrustServerCertificate: yes
+                    
                 # IMPORTANT: You MUST configure your server version,
                 # either here or in the DATABASE_URL env var (see .env file)
                 #server_version: '13'
+            hosix_hcz:
+                # configure these for your database server
+                url: '%env(resolve:DATABASE_URL_Hosix_Hcz)%'
+                driver: 'sqlsrv'
+                charset: UTF-8
+                options:
+                    TrustServerCertificate: yes
             # ugouv:
             #     url: '%env(resolve:DATABASE_URL_UGOUV)%'
             #     driver: 'mysql'
@@ -17,13 +25,7 @@ doctrine:
             #     IMPORTANT: You MUST configure your server version,
             #     either here or in the DATABASE_URL env var (see .env file)
             #     server_version: '5.7'
-            # HosixHcz:
-            #     # configure these for your database server
-            #     url: '%env(resolve:DATABASE_URL_Hosix_Hcz)%'
-            #     driver: 'sqlsrv'
-            #     charset: UTF-8
-            #     options:
-            #         TrustServerCertificate: yes
+            
             # TLIMS:
             #     # configure these for your database server
             #     url: '%env(resolve:DATABASE_URL_TLIMS)%'

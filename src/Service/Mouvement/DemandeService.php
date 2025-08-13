@@ -47,11 +47,13 @@ class DemandeService
             $demande->setPositionActuel('Généré');
             $status = $this->em->getRepository(PStatut::class)->find(13);
             $demande->setNomPatient($data['nom_patient'] ?? null);
-            $demande->setDossierPatient($data['dossier_patient'] ?? null);
+            $demande->setDossierPatient($data['di'] ?? null);
             $demande->setIpp((int)($data['ipp'] ?? null));
         } else {
             $demande->setPositionActuel('Crée');
             $status = $this->em->getRepository(PStatut::class)->find(9);
+            $recepteur = $this->em->getRepository(PMagasins::class)->find($data['recepteur_id'] ?? null);
+            $demande->setRecepteurId($recepteur);
         }
 
         $demande->setStatus($status);
@@ -66,28 +68,25 @@ class DemandeService
         }
 
         $demandeur = $this->em->getRepository(PMagasins::class)->find($data['demandeur_id'] ?? null);
-        $recepteur = $this->em->getRepository(PMagasins::class)->find($data['recepteur_id'] ?? null);
-
         $demande->setDemandeurId($demandeur);
-        $demande->setRecepteurId($recepteur);
+       
 
         $this->em->persist($demande);
-        $this->em->flush();
 
         foreach ($data['lignes'] as $ligne) {
             $produit = $this->em->getRepository(PProduits::class)->find($ligne['id']);
             if (!$produit) continue;
 
             $unite = $produit->getPPrUnite();
-            $remise = $ligne['remise'] ?? 0;
-            $tva = $ligne['tva'] ?? 0;
+            $remise =  0;
+            $tva =  0;
 
             $quantite = abs((float) $ligne['quantity']);
             if ($typeDemandeId === 3 or $typeDemandeId === 5) {
                 $quantite *= -1;
             }
 
-            $prixUnitaire = (float) $ligne['price'];
+            $prixUnitaire =  $produit->getPrixVente() ;
             $montantHt = ($prixUnitaire * $quantite) - $remise;
             $montantTtc = $montantHt + ($montantHt * $tva / 100);
 
@@ -110,9 +109,9 @@ class DemandeService
 
         $this->em->flush();
 
-        if (in_array($typeDemandeId, [2, 3])) {
-            $this->commandeService->createFromDemande($demande);
-        }
+        // if (in_array($typeDemandeId, [2, 3])) {
+        //     $this->commandeService->createFromDemande($demande);
+        // }
 
         return $demande;
     }
