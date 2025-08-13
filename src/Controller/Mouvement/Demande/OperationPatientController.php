@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Repository\PProduitsRepository;
+use App\Repository\TStStockstaticRepository;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use App\Service\Hosix\HosixHczService;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -107,19 +108,35 @@ class OperationPatientController extends AbstractController
         return $this->json($rows);
     }
 
-    #[Route('/fetch-stock', name: 'mouvement_fetch-stock', methods: ['POST'])]
-    public function fetchStock(Request $request): Response
-    {
-        $data = json_decode($request->getContent(), true);
-        if (!$data || empty($data['lignes'])) {
-            return $this->json(['status' => 'error', 'message' => 'Aucune donnée reçue.'], 400);
-        }
+#[Route('/fetch-stock', name: 'mouvement_fetch-stock', methods: ['POST'])]
+public function fetchStock(Request $request, TStStockstaticRepository $repo): Response
+{
+    $data = json_decode($request->getContent(), true);
 
+    if (!$data || empty($data['lignes']) || empty($data['demandeur_id'])) {
         return $this->json([
-            'status' => 'success',
-            'message' => 'search from stock.'
-        ]);
+            'status' => 'error',
+            'message' => 'Paramètres invalides.',
+        ], 400);
     }
+
+    $demandeurId = (int) $data['demandeur_id'];
+    $stocks = [];
+
+    foreach ($data['lignes'] as $ligne) {
+        $productId = (int) $ligne['id'];
+        $stockRows = $repo->findStockByProductAndEmplacement($productId, $demandeurId);
+
+        if (!empty($stockRows)) {
+            $stocks[] = $stockRows[0]; // already contains produit_id and quantity
+        }
+    }
+
+    return $this->json([
+        'status' => 'success',
+        'stocks' => $stocks,
+    ]);
+}
 
 
 }
