@@ -24,6 +24,18 @@ class TStStockstaticRepository extends ServiceEntityRepository
 //    /**
 //     * @return TStStockstatic[] Returns an array of TStStockstatic objects
 //     */
+
+    public function findStockByProductAndEmplacement(int $productId, int $demandeurId): ?array
+    {
+        return $this->createQueryBuilder('s')
+            ->select('IDENTITY(s.pProduit) AS produit_id', 's.solde AS quantity')
+            ->where('s.pProduit = :productId')
+            ->andWhere('s.pEmplacements = :demandeurId')
+            ->setParameter('productId', $productId)
+            ->setParameter('demandeurId', $demandeurId)
+            ->getQuery()
+            ->getArrayResult();
+    }
 //    public function findByExampleField($value): array
 //    {
 //        return $this->createQueryBuilder('t')
