@@ -75,6 +75,7 @@ class TransfertController extends AbstractController
         $firstMagasinDemandeur = !empty($magasinsDemandeur) ? $magasinsDemandeur[0] : null;
         $products = $produitsRepository->findProductsWithTarificationAndSolde(null, $firstMagasinDemandeur?->getId());
         // dd($demandes);
+        $magasinSelected = $magasinsRepository->findSelectedMagasin($this->getUser());
 
         return $this->render('stock/GestionTransfert/index.html.twig', [
             'professions' => $professions,
@@ -85,6 +86,7 @@ class TransfertController extends AbstractController
             'magasinsTraitement' => $magasinsTraitement,
             'demandes' => $demandes,
             'produits' => $products,
+            'defaultMagasin' => $magasinSelected,
         ]);
     }
 
