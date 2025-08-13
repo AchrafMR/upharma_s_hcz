@@ -1,0 +1,62 @@
+{% set id = id|default('opPatientPopup') %}
+{% set autoOpen = auto_open is defined and auto_open ? 'true' : 'false' %}
+
+<div id="{{ id }}-backdrop" class="popup-backdrop" hidden></div>
+
+<div id="{{ id }}"
+     class="popup"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="{{ id }}-title"
+     data-auto-open="{{ autoOpen }}"
+     hidden>
+  <div class="popup__card">
+    <div class="popup__header">
+      <h2 id="{{ id }}-title" class="popup__title">{{ title|default('Information Patient') }}</h2>
+    </div>
+
+    <div class="popup__body">
+      <form id="{{ id }}-form" class="needs-validation" novalidate>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="{{ id }}-ipp">IPP (ID Patient)</label>
+            <input type="text" id="{{ id }}-ipp" name="ipp" class="form-control" placeholder="Identifiant du patient" required />
+          </div>
+          <div class="form-group col-md-6">
+            <label for="{{ id }}-nom_patient">Nom du Patient</label>
+            <input type="text" id="{{ id }}-nom_patient" name="nom_patient" class="form-control" placeholder="Nom complet du patient" required  disabled/>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="{{ id }}-dossier_imputation">DI</label>
+            <select id="{{ id }}-dossier_imputation" name="dossier_imputation" class="form-control" required>
+              <option value="" selected disabled>-- Sélectionner DI --</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="{{ id }}-dossier_patient">Dossier Patient</label>
+            <input type="text" id="{{ id }}-dossier_patient" name="dossier_patient" class="form-control" placeholder="Dossier..." required disabled/>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="{{ id }}-convention">Convention</label>
+            <input type="text" id="{{ id }}-convention" name="convention" class="form-control" placeholder="Convention..." required disabled/>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="popup__footer">
+      <button type="submit"
+              class="popup__btn popup__btn--primary"
+              form="{{ id }}-form"
+              data-popup-validate>
+        Enregistrer
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %} {% block title %}OPÉRATION PATIENT{% endblock %}
+{% block stylesheets %}
+{{ parent() }}
+{{ encore_entry_link_tags("operation_patient") }}
+{% endblock %} {% block body %}
+<div class="d-flex align-items-center justify-content-between px-2 pt-4">
+  <h2 class="h6 mb-0">INFORMATION PATIENT</h2>
+
+  {% for action in actions %} {% if action.horizontal and action.principal %}
+  <button
+    type="button"
+    class="{{ action.className }}"
+    data-toggle="modal"
+    data-target="#{{ action.idName }}"
+  >
+    <i class="{{ action.icon }}"></i>
+  </button>
+  {% endif %} {% endfor %}
+</div>
+<hr class="mt-2" />
+
+<div id="patientInfoContainer" class="px-2"></div>
+
+<hr class="my-3" />
+
+<div class="container-fluid px-2">
+  <div class="row g-3 align-items-stretch">
+    {# LEFT: Sortie Patient #}
+    <div class="col-12 col-md-6">
+      <div class="card shadow-sm border-1 h-100">
+        <div
+          class="card-header bg-white border-0 d-flex align-items-center justify-content-between py-3"
+        >
+          <h3 class="h6 mb-0">SORTIE PATIENT</h3>
+        </div>
+        <div class="card-body pt-0">
+          <div id="sortiePatientBlock">
+            <p class="text-muted mb-0">Aucune sortie pour le moment.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 d-md-none">
+      <hr class="my-3" />
+    </div>
+
+    {# RIGHT: Commande Patient #}
+    <div class="col-12 col-md-6">
+      <div class="card shadow-sm border-1 h-100">
+        <div
+          class="card-header bg-white border-0 d-flex align-items-center justify-content-between py-3"
+        >
+          <h3 class="h6 mb-0">COMMANDE PATIENT</h3>
+        </div>
+        <div class="card-body pt-0">
+          <div id="commandePatientBlock">
+            <p class="text-muted mb-0">Aucune commande pour le moment.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{# Include the popup #} {% include
+'mouvement/OperationPatient/popup/infoPatient_popup.html.twig' with { id:
+'opPatientPopup', title: 'Information Patient', auto_open: true } %} {% include
+'mouvement/OperationPatient/modals/ajouter.html.twig' %} {% endblock %} {% block
+javascripts %}
+{{ parent() }}
+{{ encore_entry_script_tags("operation_patient") }}
+{% endblock %}

@@ -15,9 +15,11 @@ $danger:#AB4459;
 @import "profile";
 @import "addPatient";
 @import "../plugins/toastr/build/toastr.css";
-@import "vente/pointVente";
-@import "vente/livraison.scss";
-@import "vente/commande.scss";
+@import "mouvement/pointVente";
+@import "mouvement/livraison.scss";
+@import "mouvement/commande.scss";
+@import "mouvement/operationPatient.scss";
+
 
 
 * {

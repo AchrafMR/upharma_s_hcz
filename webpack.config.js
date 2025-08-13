@@ -47,7 +47,7 @@ Encore
   .addEntry("sidebar", "./assets/js/plugins/sidebar.js")
 
   //module mouvement
-  .addEntry("imputation_patient", "./assets/js/mouvement/imputation_patient.js")
+  .addEntry("operation_patient", "./assets/js/mouvement/operation_patient/operation_patient.js")
   .addEntry("gestion_demandes", "./assets/js/mouvement/gestion_demandes.js")
   .addEntry("gestion_commandes", "./assets/js/mouvement/gestion_commandes.js")
   .addEntry("gestion_livraisons", "./assets/js/mouvement/gestion_livraisons.js")
