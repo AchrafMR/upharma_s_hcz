@@ -14,7 +14,7 @@
     >
       {% for action in actions %} {% if action.horizontal and action.principal %}
           <button
-            class=" {{ action.className }}"
+            class=" {{ action.className }} {{ action.idName }}"
             data-target="#{{ action.idName }}"
           >
             <i class="{{ action.icon }}"></i>

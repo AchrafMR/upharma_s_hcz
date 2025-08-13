@@ -211,35 +211,7 @@ window.addEventListener("load", () => {
       });
     }
 
-    // Add new product row
-    if (target.classList.contains("fa-plus")) {
-      const tableBody = modal.querySelector("tbody");
-      const newRow = document.createElement("tr");
-
-      newRow.innerHTML = `
-        <td style="vertical-align: top !important; text-align: left !important;">
-          <select class="form-control form-control-sm product-select">
-            ${produits
-              .map(
-                (p) =>
-                  `<option value="${p.id}" data-prix="${p.price}">${p.name}</option>`
-              )
-              .join("")}
-          </select>
-        </td>
-        <td>
-          <input type="number" class="form-control form-control-sm quantity-input" min="1" value="1">
-        </td>
-        <td class="text-center">
-          <button type="button" class="btn btn-sm btn-save-new-line" title="Enregistrer">
-            <i class="fa fa-save text-success"></i>
-          </button>
-        </td>
-      `;
-
-      tableBody.appendChild(newRow);
-    }
-
+    
 
     if (target.classList.contains("btn-save-new-line")) {
       const productSelect = row.querySelector(".product-select");
@@ -436,7 +408,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     $('body').on('click', '.genererPdfDemandeSortieStock', function (e) {
         e.preventDefault();
-
+        alert('test js');
         const id = $(this).data('id');
         if (!id) {
             toastr.warning("ID de Demande ortie Stock manquant.");
@@ -451,10 +423,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });  
   
-    $("#ajouterTransfert").modal("show");
+    $('body').on('click', '.ajouter-transfert', function () {
+      
+      $("#ajouterTransfert").modal("show");
 
-    $("#ajouterTransfert").on("hidden.bs.modal", () => {
-      isCommandLocked = false;
     });
 });
 
