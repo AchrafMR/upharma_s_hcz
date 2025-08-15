@@ -256,11 +256,10 @@ public function saveDemande(Request $request): Response
         $this->em->persist($commandelg); 
     }
     $this->em->flush();
-    if ($typeOperation === 1) {
-        $this->demandeService->createDemandeAlimentationFromCommande($commande);
-    }
+    // if ($typeOperation === 1) {
+    //     $this->demandeService->createDemandeAlimentationFromCommande($commande);
+    // }
     
-
     return $this->json([
         'status' => 'success',
         'message' => 'Commande enregistrée avec succès.',

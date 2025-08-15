@@ -433,16 +433,16 @@ class CommandeVenteController extends AbstractController
                 $this->em->persist($livraisonObj);
             }
 
-            $magasinId = $commande->getDemandeurId()->getId();
-            $operation = ($typeCommande->getId() == 2) ? 'sortie' : 'entree';
+            // $magasinId = $commande->getDemandeurId()->getId();
+            // $operation = ($typeCommande->getId() == 2) ? 'sortie' : 'entree';
 
-            $this->stockDynaService->insertStockDynamique(
-                $ligne->getPProduit(),
-                $ligne->getPPrUnite(),
-                $qtyLivree,
-                $magasinId,
-                $operation
-            );
+            // $this->stockDynaService->insertStockDynamique(
+            //     $ligne->getPProduit(),
+            //     $ligne->getPPrUnite(),
+            //     $qtyLivree,
+            //     $magasinId,
+            //     $operation
+            // );
              
 
             $ligne->setQuantiteServie($newServie);

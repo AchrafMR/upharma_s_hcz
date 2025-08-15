@@ -231,22 +231,17 @@ public function updateLivraisonStatus(Request $request,EntityManagerInterface $e
             $recepteur = $livraison->getRecepteurId();
             $type_livraison = $livraison->getTypeLivraison();
 
-            if (
-                $demandeur &&
-                $recepteur &&
-                $demandeur->getId() !== $recepteur->getId() &&
-                $type_livraison !== 4
-            ) {
-                foreach ($livraison->getTMsLivraisonlgs() as $ligne) {
-                    $this->stockDynaService->insertStockDynamique(
-                        $ligne->getPProduit(),
-                        $ligne->getPPrUnite(),
-                        $ligne->getQuantiteLivree(),
-                        $demandeur->getId(),
-                        'sortie'
-                    );
-                }
+            
+            foreach ($livraison->getTMsLivraisonlgs() as $ligne) {
+                $this->stockDynaService->insertStockDynamique(
+                    $ligne->getPProduit(),
+                    $ligne->getPPrUnite(),
+                    $ligne->getQuantiteLivree(),
+                    $demandeur->getId(),
+                    'sortie'
+                );
             }
+            
 
             $livraison->setStatus($status);
             $livraison->setStPositionActuel($position);

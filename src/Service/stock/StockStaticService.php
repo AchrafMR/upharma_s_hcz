@@ -20,30 +20,44 @@ class StockStaticService
         $this->security = $security;
     }
 
-    public function updateSolde(PProduits $produit, PPrUnites $unite, PEmplacements $emplacement, float $quantite): void
-    {
-        // dd("achraf");
-        $stock = $this->em->getRepository(TStStockstatic::class)->findOneBy([
-            'pProduit' => $produit,
-            'pPrUnite' => $unite,
-            'pEmplacements' => $emplacement,
-        ]);
-        if ($stock) {
-            $newSolde = $stock->getSolde() + $quantite;
-            $stock->setSolde($newSolde);
-        } else {
-            $stock = new TStStockstatic();
-            $stock->setPProduit($produit);
-            $stock->setPPrUnite($unite);
-            $stock->setPEmplacements($emplacement);
-            $stock->setSolde($quantite);
-            $stock->setQuantiteReserve(0);
-            $stock->setFlagSynchronisationLocale(0);
+public function updateSolde(PProduits $produit, PPrUnites $unite, PEmplacements $emplacement, float $quantite): bool
+{
+    $stock = $this->em->getRepository(TStStockstatic::class)->findOneBy([
+        'pProduit' => $produit,
+        'pPrUnite' => $unite,
+        'pEmplacements' => $emplacement,
+    ]);
+
+    if ($stock) {
+        $newSolde = $stock->getSolde() + $quantite;
+
+        // If new solde would be negative, block and return false
+        if ($newSolde < 0) {
+            return false;
         }
 
-        $stock->setUserupdate($this->security->getUser());
-        $stock->setDateupdate(new \DateTime());
+        $stock->setSolde($newSolde);
+    } else {
+        // Prevent creating new stock if negative quantity
+        if ($quantite < 0) {
+            return false;
+        }
 
-        $this->em->persist($stock);
+        $stock = new TStStockstatic();
+        $stock->setPProduit($produit);
+        $stock->setPPrUnite($unite);
+        $stock->setPEmplacements($emplacement);
+        $stock->setSolde($quantite);
+        $stock->setQuantiteReserve(0);
+        $stock->setFlagSynchronisationLocale(0);
     }
+
+    $stock->setUserupdate($this->security->getUser());
+    $stock->setDateupdate(new \DateTime());
+
+    $this->em->persist($stock);
+
+    return true;
+}
+
 }
