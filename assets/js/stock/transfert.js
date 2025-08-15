@@ -1,3 +1,5 @@
+import './articlesTable'
+
 $(document).ready(function () {
   const table = $("#salesTable").DataTable({
     language: {
@@ -116,6 +118,27 @@ $(document).ready(function () {
   });
 });
 
+function getSubSelect(myclass, myboolean, mycontent) {
+  //console.log(mycontent)
+  if (myboolean) {
+      $(myclass).prop("disabled", false);
+  } else {
+      $(myclass).prop("disabled", true);
+      $(myclass)
+          .parent()
+          .find(".select2 .select2-selection__arrow")
+          .html('<i class="i-load fa fa-refresh"></i>');
+  }
+  if (mycontent) {
+      var array = myclass.split(",");
+      for (var i = 0, l = array.length; i < l; i++) {
+          //console.log($(mycontent).find(array[i]));
+          $(array[i]).replaceWith($(mycontent).find(array[i]));
+      }
+  }
+}
+
+
 
 $(document).on("click", ".edit-demande", function () {
   const demandeId = $(this).attr("id");
@@ -211,7 +234,34 @@ window.addEventListener("load", () => {
       });
     }
 
-    
+    // Add new product row
+    if (target.classList.contains("add-product")) {
+      const tableBody = modal.querySelector("tbody");
+      const newRow = document.createElement("tr");
+
+      newRow.innerHTML = `
+        <td style="vertical-align: top !important; text-align: left !important;">
+          <select class="form-control form-control-sm product-select">
+            ${produits
+              .map(
+                (p) =>
+                  `<option value="${p.id}" data-prix="${p.price}">${p.name}</option>`
+              )
+              .join("")}
+          </select>
+        </td>
+        <td>
+          <input type="number" class="form-control form-control-sm quantity-input" min="1" value="1">
+        </td>
+        <td class="text-center">
+          <button type="button" class="btn btn-sm btn-save-new-line" title="Enregistrer">
+            <i class="fa fa-save text-success"></i>
+          </button>
+        </td>
+      `;
+
+      tableBody.appendChild(newRow);
+    }
 
     if (target.classList.contains("btn-save-new-line")) {
       const productSelect = row.querySelector(".product-select");
@@ -310,7 +360,7 @@ window.addEventListener("load", () => {
     const deleted = window.getDeletedProduits().filter(d => d.demande_id == demandeId);
 
     try {
-      const response = await fetch("/mouvement/edit-demande", {
+      const response = await fetch("/transfert/edit-demande", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -353,7 +403,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const updatePosition = async (id, position, button) => {
     try {
-      const response = await fetch("/mouvement/update-position-demande", {
+      const response = await fetch("/transfert/update-position-demande", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -408,7 +458,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     $('body').on('click', '.genererPdfDemandeSortieStock', function (e) {
         e.preventDefault();
-        alert('test js');
+        
         const id = $(this).data('id');
         if (!id) {
             toastr.warning("ID de Demande ortie Stock manquant.");
@@ -428,6 +478,105 @@ document.addEventListener("DOMContentLoaded", () => {
       $("#ajouterTransfert").modal("show");
 
     });
+
+    $('body').on('change', '#demandeur_id', function (e) {
+      var id_demandeur=$(this).val();
+      getSubSelect(".recepteur_id", false, "");
+      var $this = $(this).closest("form");
+
+      // alert( $('#ajouterTransfert #demandeur_id').val());
+      $.ajax({        
+        type: 'POST',
+        url:  '/transfert/magasin-traitement',
+        data: {
+          demandeur : id_demandeur
+        },
+        success: function(result) {
+            console.log(result);
+          $(".recepteur_id").html(result);
+          getSubSelect(".recepteur_id", true, "");
+          $(".recepteur_id").select2();
+      },
+      });
+    }); 
 });
+
+
+
+// save the demande patient (AJAX)
+$(function () {
+  $('body').on('click', '#submit-demande', function (e) {
+    e.preventDefault();
+
+    const $btn = $(this);
+
+    const demandeur_id = $('#ajouterTransfert #demandeur_id').val() || null;
+    
+    const recepteur_id = $('#ajouterTransfert #recepteur_id').val() || null;
+    const type_demande = $('#ajouterTransfert #type_demande').val()|| 6; 
+    const description  = ($('#ajouterTransfert #description').val()|| '').trim();
+    const urgent       = $('#ajouterTransfert #urgent').val()? 1 : 0;
+
+    const lignes = [];
+    $('#articlesTableBody tr.locked-row').each(function () {
+      const $tr = $(this);
+      const id = $tr.find('input.hidden-article-id').val();
+      const quantity   = Number($tr.find('input.hidden-qty').val());
+      if (id && Number.isFinite(quantity) && quantity > 0) {
+        lignes.push({ id, quantity });
+      }
+    });
+
+  
+    if (!demandeur_id) {
+      toastr && toastr.error('Choisissez un magasin demandeur.');
+      return;
+    }
+    if (!lignes.length) {
+      toastr && toastr.error('Ajoutez au moins une ligne produit.');
+      return;
+    }
+  
+
+    const payload = {
+      demandeur_id,
+      recepteur_id,
+      type_demande: Number(type_demande),
+      description,
+      urgent,
+      lignes
+    };
+
+    const url   = $btn.data('url')   || '/transfert/save-demande';
+    const token = $btn.data('token') || ''; 
+
+    $btn.prop('disabled', true);
+
+    $.ajax({
+      url,
+      method: 'POST',
+      data: JSON.stringify(payload),
+      contentType: 'application/json',
+      headers: token ? { 'X-CSRF-TOKEN': token } : {},
+    })
+    .done(function () {
+      toastr && toastr.success('Success', 'Demande enregistrée avec succès.', {timeOut: 4000});
+      $('#ajouterTransfert').modal('hide');
+      $('#articlesTableBody tr.locked-row').remove();
+
+      location.reload();
+      
+    })
+    .fail(function (xhr) {
+      const msg = xhr.responseJSON?.message || 'Erreur lors de l’enregistrement.';
+      toastr && toastr.error(msg);
+    })
+    .always(function () {
+      $btn.prop('disabled', false);
+    });
+  });
+});
+
+
 
 

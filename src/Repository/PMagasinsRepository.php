@@ -77,7 +77,7 @@ class PMagasinsRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getOneOrNullResult();
     }
-        public function findMagasinParDefaut($user): ?PMagasins
+    public function findMagasinParDefaut($user): ?PMagasins
     {
         return $this->createQueryBuilder('m')
             ->join('m.pAffectationMagasins', 'a')
@@ -113,6 +113,17 @@ class PMagasinsRepository extends ServiceEntityRepository
             ->andWhere('a.defaut = 1') 
             ->andWhere('user = :user')
             ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findMagasinTraitementTransfet($demandeur)
+    {
+        return $this->createQueryBuilder('m')
+            ->innerJoin(PAffectationMagasin::class, 'a', 'WITH', 'a.magasin = m')
+            ->andWhere('a.defaut = 1') 
+            ->andWhere('a.magasin != :demandeur')
+            ->setParameter('demandeur', $demandeur)
             ->getQuery()
             ->getResult();
     }

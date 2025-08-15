@@ -5,10 +5,10 @@
         "/build/runtime.6c30001d.js",
         "/build/593.1f88b37a.js",
         "/build/193.d2d1c361.js",
-        "/build/948.3d52779b.js",
-        "/build/71.a383d658.js",
+        "/build/190.1bbefdd0.js",
+        "/build/312.6f72b7b7.js",
         "/build/986.bd2b8cb4.js",
-        "/build/app.af750376.js"
+        "/build/app.e7ac6e12.js"
       ],
       "css": [
         "/build/986.4d445ace.css",
@@ -19,7 +19,7 @@
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/593.1f88b37a.js",
-        "/build/setting_user.8e44b2b9.js"
+        "/build/setting_user.b116208f.js"
       ]
     },
     "setting_module": {
@@ -28,7 +28,7 @@
         "/build/593.1f88b37a.js",
         "/build/193.d2d1c361.js",
         "/build/866.7d029291.js",
-        "/build/setting_module.a432ac46.js"
+        "/build/setting_module.bcdd4556.js"
       ]
     },
     "setting_sub_module": {
@@ -37,13 +37,13 @@
         "/build/593.1f88b37a.js",
         "/build/193.d2d1c361.js",
         "/build/866.7d029291.js",
-        "/build/setting_sub_module.c1837169.js"
+        "/build/setting_sub_module.d950a62c.js"
       ]
     },
     "setting_action": {
       "js": [
         "/build/runtime.6c30001d.js",
-        "/build/setting_action.7fd9740b.js"
+        "/build/setting_action.18b24262.js"
       ]
     },
     "setting_user_affectation": {
@@ -52,27 +52,27 @@
         "/build/593.1f88b37a.js",
         "/build/193.d2d1c361.js",
         "/build/216.c4966876.js",
-        "/build/setting_user_affectation.3725a229.js"
+        "/build/setting_user_affectation.6e6d0906.js"
       ]
     },
     "setting_profile": {
       "js": [
         "/build/runtime.6c30001d.js",
-        "/build/setting_profile.e1792fd0.js"
+        "/build/setting_profile.9188de6f.js"
       ]
     },
     "setting_site": {
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/593.1f88b37a.js",
-        "/build/setting_site.8ffdcea7.js"
+        "/build/setting_site.b8610b35.js"
       ]
     },
     "sidebar": {
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/593.1f88b37a.js",
-        "/build/sidebar.c892ae52.js"
+        "/build/sidebar.99652ac8.js"
       ]
     },
     "operation_patient": {
@@ -81,8 +81,8 @@
         "/build/593.1f88b37a.js",
         "/build/193.d2d1c361.js",
         "/build/866.7d029291.js",
-        "/build/948.3d52779b.js",
-        "/build/operation_patient.ea3cc586.js"
+        "/build/190.1bbefdd0.js",
+        "/build/operation_patient.d7799439.js"
       ],
       "css": [
         "/build/operation_patient.040964b3.css"
@@ -94,8 +94,8 @@
         "/build/593.1f88b37a.js",
         "/build/193.d2d1c361.js",
         "/build/866.7d029291.js",
-        "/build/948.3d52779b.js",
-        "/build/gestion_demandes.362a62fa.js"
+        "/build/190.1bbefdd0.js",
+        "/build/gestion_demandes.07bb5612.js"
       ]
     },
     "gestion_commandes": {
@@ -104,15 +104,15 @@
         "/build/593.1f88b37a.js",
         "/build/193.d2d1c361.js",
         "/build/866.7d029291.js",
-        "/build/948.3d52779b.js",
-        "/build/gestion_commandes.7867b04b.js"
+        "/build/190.1bbefdd0.js",
+        "/build/gestion_commandes.892501d3.js"
       ]
     },
     "gestion_livraisons": {
       "js": [
         "/build/runtime.6c30001d.js",
         "/build/593.1f88b37a.js",
-        "/build/gestion_livraisons.da60fc72.js"
+        "/build/gestion_livraisons.9459de8d.js"
       ]
     },
     "alimentation_stock": {
@@ -121,9 +121,9 @@
         "/build/593.1f88b37a.js",
         "/build/193.d2d1c361.js",
         "/build/866.7d029291.js",
-        "/build/948.3d52779b.js",
-        "/build/71.a383d658.js",
-        "/build/alimentation_stock.41d021c0.js"
+        "/build/190.1bbefdd0.js",
+        "/build/312.6f72b7b7.js",
+        "/build/alimentation_stock.caef9e3a.js"
       ]
     },
     "stock_suivi": {
@@ -132,7 +132,7 @@
         "/build/593.1f88b37a.js",
         "/build/193.d2d1c361.js",
         "/build/866.7d029291.js",
-        "/build/stock_suivi.5e483cd3.js"
+        "/build/stock_suivi.fac3f9eb.js"
       ]
     },
     "gestion_transfert": {
@@ -141,8 +141,8 @@
         "/build/593.1f88b37a.js",
         "/build/193.d2d1c361.js",
         "/build/866.7d029291.js",
-        "/build/948.3d52779b.js",
-        "/build/gestion_transfert.d0eb8d50.js"
+        "/build/190.1bbefdd0.js",
+        "/build/gestion_transfert.1275bcd4.js"
       ]
     },
     "login": {

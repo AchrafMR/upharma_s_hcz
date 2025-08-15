@@ -140,7 +140,7 @@ class TransfertController extends AbstractController
             ->leftJoin('d.recepteur_id', 'rec')
             ->leftJoin('d.status', 'status')
             ->where('d.actif = 1')
-            ->andWhere('d.typeDemande = 5')
+            ->andWhere('d.typeDemande = 6')
             ->andWhere('d.pEntite = :entite')
             ->setParameter('entite', $dossier)
             ->groupBy('d.id, d.code, d.description, d.created, status.designation, d.urgent, dem.designationAccess, rec.designationAccess');
@@ -221,7 +221,7 @@ class TransfertController extends AbstractController
         ]);
     }
 
-    #[Route('/edit-demande', name: 'vente_edit_demande', methods: ['POST'])]
+    #[Route('/edit-demande', name: 'transfert_edit_demande', methods: ['POST'])]
     public function editDemande(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -314,7 +314,7 @@ class TransfertController extends AbstractController
         ]);
     }
 
-    #[Route('/update-position-demande', name: 'update_position', methods: ['POST'])]
+    #[Route('/update-position-demande', name: 'transfert_update_position', methods: ['POST'])]
     public function updatePosition(Request $request,EntityManagerInterface $em,TMsDemandeRepository $repo,Security $security): JsonResponse 
     {
         $data = json_decode($request->getContent(), true);
@@ -350,6 +350,22 @@ class TransfertController extends AbstractController
         $em->flush();
 
         return new JsonResponse(['success' => true]);
+    }
+
+    #[Route('/magasin-traitement', name: 'app_magasin_traitement', options: ['expose' => true], methods: 'POST')]
+    public function magasinTraitement(Request $request, EntityManagerInterface $em, PMagasinsRepository $magasinsRepository): JsonResponse
+    {
+        $id_demandeur= $request->request->get('demandeur'); 
+
+        $magasinTraitement = $magasinsRepository->findMagasinTraitementTransfet($id_demandeur);
+
+        $result = "<option value =''>Magasin ...</option>";
+            foreach ($magasinTraitement as $key => $value) {
+                //$selected = ($id == $value->getId()) ? "selected='selected'" : '';
+                $result .= "<option  value='" . $value->getId() . "'>" . $value->getDesignationAccess() . "</option>";
+            }
+        return new JsonResponse($result);
+        // dd($magasinTraitement);
     }
 
 }

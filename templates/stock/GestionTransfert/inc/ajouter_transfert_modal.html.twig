@@ -25,10 +25,11 @@
               <!-- Magasin Demandeur -->
               <div class="form-group col-md-6">
                 <label for="demandeur_id">Magasin Demandeur</label>
-                <select id="demandeur_id" class="form-control select2" data-live-search="true" disabled>
+                <select id="demandeur_id" class="form-control select2" data-live-search="true" >
+                  <option value="">Demandeur ... </option>
                   {% for magasin in magasinsDemandeur %}
-                    <option value="{{ magasin.id }}"
-                      {% if defaultMagasin and magasin.id == defaultMagasin.id %}selected{% endif %}>
+                    <option value="{{ magasin.id }}">
+                      {# {% if defaultMagasin and magasin.id == defaultMagasin.id %}selected{% endif %}> #}
                       {{ magasin.designationAccess }}
                     </option>
                   {% endfor %}
@@ -37,14 +38,9 @@
 
               <!-- Magasin de Traitement -->
               <div class="form-group col-md-6">
-                <label for="recepteur_id">Magasin de Traitement</label>
-                <select id="recepteur_id" class="form-control select2" data-live-search="true">
-                    {% for magasin in magasinsTraitement %}
-                      <option value="{{ magasin.id }}"
-                        {% if defaultMagasin and magasin.id == defaultMagasin.id %}selected{% endif %}>
-                        {{ magasin.designationAccess }}
-                      </option>
-                    {% endfor %}
+                <label for="recepteur">Magasin de Traitement</label>
+                <select id="recepteur_id" class="form-control select2 recepteur_id" data-live-search="true">
+                  <option value="">Magasin ... </option>
                 </select>
               </div>
             </div>
@@ -52,9 +48,9 @@
             <div class="form-row"> 
               <div class="form-group col-md-6">
                 <label for="type_demande">Type d’opération</label>
-                <select id="type_demande" class="form-control select2" data-live-search="true">
-                  <option value="4" selected>Demande</option>
-                  <option value="5">Retour</option>
+                <select id="type_demande" class="form-control select2" data-live-search="true" >
+                  <option value="6" selected>Demande transfert</option>
+                  {# <option value="5">Retour</option> #}
                 </select>
               </div>
               
@@ -72,8 +68,42 @@
               </div>
             </div>
 
+            <hr/>
+
+            <table id="articlesTable" style="table-layout: fixed; width: 100%;" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th width="1%">#</th>
+                        <th width="33%">Article</th>
+                        <th width="5%">QTE</th>
+                        <th width="3%">ACT</th>
+                    </tr>
+                </thead>
+                <tbody id="articlesTableBody">
+                    <tr>
+                        <td class="newArticleTd"></td>
+                        <td class="newArticleTd " width="20%">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <select class="articleSelect form-control" name="articleSelectAjout" id="articleSelectAjout" style="flex: 1;">
+                                    <option value="" disabled selected>CHOIX DE ARTICLES</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td class="newArticleTd" width="10%"><input name="quantite" id="quantite" type="number" class="quantite form-control no-spinner" placeholder="0.00" min="0"></td>
+                        <td class="newArticleTd">
+                            <a href="#" id="addArticleAjout" class="addArticle" style="background: transparent; border: none; padding: 0;">
+                                <span class="ladda-label">
+                                <i class="fa-solid fa-circle-plus" style="color: #71c6ad;font-size: 15px !important;"></i>
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
             
           </div>
+
+          
 
           <div class="modal-footer">
             <button type="button" id="submit-demande" class="btn btn-primary">
