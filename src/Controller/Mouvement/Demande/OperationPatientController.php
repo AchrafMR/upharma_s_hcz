@@ -171,7 +171,7 @@ public function saveDemande(Request $request): Response
     $commande->setDossierPatient($data['di'] ?? null);
     $commande->setIpp(isset($data['ipp']) ? (int)$data['ipp'] : null);
     $commande->setCreated(new \DateTime());
-// dd( "good");
+
 
     $commande->setUrgent(!empty($data['urgent']));
     $commande->setActif(true);
@@ -214,6 +214,7 @@ public function saveDemande(Request $request): Response
     }
 
 
+  
     // Recepteur
     
 
@@ -251,7 +252,8 @@ public function saveDemande(Request $request): Response
         $commandelg->setObservation(null);
         $commandelg->setActif(true);
 
-        $this->em->persist($commandelg);
+        $commande->addTMsCommandelg($commandelg);
+        $this->em->persist($commandelg); 
     }
     $this->em->flush();
     if ($typeOperation === 1) {

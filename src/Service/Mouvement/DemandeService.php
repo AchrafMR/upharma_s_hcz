@@ -125,6 +125,7 @@ class DemandeService
             return null;
         }
 
+        // dd($commande->getTMsCommandelgs());
         $demande = new TMsDemande();
         $demande->setCode(null);
         $demande->setDescription($commande->getDescription());
@@ -154,13 +155,11 @@ class DemandeService
             $typeDemande = $this->em->getRepository(PTypeOprt::class)->find(3); 
             $demande->setTypeDemande($typeDemande);
         }
-// dd(1);
-
         $this->em->persist($demande);
 
 
         foreach ($commande->getTMsCommandelgs() as $commandelg) {
-            dd(1);
+            // dd(1);
             $produit = $commandelg->getPProduit();
             $unite = $commandelg->getPPrUnite();
 
