@@ -17,18 +17,24 @@
 
     <div class="popup__body">
       <form id="{{ id }}-form" class="needs-validation" novalidate>
+
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <label for="{{ id }}-nom_patient">Patient</label>
+            <input type="text" id="{{ id }}-nom_patient" name="nom_patient"
+                  class="form-control border-0 nom_patient"
+                  required
+                  style="font-size: 1.25rem !important; color:black;" 
+                  readonly/>
+          </div>
+        </div>
+
+
         <div class="form-row">
           <div class="form-group col-md-6">
             <label for="{{ id }}-ipp">IPP (ID Patient)</label>
             <input type="text" id="{{ id }}-ipp" name="ipp" class="form-control" placeholder="Identifiant du patient" required />
           </div>
-          <div class="form-group col-md-6">
-            <label for="{{ id }}-nom_patient">Nom du Patient</label>
-            <input type="text" id="{{ id }}-nom_patient" name="nom_patient" class="form-control" placeholder="Nom complet du patient" required  disabled/>
-          </div>
-        </div>
-
-        <div class="form-row">
           <div class="form-group col-md-6">
             <label for="{{ id }}-dossier_imputation">DI</label>
             <select id="{{ id }}-dossier_imputation" name="dossier_imputation" class="form-control" required>

@@ -29,23 +29,42 @@ class PProduitsRepository extends ServiceEntityRepository
 
 
 
-    public function searchActiveByTerm(string $term, int $limit = 20): array
+    // public function searchActiveByTerm(string $term, int $limit = 20): array
+    // {
+    //     $term = trim($term);
+    //     if ($term === '') {
+    //         return [];
+    //     }
+
+    //     return $this->createQueryBuilder('p')
+    //         ->select('p.id AS id, p.code AS code, p.titre AS titre')
+    //         ->where('p.active = 1')
+    //         ->andWhere('p.code LIKE :term OR p.titre LIKE :term')
+    //         ->setParameter('term', '%'.$term.'%')
+    //         ->orderBy('p.code', 'ASC')
+    //         ->setMaxResults($limit)
+    //         ->getQuery()
+    //         ->getArrayResult();
+    // }
+
+    public function searchByTermAndMagasin(string $term, int $emplacementId, int $limit = 20): array
     {
         $term = trim($term);
-        if ($term === '') {
-            return [];
-        }
+        if ($term === '') return [];
 
         return $this->createQueryBuilder('p')
-            ->select('p.id AS id, p.code AS code, p.titre AS titre')
+            ->select('p.id AS id, p.code AS code, p.titre AS titre, COALESCE(s.solde, 0) AS stock')
+            ->leftJoin('p.tStStockstatics', 's', 'WITH', 's.pEmplacements = :emplacement_id')
             ->where('p.active = 1')
             ->andWhere('p.code LIKE :term OR p.titre LIKE :term')
-            ->setParameter('term', '%'.$term.'%')
+            ->setParameter('term', '%' . $term . '%')
+            ->setParameter('emplacement_id', $emplacementId)
             ->orderBy('p.code', 'ASC')
             ->setMaxResults($limit)
             ->getQuery()
             ->getArrayResult();
     }
+
 
     public function findProductsWithTarificationAndSolde(?int $parentId = null, ?int $magasinId = null): array
     {

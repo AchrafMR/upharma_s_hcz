@@ -3,10 +3,10 @@
 {{ parent() }}
 {{ encore_entry_link_tags("operation_patient") }}
 {% endblock %} {% block body %}
-<div class="d-flex align-items-center justify-content-between px-2 pt-4">
-  <h2 class="h6 mb-0">INFORMATION PATIENT</h2>
+<div class="d-flex align-items-center justify-content-between px-2 pt-2">
+  <h2 class="h6 mb-0"></h2>
 
-  {% for action in actions %} {% if action.horizontal and action.principal %}
+  {% for action in actions %} {% if action.horizontal and action.principal and action.ord == 1 %}
   <button
     type="button"
     class="{{ action.className }}"
@@ -17,57 +17,56 @@
   </button>
   {% endif %} {% endfor %}
 </div>
-<hr class="mt-2" />
+{# <hr class="mt-2" /> #}
 
 <div id="patientInfoContainer" class="px-2"></div>
 
-<hr class="my-3" />
+{# <br/> #}
 
 <div class="container-fluid px-2">
   <div class="row g-3 align-items-stretch">
-    {# LEFT: Sortie Patient #}
-    <div class="col-12 col-md-6">
-      <div class="card shadow-sm border-1 h-100">
-        <div
-          class="card-header bg-white border-0 d-flex align-items-center justify-content-between py-3"
-        >
-          <h3 class="h6 mb-0">SORTIE PATIENT</h3>
+    <!-- LEFT: Sortie Patient -->
+    <div class="col-12 col-md-6 h-100">
+      <fieldset class="fieldset-card h-100">
+        <legend class="fieldset-legend">SORTIE PATIENT</legend>
+        <div id="sortiePatientBlock">
+
         </div>
-        <div class="card-body pt-0">
-          <div id="sortiePatientBlock">
-            <p class="text-muted mb-0">Aucune sortie pour le moment.</p>
-          </div>
-        </div>
-      </div>
+      </fieldset>
     </div>
 
-    <div class="col-12 d-md-none">
-      <hr class="my-3" />
-    </div>
-
-    {# RIGHT: Commande Patient #}
-    <div class="col-12 col-md-6">
-      <div class="card shadow-sm border-1 h-100">
-        <div
-          class="card-header bg-white border-0 d-flex align-items-center justify-content-between py-3"
-        >
-          <h3 class="h6 mb-0">COMMANDE PATIENT</h3>
+    <!-- RIGHT: Commande Patient -->
+    <div class="col-12 col-md-6 h-100">
+      <fieldset class="fieldset-card h-100">
+        <legend class="fieldset-legend">COMMANDE PATIENT</legend>
+        <div id="commandePatientBlock">
+            
         </div>
-        <div class="card-body pt-0">
-          <div id="commandePatientBlock">
-            <p class="text-muted mb-0">Aucune commande pour le moment.</p>
-          </div>
-        </div>
-      </div>
+      </fieldset>
     </div>
   </div>
+
+   <div class="d-flex align-items-center justify-content-between px-2 pt-1">
+  <h2 class="h6 mb-0"></h2>
+
+  {% for action in actions %} {% if action.horizontal and action.principal and action.ord == 2 %}
+  <button
+    type="button"
+    class="{{ action.className }}"
+  >
+  {{action.nom}}
+    <i class="{{ action.icon }}"></i>
+  </button>
+  {% endif %} {% endfor %}
+</div>
 </div>
 
-{# Include the popup #} {% include
-'mouvement/OperationPatient/popup/infoPatient_popup.html.twig' with { id:
-'opPatientPopup', title: 'Information Patient', auto_open: true } %} {% include
-'mouvement/OperationPatient/modals/ajouter.html.twig' %} {% endblock %} {% block
-javascripts %}
+
+{# Include the popup #} 
+{% include 'mouvement/OperationPatient/popup/infoPatient_popup.html.twig' with { id:'opPatientPopup', title: 'Information Patient', auto_open: true } %} 
+{% include 'mouvement/OperationPatient/modals/ajouter.html.twig' %} {% endblock %} 
+
+{% block javascripts %}
 {{ parent() }}
 {{ encore_entry_script_tags("operation_patient") }}
 {% endblock %}

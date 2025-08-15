@@ -2,7 +2,7 @@
     <div class="modal-dialog" role="document" style="width:65%">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" >Panier demande patient</h5>
+            <h5 class="modal-title" >Panier pharmaceutique patient</h5>
             <button type="button" class="close" data-dismiss="modal" id="closeDemandeAchat" aria-label="Close">
             <span aria-hidden="true">&times;</span>
             </button>
@@ -54,6 +54,7 @@
                         <th width="1%">#</th>
                         <th width="33%">Article</th>
                         <th width="5%">QTE</th>
+                        <th width="5%">QTE STOCK</th>
                         <th width="3%">ACT</th>
                     </tr>
                 </thead>
@@ -67,7 +68,9 @@
                                 </select>
                             </div>
                         </td>
-                        <td class="newArticleTd" width="10%"><input name="quantite" id="quantite" type="number" class="quantite form-control no-spinner" placeholder="0.00" min="0"></td>
+                        <td class="newArticleTd" width="10%"><input name="quantite" id="quantite" type="number" class="quantite form-control no-spinner" placeholder="0" min="0"></td>
+                        <td class="newArticleTd" width="10%"><input name="qtyInStock" id="qtyInStock" type="number" readonly class="qtyInStock form-control no-spinner"  min="0"></td>
+
                         <td class="newArticleTd">
                             <a href="#" id="addArticleAjout" class="addArticle" style="background: transparent; border: none; padding: 0;">
                                 <span class="ladda-label">

@@ -154,10 +154,13 @@ class DemandeService
             $typeDemande = $this->em->getRepository(PTypeOprt::class)->find(3); 
             $demande->setTypeDemande($typeDemande);
         }
+// dd(1);
 
         $this->em->persist($demande);
 
+
         foreach ($commande->getTMsCommandelgs() as $commandelg) {
+            dd(1);
             $produit = $commandelg->getPProduit();
             $unite = $commandelg->getPPrUnite();
 
@@ -168,7 +171,6 @@ class DemandeService
 
             $montantHt = ($prixUnitaire * $quantite) - $remise;
             $montantTtc = $montantHt + ($montantHt * $tva / 100);
-
             $demandelg = new TMsDemandelg();
             $demandelg->setTmsDemande($demande);
             $demandelg->setPProduit($produit);
